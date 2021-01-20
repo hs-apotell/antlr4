@@ -319,7 +319,7 @@ bool LexerATNSimulator::closure(CharStream *input, const Ref<LexerATNConfig> &co
     std::cout << "closure(" << config->toString(true) << ")" << std::endl;
 #endif
 
-  if (is<RuleStopState *>(config->state)) {
+    if (config->state->isType(ATNState::RuleStopStateClass)) {
 #if DEBUG_ATN == 1
       if (_recog != nullptr) {
         std::cout << "closure at " << _recog->getRuleNames()[config->state->ruleIndex] << " rule stop " << config << std::endl;
@@ -544,7 +544,7 @@ dfa::DFAState *LexerATNSimulator::addDFAState(ATNConfigSet *configs) {
   dfa::DFAState *proposed = new dfa::DFAState(std::unique_ptr<ATNConfigSet>(configs)); /* mem-check: managed by the DFA or deleted below */
   Ref<ATNConfig> firstConfigWithRuleStopState = nullptr;
   for (auto &c : configs->configs) {
-    if (is<RuleStopState *>(c->state)) {
+    if (c->state->isType(ATNState::RuleStopStateClass)) {
       firstConfigWithRuleStopState = c;
       break;
     }

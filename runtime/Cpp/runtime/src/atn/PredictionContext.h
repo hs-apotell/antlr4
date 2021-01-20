@@ -38,6 +38,16 @@ namespace atn {
     };
 #endif
 
+    enum ClassType {
+      PredictionContextClass = 1,
+      SingletonPredictionContextClass = 2,
+      EmptyPredictionContextClass = 4
+    };
+    
+    long classtype;
+
+    bool isType(ClassType type) const { return (classtype & type); }
+
   private:
 #if __cplusplus >= 201703L
     static constexpr size_t INITIAL_HASH = 1;

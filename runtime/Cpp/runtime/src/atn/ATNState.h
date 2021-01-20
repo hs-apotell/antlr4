@@ -107,6 +107,29 @@ namespace atn {
       LOOP_END = 12
     };
 
+    enum ClassType {
+      ATNStateClass = 1,
+      BasicStateClass = 2,
+      BlockEndStateClass = 4,
+      DecisionStateClass = 8,
+      LoopEndStateClass = 16,
+      RuleStartStateClass = 32,
+      RuleStopStateClass = 64,
+      StarLoopbackStateClass = 128,
+      BlockStartStateClass  = 256,
+      PlusLoopbackStateClass = 512,
+      StarLoopEntryStateClass = 1024,
+      TokensStartStateClass = 2048,
+      BasicBlockStartStateClass = 4096,
+      PlusBlockStartStateClass = 8192,
+      StarBlockStartStateClass = 16384
+
+    };
+
+    long classtype;
+
+    bool isType(ClassType type) const { return (classtype & type); }
+
     static const std::vector<std::string> serializationNames;
 
     size_t stateNumber = INVALID_STATE_NUMBER;
