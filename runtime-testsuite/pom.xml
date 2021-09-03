@@ -83,6 +83,7 @@
 				<excludes>
 					<exclude>**/.build/**</exclude>
 					<exclude>**/target/**</exclude>
+					<exclude>**/.vs/**</exclude>
 					<exclude>Swift/*.xcodeproj/**</exclude>
 				</excludes>
 			</resource>
