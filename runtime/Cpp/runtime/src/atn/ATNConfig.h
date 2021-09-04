@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "RTTI.h"
+
 namespace antlr4 {
 namespace atn {
 
@@ -16,7 +18,8 @@ namespace atn {
   ///  the tree of semantic predicates encountered before reaching
   ///  an ATN state.
   /// </summary>
-  class ANTLR4CPP_PUBLIC ATNConfig {
+  class ANTLR4CPP_PUBLIC ATNConfig : public RTTI {
+    IMPLEMENT_RTTI(ATNConfig, RTTI)
   public:
     struct Hasher
     {
@@ -126,6 +129,7 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
+IMPLEMENT_CAST_FUNCTIONS(atnconfig_cast, antlr4::atn::ATNConfig)
 
 // Hash function for ATNConfig.
 

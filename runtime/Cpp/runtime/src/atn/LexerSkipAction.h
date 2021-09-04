@@ -21,6 +21,7 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerSkipAction final : public LexerAction {
+    IMPLEMENT_RTTI(LexerSkipAction, LexerAction)
   public:
     /// Provides a singleton instance of this parameterless lexer action.
     static const Ref<LexerSkipAction> getInstance();

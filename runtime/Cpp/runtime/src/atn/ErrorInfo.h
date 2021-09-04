@@ -21,6 +21,7 @@ namespace atn {
   ///
   /// @since 4.3 </seealso>
   class ANTLR4CPP_PUBLIC ErrorInfo : public DecisionEventInfo {
+    IMPLEMENT_RTTI(ErrorInfo, DecisionEventInfo)
   public:
     /// <summary>
     /// Constructs a new instance of the <seealso cref="ErrorInfo"/> class with the

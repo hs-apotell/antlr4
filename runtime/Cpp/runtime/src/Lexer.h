@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "atn/ATNSimulator.h"
 #include "Recognizer.h"
 #include "TokenSource.h"
 #include "CharStream.h"
@@ -17,6 +18,7 @@ namespace antlr4 {
   /// uses simplified match() and error recovery mechanisms in the interest
   /// of speed.
   class ANTLR4CPP_PUBLIC Lexer : public Recognizer, public TokenSource {
+    IMPLEMENT_RTTI_2_BASES(Lexer, Recognizer, TokenSource)
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t DEFAULT_MODE = 0;

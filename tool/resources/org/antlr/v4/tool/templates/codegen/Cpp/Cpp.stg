@@ -44,6 +44,7 @@ LexerHeader(lexer, atn, actionFuncs, sempredFuncs, superClass = {antlr4::Lexer})
 <namedActions.context>
 
 class <file.exportMacro> <lexer.name> : public <superClass> {
+  IMPLEMENT_RTTI(<lexer.name>, <superClass>)
 public:
 <if (lexer.tokens)>
   enum {
@@ -159,7 +160,7 @@ const atn::ATN& <lexer.name>::getATN() const {
 <if (actionFuncs)>
 void <lexer.name>::action(RuleContext *context, size_t ruleIndex, size_t actionIndex) {
   switch (ruleIndex) {
-    <lexer.actionFuncs.values: {f | case <f.ruleIndex>: <f.name>Action(dynamic_cast\<<f.ctxType> *>(context), actionIndex); break;}; separator="\n">
+    <lexer.actionFuncs.values: {f | case <f.ruleIndex>: <f.name>Action(parsetree_cast\<<f.ctxType>\>(context), actionIndex); break;}; separator="\n">
 
   default:
     break;
@@ -170,7 +171,7 @@ void <lexer.name>::action(RuleContext *context, size_t ruleIndex, size_t actionI
 <if (sempredFuncs)>
 bool <lexer.name>::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
-    <lexer.sempredFuncs.values: {f | case <f.ruleIndex>: return <f.name>Sempred(dynamic_cast\<<f.ctxType> *>(context), predicateIndex);}; separator="\n">
+    <lexer.sempredFuncs.values: {f | case <f.ruleIndex>: return <f.name>Sempred(parsetree_cast\<<f.ctxType>\>(context), predicateIndex);}; separator="\n">
 
   default:
     break;
@@ -277,6 +278,7 @@ ParserHeader(parser, funcs, atn, sempredFuncs, superClass = {antlr4::Parser}) ::
 <namedActions.context>
 
 class <file.exportMacro> <parser.name> : public <superClass> {
+  IMPLEMENT_RTTI(<parser.name>, <superClass>)
 public:
 <if (parser.tokens)>
   enum {
@@ -361,7 +363,7 @@ dfa::Vocabulary& <parser.name>::getVocabulary() const {
 bool <parser.name>::sempred(RuleContext *context, size_t ruleIndex, size_t predicateIndex) {
   switch (ruleIndex) {
   <parser.sempredFuncs.values: {f |
-  case <f.ruleIndex>: return <f.name>Sempred(dynamic_cast\<<f.ctxType> *>(context), predicateIndex);}; separator="\n">
+  case <f.ruleIndex>: return <f.name>Sempred(parsetree_cast\<<f.ctxType>\>(context), predicateIndex);}; separator="\n">
 
   default:
     break;
@@ -538,6 +540,7 @@ LeftRecursiveRuleFunction(currentRule, args, code, locals, ruleCtx, altLabelCtxs
 
 StructDeclHeader(struct, ctorAttrs, attrs, getters, dispatchMethods, interfaces, extensionMembers) ::= <<
 class <file.exportMacro> <struct.name> : public <if (contextSuperClass)><contextSuperClass><else>antlr4::ParserRuleContext<endif><if(interfaces)>, <interfaces; separator=", "><endif> {
+  IMPLEMENT_RTTI(<struct.name>, <if (contextSuperClass)><contextSuperClass><else>antlr4::ParserRuleContext<endif>)
 public:
   <attrs: {a | <a>;}; separator = "\n">
   <if (ctorAttrs)><struct.name>(antlr4::ParserRuleContext *parent, size_t invokingState);<endif>
@@ -590,6 +593,7 @@ void <parser.name>::<struct.name>::copyFrom(<struct.name> *ctx) {
 
 AltLabelStructDeclHeader(struct, attrs, getters, dispatchMethods) ::= <<
 class <file.exportMacro> <struct.name> : public <currentRule.name; format = "cap">Context {
+  IMPLEMENT_RTTI(<struct.name>, <currentRule.name; format = "cap">Context)
 public:
   <struct.name>(<currentRule.name; format = "cap">Context *ctx);
 
@@ -614,7 +618,7 @@ AltLabelStructDecl(struct, attrs, getters, dispatchMethods) ::= <<
 CodeBlockForOuterMostAltHeader(currentOuterMostAltCodeBlock, locals, preamble, ops) ::= "<! Required to exist, but unused. !>"
 CodeBlockForOuterMostAlt(currentOuterMostAltCodeBlock, locals, preamble, ops) ::= <<
 <if (currentOuterMostAltCodeBlock.altLabel)>
-_localctx = dynamic_cast\<<currentRule.ctxType> *>(_tracker.createInstance\<<parser.name>::<currentOuterMostAltCodeBlock.altLabel; format = "cap">Context>(_localctx));
+_localctx = parsetree_cast\<<currentRule.ctxType>\>(_tracker.createInstance\<<parser.name>::<currentOuterMostAltCodeBlock.altLabel; format = "cap">Context>(_localctx));
 <endif>
 enterOuterAlt(_localctx, <currentOuterMostAltCodeBlock.alt.altNum>);
 <CodeBlockForAlt(currentAltCodeBlock = currentOuterMostAltCodeBlock, ...)>
@@ -1052,7 +1056,7 @@ virtual void <if (method.isEnter)>enter<else>exit<endif>Rule(antlr4::tree::Parse
 >>
 ListenerDispatchMethod(method) ::= <<
 void <parser.name>::<struct.name>::<if (method.isEnter)>enter<else>exit<endif>Rule(tree::ParseTreeListener *listener) {
-  auto parserListener = dynamic_cast\<<parser.grammarName>Listener *>(listener);
+  auto parserListener = parsetreelistener_cast\<<parser.grammarName>Listener>(listener);
   if (parserListener != nullptr)
     parserListener-><if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this);
 }
@@ -1065,7 +1069,7 @@ virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
 VisitorDispatchMethod(method) ::=  <<
 
 antlrcpp::Any <parser.name>::<struct.name>::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast\<<parser.grammarName>Visitor*>(visitor))
+  if (auto parserVisitor = parsetreevisitor_cast\<<parser.grammarName>Visitor>(visitor))
     return parserVisitor->visit<struct.derivedFromName; format="cap">(this);
   else
     return visitor->visitChildren(this);
@@ -1076,10 +1080,10 @@ AttributeDeclHeader(d) ::= "<d.type> <d.name><if(d.initValue)> = <d.initValue><e
 AttributeDecl(d) ::= "<d.type> <d.name>"
 
 /** If we don't know location of label def x, use this template */
-labelref(x) ::= "<if (!x.isLocal)>dynamic_cast\<<x.ctx.name> *>(_localctx)-><endif><x.name>"
+labelref(x) ::= "<if (!x.isLocal)>parsetree_cast\<<x.ctx.name>\>(_localctx)-><endif><x.name>"
 
 /** For any action chunk, what is correctly-typed context struct ptr? */
-ctx(actionChunk) ::= "dynamic_cast\<<actionChunk.ctx.name> *>(_localctx)"
+ctx(actionChunk) ::= "parsetree_cast\<<actionChunk.ctx.name>\>(_localctx)"
 
 // used for left-recursive rules
 recRuleAltPredicate(ruleName,opPrec) ::= "precpred(_ctx, <opPrec>)"

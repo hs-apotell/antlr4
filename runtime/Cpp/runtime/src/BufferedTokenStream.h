@@ -22,6 +22,7 @@ namespace antlr4 {
    * {@link CommonTokenStream}.</p>
    */
   class ANTLR4CPP_PUBLIC BufferedTokenStream : public TokenStream {
+    IMPLEMENT_RTTI(BufferedTokenStream, TokenStream)
   public:
     BufferedTokenStream(TokenSource *tokenSource);
     BufferedTokenStream(const BufferedTokenStream& other) = delete;

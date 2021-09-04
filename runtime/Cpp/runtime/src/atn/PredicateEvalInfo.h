@@ -18,6 +18,7 @@ namespace atn {
   ///
   /// @since 4.3 </seealso>
   class ANTLR4CPP_PUBLIC PredicateEvalInfo : public DecisionEventInfo {
+    IMPLEMENT_RTTI(PredicateEvalInfo, DecisionEventInfo)
   public:
     /// The semantic context which was evaluated.
     const Ref<SemanticContext> semctx;

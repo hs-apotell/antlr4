@@ -12,6 +12,7 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathTokenAnywhereElement : public XPathElement {
+    IMPLEMENT_RTTI(XPathTokenAnywhereElement, XPathElement)
   protected:
     int tokenType = 0;
   public:

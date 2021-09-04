@@ -15,6 +15,7 @@ namespace antlr4 {
    * error reporting and recovery in ANTLR parsers.
    */
   class ANTLR4CPP_PUBLIC DefaultErrorStrategy : public ANTLRErrorStrategy {
+    IMPLEMENT_RTTI(DefaultErrorStrategy, ANTLRErrorStrategy)
   public:
     DefaultErrorStrategy();
     DefaultErrorStrategy(DefaultErrorStrategy const& other) = delete;

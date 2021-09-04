@@ -12,6 +12,7 @@ namespace antlr4 {
 
   /// A source of characters for an ANTLR lexer.
   class ANTLR4CPP_PUBLIC CharStream : public IntStream {
+    IMPLEMENT_RTTI(CharStream, IntStream)
   public:
     virtual ~CharStream();
 

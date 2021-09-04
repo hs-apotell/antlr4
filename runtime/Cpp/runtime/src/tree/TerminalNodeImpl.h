@@ -11,6 +11,7 @@ namespace antlr4 {
 namespace tree {
 
   class ANTLR4CPP_PUBLIC TerminalNodeImpl : public virtual TerminalNode {
+    IMPLEMENT_RTTI(TerminalNodeImpl, TerminalNode)
   public:
     Token *symbol;
 

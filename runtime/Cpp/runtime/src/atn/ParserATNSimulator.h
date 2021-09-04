@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
+/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
  */
@@ -243,6 +243,7 @@ namespace atn {
    * the input.</p>
    */
   class ANTLR4CPP_PUBLIC ParserATNSimulator : public ATNSimulator {
+    IMPLEMENT_RTTI(ParserATNSimulator, ATNSimulator)
   public:
     /// Testing only!
     ParserATNSimulator(const ATN &atn, std::vector<dfa::DFA> &decisionToDFA,
@@ -894,7 +895,6 @@ namespace atn {
   private:
     // SLL, LL, or LL + exact ambig detection?
     PredictionMode _mode;
-    int mergeCacheCleanCounter;
 
     static bool getLrLoopSetting();
     void InitializeInstanceFields();

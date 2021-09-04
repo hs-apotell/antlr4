@@ -11,6 +11,7 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC NotSetTransition final : public SetTransition {
+    IMPLEMENT_RTTI(NotSetTransition, SetTransition)
   public:
     NotSetTransition(ATNState *target, const misc::IntervalSet &set);
 

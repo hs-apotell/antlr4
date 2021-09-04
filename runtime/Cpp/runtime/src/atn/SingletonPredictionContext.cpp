@@ -13,7 +13,6 @@ SingletonPredictionContext::SingletonPredictionContext(Ref<PredictionContext> co
   : PredictionContext(parent ? calculateHashCode(parent, returnState) : calculateEmptyHashCode()),
     parent(parent), returnState(returnState) {
   assert(returnState != ATNState::INVALID_STATE_NUMBER);
-  classtype |= SingletonPredictionContextClass;
 }
 
 SingletonPredictionContext::~SingletonPredictionContext() {
@@ -23,7 +22,7 @@ Ref<SingletonPredictionContext> SingletonPredictionContext::create(Ref<Predictio
 
   if (returnState == EMPTY_RETURN_STATE && parent) {
     // someone can pass in the bits of an array ctx that mean $
-    return std::dynamic_pointer_cast<SingletonPredictionContext>(EMPTY);
+    return predictioncontext_cast<SingletonPredictionContext>(EMPTY);
   }
   return std::make_shared<SingletonPredictionContext>(parent, returnState);
 }
@@ -49,7 +48,7 @@ bool SingletonPredictionContext::operator == (const PredictionContext &o) const 
     return true;
   }
 
-  const SingletonPredictionContext *other = dynamic_cast<const SingletonPredictionContext*>(&o);
+  const SingletonPredictionContext *other = predictioncontext_cast<SingletonPredictionContext>(&o);
   if (other == nullptr) {
     return false;
   }

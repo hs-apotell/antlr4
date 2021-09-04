@@ -40,6 +40,7 @@ namespace atn {
   ///
   /// @since 4.3 </seealso>
   class ANTLR4CPP_PUBLIC AmbiguityInfo : public DecisionEventInfo {
+    IMPLEMENT_RTTI(AmbiguityInfo, DecisionEventInfo)
   public:
     /// The set of alternative numbers for this decision event that lead to a valid parse.
     antlrcpp::BitSet ambigAlts;

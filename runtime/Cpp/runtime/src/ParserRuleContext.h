@@ -8,6 +8,9 @@
 #include "RuleContext.h"
 #include "support/CPPUtils.h"
 
+template<typename T, typename>
+ANTLR4CPP_PUBLIC T *parsetree_cast(antlr4::tree::ParseTree *const u) noexcept;
+
 namespace antlr4 {
 
   /// <summary>
@@ -34,6 +37,7 @@ namespace antlr4 {
   ///  satisfy the superclass interface.
   /// </summary>
   class ANTLR4CPP_PUBLIC ParserRuleContext : public RuleContext {
+    IMPLEMENT_RTTI(ParserRuleContext, RuleContext)
   public:
     static ParserRuleContext EMPTY;
 
@@ -94,7 +98,7 @@ namespace antlr4 {
 
     virtual std::vector<tree::TerminalNode *> getTokens(size_t ttype);
 
-    template<typename T>
+    template<typename T, typename = typename std::enable_if<std::is_base_of<tree::ParseTree, T>::value>::type>
     T* getRuleContext(size_t i) {
       if (children.empty()) {
         return nullptr;
@@ -102,21 +106,21 @@ namespace antlr4 {
 
       size_t j = 0; // what element have we found with ctxType?
       for (auto &child : children) {
-        if (antlrcpp::is<T *>(child)) {
-          if (j++ == i) {
-            return dynamic_cast<T *>(child);
-          }
+        T *const t = parsetree_cast<T>(child);
+        if ((t != nullptr) && (j++ == i)) {
+          return t;
         }
       }
       return nullptr;
     }
 
-    template<typename T>
+    template<typename T, typename = typename std::enable_if<std::is_base_of<tree::ParseTree, T>::value>::type>
     std::vector<T *> getRuleContexts() {
       std::vector<T *> contexts;
       for (auto *child : children) {
-        if (antlrcpp::is<T *>(child)) {
-          contexts.push_back(dynamic_cast<T *>(child));
+        T *const t = parsetree_cast<T>(child);
+        if (t != nullptr) {
+          contexts.push_back(t);
         }
       }
 

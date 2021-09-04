@@ -133,7 +133,7 @@ void LL1Analyzer::_LOOK(ATNState *s, ATNState *stopState, Ref<PredictionContext>
       calledRuleStack.set((static_cast<RuleTransition*>(t))->target->ruleIndex);
       _LOOK(t->target, stopState, newContext, look, lookBusy, calledRuleStack, seeThruPreds, addEOF);
 
-    } else if (t->isType(Transition::AbstractPredicateTransitionClass)) {
+    } else if (transition_cast<AbstractPredicateTransition>(t) != nullptr) {
       if (seeThruPreds) {
         _LOOK(t->target, stopState, ctx, look, lookBusy, calledRuleStack, seeThruPreds, addEOF);
       } else {
@@ -146,7 +146,7 @@ void LL1Analyzer::_LOOK(ATNState *s, ATNState *stopState, Ref<PredictionContext>
     } else {
       misc::IntervalSet set = t->label();
       if (!set.isEmpty()) {
-        if (t->isType(Transition::NotSetTransitionClass)) {
+        if (transition_cast<NotSetTransition>(t) != nullptr) {
           set = set.complement(misc::IntervalSet::of(Token::MIN_USER_TOKEN_TYPE, static_cast<ssize_t>(_atn.maxTokenType)));
         }
         look.addAll(set);

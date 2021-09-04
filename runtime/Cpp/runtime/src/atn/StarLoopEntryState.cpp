@@ -8,7 +8,6 @@
 using namespace antlr4::atn;
 
 StarLoopEntryState::StarLoopEntryState() : DecisionState(), isPrecedenceDecision(false) {
-  classtype |= StarLoopEntryStateClass;
 }
 
 size_t StarLoopEntryState::getStateType() {

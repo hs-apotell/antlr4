@@ -43,7 +43,7 @@ bool LexerPushModeAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerPushModeAction *action = dynamic_cast<const LexerPushModeAction *>(&obj);
+  const LexerPushModeAction *action = lexeraction_cast<LexerPushModeAction>(&obj);
   if (action == nullptr) {
     return false;
   }

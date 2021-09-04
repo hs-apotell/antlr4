@@ -6,10 +6,24 @@
 #pragma once
 
 #include "ProxyErrorListener.h"
+#include "RTTI.h"
+
+namespace antlr4 {
+  namespace atn {
+    class ATNSimulator;
+  }
+}
+
+template<typename T, typename>
+ANTLR4CPP_PUBLIC T *atnsimulator_cast(antlr4::atn::ATNSimulator *const u) noexcept;
+
+template<typename T, typename>
+ANTLR4CPP_PUBLIC const T *atnsimulator_cast(const antlr4::atn::ATNSimulator *const u) noexcept;
 
 namespace antlr4 {
 
-  class ANTLR4CPP_PUBLIC Recognizer {
+  class ANTLR4CPP_PUBLIC Recognizer : public RTTI {
+    IMPLEMENT_RTTI(Recognizer, RTTI)
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t EOF = std::numeric_limits<size_t>::max();
@@ -77,9 +91,9 @@ namespace antlr4 {
 
     /// Get the ATN interpreter (in fact one of it's descendants) used by the recognizer for prediction.
     /// @returns The ATN interpreter used by the recognizer for prediction.
-    template <class T>
+    template <typename T, typename = typename std::enable_if<std::is_base_of<atn::ATNSimulator, T>::value>::type>
     T* getInterpreter() const {
-      return dynamic_cast<T *>(_interpreter);
+      return atnsimulator_cast<T>(_interpreter);
     }
 
     /**
@@ -168,3 +182,5 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(recognizer_cast, antlr4::Recognizer)

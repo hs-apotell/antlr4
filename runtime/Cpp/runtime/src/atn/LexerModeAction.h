@@ -19,6 +19,7 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerModeAction final : public LexerAction {
+    IMPLEMENT_RTTI(LexerModeAction, LexerAction)
   public:
     /// <summary>
     /// Constructs a new {@code mode} action with the specified mode value. </summary>

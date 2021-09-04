@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "RTTI.h"
 #include "atn/LexerActionType.h"
 #include "antlr4-common.h"
 
@@ -19,7 +20,8 @@ namespace atn {
   /// @author Sam Harwell
   /// @since 4.2
   /// </summary>
-  class ANTLR4CPP_PUBLIC LexerAction {
+  class ANTLR4CPP_PUBLIC LexerAction : public RTTI {
+    IMPLEMENT_RTTI(LexerAction, RTTI)
   public:
     virtual ~LexerAction();
 
@@ -64,3 +66,5 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(lexeraction_cast, antlr4::atn::LexerAction)

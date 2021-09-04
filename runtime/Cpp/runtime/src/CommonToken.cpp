@@ -58,9 +58,10 @@ CommonToken::CommonToken(Token *oldToken) {
   _start = oldToken->getStartIndex();
   _stop = oldToken->getStopIndex();
 
-  if (is<CommonToken *>(oldToken)) {
-    _text = (static_cast<CommonToken *>(oldToken))->_text;
-    _source = (static_cast<CommonToken *>(oldToken))->_source;
+  CommonToken *const commonToken = token_cast<CommonToken>(oldToken);
+  if (commonToken != nullptr) {
+    _text = commonToken->_text;
+    _source = commonToken->_source;
   } else {
     _text = oldToken->getText();
     _source = { oldToken->getTokenSource(), oldToken->getInputStream() };

@@ -142,7 +142,7 @@ TokenFactory<CommonToken>* Lexer::getTokenFactory() {
 
 void Lexer::setInputStream(IntStream *input) {
   reset();
-  _input = dynamic_cast<CharStream*>(input);
+  _input = intstream_cast<CharStream>(input);
 }
 
 std::string Lexer::getSourceName() {

@@ -15,6 +15,7 @@ namespace antlr4 {
   /// in the input, where it is in the ATN, the rule invocation stack,
   /// and what kind of problem occurred.
   class ANTLR4CPP_PUBLIC RecognitionException : public RuntimeException {
+    IMPLEMENT_RTTI(RecognitionException, RuntimeException)
   private:
     /// The Recognizer where this exception originated.
     Recognizer *_recognizer;

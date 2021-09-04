@@ -140,16 +140,14 @@ ParseTree* ParseTreePatternMatcher::matchImpl(ParseTree *tree, ParseTree *patter
   }
 
   // x and <ID>, x and y, or x and x; or could be mismatched types
-  if (is<TerminalNode *>(tree) && is<TerminalNode *>(patternTree)) {
-    TerminalNode *t1 = dynamic_cast<TerminalNode *>(tree);
-    TerminalNode *t2 = dynamic_cast<TerminalNode *>(patternTree);
-
+  TerminalNode *const t1 = parsetree_cast<TerminalNode>(tree);
+  TerminalNode *const t2 = parsetree_cast<TerminalNode>(patternTree);
+  if ((t1 != nullptr) && (t2 != nullptr)) {
     ParseTree *mismatchedNode = nullptr;
     // both are tokens and they have same type
     if (t1->getSymbol()->getType() == t2->getSymbol()->getType()) {
-      if (is<TokenTagToken *>(t2->getSymbol())) { // x and <ID>
-        TokenTagToken *tokenTagToken = dynamic_cast<TokenTagToken *>(t2->getSymbol());
-
+      TokenTagToken *tokenTagToken = token_cast<TokenTagToken>(t2->getSymbol());
+      if (tokenTagToken != nullptr) { // x and <ID>
         // track label->list-of-nodes for both token name and label (if any)
         labels[tokenTagToken->getTokenName()].push_back(tree);
         if (tokenTagToken->getLabel() != "") {
@@ -172,9 +170,9 @@ ParseTree* ParseTreePatternMatcher::matchImpl(ParseTree *tree, ParseTree *patter
     return mismatchedNode;
   }
 
-  if (is<ParserRuleContext *>(tree) && is<ParserRuleContext *>(patternTree)) {
-    ParserRuleContext *r1 = dynamic_cast<ParserRuleContext *>(tree);
-    ParserRuleContext *r2 = dynamic_cast<ParserRuleContext *>(patternTree);
+  ParserRuleContext *r1 = parsetree_cast<ParserRuleContext>(tree);
+  ParserRuleContext *r2 = parsetree_cast<ParserRuleContext>(patternTree);
+  if ((r1 != nullptr) && (r2 != nullptr)) {
     ParseTree *mismatchedNode = nullptr;
 
     // (expr ...) and <expr>
@@ -221,11 +219,9 @@ ParseTree* ParseTreePatternMatcher::matchImpl(ParseTree *tree, ParseTree *patter
 }
 
 RuleTagToken* ParseTreePatternMatcher::getRuleTagToken(ParseTree *t) {
-  if (t->children.size() == 1 && is<TerminalNode *>(t->children[0])) {
-    TerminalNode *c = dynamic_cast<TerminalNode *>(t->children[0]);
-    if (is<RuleTagToken *>(c->getSymbol())) {
-      return dynamic_cast<RuleTagToken *>(c->getSymbol());
-    }
+  TerminalNode *const c = parsetree_cast<TerminalNode>(t->children[0]);
+  if (t->children.size() == 1 && (c != nullptr)) {
+    return token_cast<RuleTagToken>(c->getSymbol());
   }
   return nullptr;
 }
@@ -237,7 +233,7 @@ std::vector<std::unique_ptr<Token>> ParseTreePatternMatcher::tokenize(const std:
   // create token stream from text and tags
   std::vector<std::unique_ptr<Token>> tokens;
   for (auto chunk : chunks) {
-    if (is<TagChunk *>(&chunk)) {
+    if (chunk_cast<TagChunk>(&chunk) != nullptr) {
       TagChunk &tagChunk = (TagChunk&)chunk;
       // add special rule token or conjure up new token from name
       if (isupper(tagChunk.getTag()[0])) {
@@ -351,7 +347,7 @@ std::vector<Chunk> ParseTreePatternMatcher::split(const std::string &pattern) {
   // strip out all backslashes from text chunks but not tags
   for (size_t i = 0; i < chunks.size(); i++) {
     Chunk &c = chunks[i];
-    if (is<TextChunk *>(&c)) {
+    if (chunk_cast<TextChunk>(&c) != nullptr) {
       TextChunk &tc = (TextChunk&)c;
       std::string unescaped = tc.getText();
       unescaped.erase(std::remove(unescaped.begin(), unescaped.end(), '\\'), unescaped.end());

@@ -12,10 +12,8 @@ namespace atn {
 
   /// Mark the end of a * or + loop.
   class ANTLR4CPP_PUBLIC LoopEndState final : public ATNState {
+    IMPLEMENT_RTTI(LoopEndState, ATNState)
   public:
-    LoopEndState() : ATNState() {
-      classtype |= LoopEndStateClass;
-    }
     ATNState *loopBackState = nullptr;
 
     virtual size_t getStateType() override;

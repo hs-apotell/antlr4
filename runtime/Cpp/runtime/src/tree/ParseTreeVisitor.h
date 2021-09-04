@@ -6,6 +6,7 @@
 #pragma once
 
 #include "support/Any.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 namespace tree {
@@ -18,7 +19,8 @@ namespace tree {
   /// @param <T> The return type of the visit operation. Use <seealso cref="Void"/> for
   /// operations with no return type. </param>
   // ml: no template parameter here, to avoid the need for virtual template functions. Instead we have our Any class.
-  class ANTLR4CPP_PUBLIC ParseTreeVisitor {
+  class ANTLR4CPP_PUBLIC ParseTreeVisitor : public RTTI {
+    IMPLEMENT_RTTI(ParseTreeVisitor, RTTI)
   public:
     virtual ~ParseTreeVisitor();
 
@@ -55,3 +57,5 @@ namespace tree {
 
 } // namespace tree
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(parsetreevisitor_cast, antlr4::tree::ParseTreeVisitor)

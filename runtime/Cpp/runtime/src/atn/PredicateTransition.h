@@ -17,6 +17,7 @@ namespace atn {
   ///  may have to combine a bunch of them as it collects predicates from
   ///  multiple ATN configurations into a single DFA state.
   class ANTLR4CPP_PUBLIC PredicateTransition final : public AbstractPredicateTransition {
+    IMPLEMENT_RTTI(PredicateTransition, AbstractPredicateTransition)
   public:
     const size_t ruleIndex;
     const size_t predIndex;

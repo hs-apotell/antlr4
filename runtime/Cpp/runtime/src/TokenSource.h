@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "RTTI.h"
 #include "TokenFactory.h"
 
 namespace antlr4 {
@@ -24,7 +25,8 @@ namespace antlr4 {
   /// token. Keep lexing until you get a valid one. Just report errors and keep
   /// going, looking for a valid token.
   /// </summary>
-  class ANTLR4CPP_PUBLIC TokenSource {
+  class ANTLR4CPP_PUBLIC TokenSource : public RTTI {
+    IMPLEMENT_RTTI(TokenSource, RTTI)
   public:
     virtual ~TokenSource();
 
@@ -83,3 +85,5 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(tokensource_cast, antlr4::TokenSource)

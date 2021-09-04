@@ -6,6 +6,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 
@@ -13,7 +14,8 @@ namespace antlr4 {
   ///  the error handling strategy (to create missing tokens).  Notifying the parser
   ///  of a new factory means that it notifies it's token source and error strategy.
   template<typename Symbol>
-  class ANTLR4CPP_PUBLIC TokenFactory {
+  class ANTLR4CPP_PUBLIC TokenFactory : public RTTI {
+    IMPLEMENT_RTTI(TokenFactory, RTTI)
   public:
     virtual ~TokenFactory() {}
 
@@ -28,3 +30,9 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
+
+template<typename S, typename T, typename = typename std::enable_if<std::is_base_of<antlr4::TokenFactory<S>, T>::value>::type>
+inline ANTLR4CPP_PUBLIC T *tokenfactory_cast(antlr4::TokenFactory<S> *const u) noexcept { return (u == nullptr) ? nullptr : u->template Cast<T>(); }
+
+template<typename S, typename T, typename = typename std::enable_if<std::is_base_of<antlr4::TokenFactory<S>, T>::value>::type>
+inline ANTLR4CPP_PUBLIC const T *tokenfactory_cast(const antlr4::TokenFactory<S> *const u) noexcept { return (u == nullptr) ? nullptr : u->template Cast<T>(); }

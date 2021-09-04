@@ -3,6 +3,7 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
+#include "atn/ATNSimulator.h"
 #include "atn/PredicateEvalInfo.h"
 #include "atn/LookaheadEventInfo.h"
 #include "Parser.h"
@@ -115,7 +116,7 @@ std::unique_ptr<ATNConfigSet> ProfilingATNSimulator::computeReachSet(ATNConfigSe
 bool ProfilingATNSimulator::evalSemanticContext(Ref<SemanticContext> const& pred, ParserRuleContext *parserCallStack,
                                                 size_t alt, bool fullCtx) {
   bool result = ParserATNSimulator::evalSemanticContext(pred, parserCallStack, alt, fullCtx);
-  if (!(std::dynamic_pointer_cast<SemanticContext::PrecedencePredicate>(pred) != nullptr)) {
+  if (!(semanticcontext_cast<SemanticContext::PrecedencePredicate>(pred) != nullptr)) {
     bool fullContext = _llStopIndex >= 0;
     int stopIndex = fullContext ? _llStopIndex : _sllStopIndex;
     _decisions[_currentDecision].predicateEvals.push_back(

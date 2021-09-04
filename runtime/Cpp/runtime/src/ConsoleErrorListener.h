@@ -10,6 +10,7 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC ConsoleErrorListener : public BaseErrorListener {
+    IMPLEMENT_RTTI(ConsoleErrorListener, BaseErrorListener)
   public:
     /**
      * Provides a default instance of {@link ConsoleErrorListener}.

@@ -319,7 +319,7 @@ bool LexerATNSimulator::closure(CharStream *input, const Ref<LexerATNConfig> &co
     std::cout << "closure(" << config->toString(true) << ")" << std::endl;
 #endif
 
-    if (config->state->isType(ATNState::RuleStopStateClass)) {
+  if (atnstate_cast<RuleStopState>(config->state) != nullptr) {
 #if DEBUG_ATN == 1
       if (_recog != nullptr) {
         std::cout << "closure at " << _recog->getRuleNames()[config->state->ruleIndex] << " rule stop " << config << std::endl;
@@ -544,7 +544,7 @@ dfa::DFAState *LexerATNSimulator::addDFAState(ATNConfigSet *configs) {
   dfa::DFAState *proposed = new dfa::DFAState(std::unique_ptr<ATNConfigSet>(configs)); /* mem-check: managed by the DFA or deleted below */
   Ref<ATNConfig> firstConfigWithRuleStopState = nullptr;
   for (auto &c : configs->configs) {
-    if (c->state->isType(ATNState::RuleStopStateClass)) {
+    if (atnstate_cast<RuleStopState>(c->state) != nullptr) {
       firstConfigWithRuleStopState = c;
       break;
     }
@@ -552,7 +552,7 @@ dfa::DFAState *LexerATNSimulator::addDFAState(ATNConfigSet *configs) {
 
   if (firstConfigWithRuleStopState != nullptr) {
     proposed->isAcceptState = true;
-    proposed->lexerActionExecutor = std::dynamic_pointer_cast<LexerATNConfig>(firstConfigWithRuleStopState)->getLexerActionExecutor();
+    proposed->lexerActionExecutor = atnconfig_cast<LexerATNConfig>(firstConfigWithRuleStopState)->getLexerActionExecutor();
     proposed->prediction = atn.ruleToTokenType[firstConfigWithRuleStopState->state->ruleIndex];
   }
 

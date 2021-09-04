@@ -19,6 +19,7 @@ namespace antlr4 {
   ///  I'm only putting into Java runtime as I'm certain I'm the only one that
   ///  will really every use this.
   class ANTLR4CPP_PUBLIC RuleContextWithAltNum : public ParserRuleContext {
+    IMPLEMENT_RTTI(RuleContextWithAltNum, ParserRuleContext)
   public:
     size_t altNum = 0;
 

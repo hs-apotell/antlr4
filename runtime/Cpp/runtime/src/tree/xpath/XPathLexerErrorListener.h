@@ -12,6 +12,7 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathLexerErrorListener : public BaseErrorListener {
+    IMPLEMENT_RTTI(XPathLexerErrorListener, BaseErrorListener)
   public:
     virtual void syntaxError(Recognizer *recognizer, Token *offendingSymbol, size_t line,
       size_t charPositionInLine, const std::string &msg, std::exception_ptr e) override;

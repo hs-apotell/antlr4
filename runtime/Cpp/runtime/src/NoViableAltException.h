@@ -16,6 +16,7 @@ namespace antlr4 {
   /// of the offending input and also knows where the parser was
   /// in the various paths when the error. Reported by reportNoViableAlternative()
   class ANTLR4CPP_PUBLIC NoViableAltException : public RecognitionException {
+    IMPLEMENT_RTTI(NoViableAltException, RecognitionException)
   public:
     NoViableAltException(Parser *recognizer); // LL(1) error
     NoViableAltException(Parser *recognizer, TokenStream *input,Token *startToken,
