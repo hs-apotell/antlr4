@@ -49,7 +49,7 @@ bool LexerCustomAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerCustomAction *action = dynamic_cast<const LexerCustomAction *>(&obj);
+  const LexerCustomAction *action = lexeraction_cast<LexerCustomAction>(&obj);
   if (action == nullptr) {
     return false;
   }

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "RecognitionException.h"
+#include "RTTI.h"
 
 namespace antlrcpp {
   class BitSet;
@@ -14,7 +15,8 @@ namespace antlrcpp {
 namespace antlr4 {
 
   /// How to emit recognition errors (an interface in Java).
-  class ANTLR4CPP_PUBLIC ANTLRErrorListener {
+  class ANTLR4CPP_PUBLIC ANTLRErrorListener : public RTTI {
+    IMPLEMENT_RTTI(ANTLRErrorListener, RTTI)
   public:
     virtual ~ANTLRErrorListener();
 
@@ -165,3 +167,5 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(antlrerrorlistener_cast, antlr4::ANTLRErrorListener)

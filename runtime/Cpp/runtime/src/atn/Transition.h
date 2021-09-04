@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "RTTI.h"
 #include "misc/IntervalSet.h"
 
 namespace antlr4 {
@@ -23,7 +24,8 @@ namespace atn {
   ///  the states. We'll use the term Edge for the DFA to distinguish them from
   ///  ATN transitions.
   /// </summary>
-  class ANTLR4CPP_PUBLIC Transition {
+  class ANTLR4CPP_PUBLIC Transition : public RTTI {
+    IMPLEMENT_RTTI(Transition, RTTI)
   public:
     // constants for serialization
     enum SerializationType {
@@ -38,23 +40,6 @@ namespace atn {
       WILDCARD = 9,
       PRECEDENCE = 10,
     };
-
-    enum ClassType {
-      TransitionClass = 1,
-      AbstractPredicateTransitionClass = 2,
-      ActionTransitionClass = 4,
-      AtomTransitionClass = 8,
-      EpsilonTransitionClass = 16,
-      RangeTransitionClass = 32,
-      RuleTransitionClass = 64,
-      SetTransitionClass = 128,
-      WildcardTransitionClass = 256,
-      NotSetTransitionClass = 512,
-    };
-
-    long classtype;
-
-    bool isType(ClassType type) const { return (classtype & type); }
 
     static const std::vector<std::string> serializationNames;
 
@@ -91,3 +76,5 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(transition_cast, antlr4::atn::Transition)

@@ -97,18 +97,21 @@ std::string Trees::getNodeText(ParseTree *t, Parser *recog) {
 
 std::string Trees::getNodeText(ParseTree *t, const std::vector<std::string> &ruleNames) {
   if (ruleNames.size() > 0) {
-    if (is<RuleContext *>(t)) {
-      size_t ruleIndex = dynamic_cast<RuleContext *>(t)->getRuleIndex();
+    RuleContext *const ruleContext = parsetree_cast<RuleContext>(t);
+    ErrorNode *const errorNode = parsetree_cast<ErrorNode>(t);
+    TerminalNode *const terminalNode = parsetree_cast<TerminalNode>(t);
+    if (ruleContext != nullptr) {
+      size_t ruleIndex = ruleContext->getRuleIndex();
       std::string ruleName = ruleNames[ruleIndex];
-      size_t altNumber = dynamic_cast<RuleContext *>(t)->getAltNumber();
+      size_t altNumber = ruleContext->getAltNumber();
       if (altNumber != atn::ATN::INVALID_ALT_NUMBER) {
         return ruleName + ":" + std::to_string(altNumber);
       }
       return ruleName;
-    } else if (is<ErrorNode *>(t)) {
+    } else if (errorNode != nullptr) {
       return t->toString();
-    } else if (is<TerminalNode *>(t)) {
-      Token *symbol = dynamic_cast<TerminalNode *>(t)->getSymbol();
+    } else if (terminalNode != nullptr) {
+      Token *symbol = terminalNode->getSymbol();
       if (symbol != nullptr) {
         std::string s = symbol->getText();
         return s;
@@ -116,12 +119,14 @@ std::string Trees::getNodeText(ParseTree *t, const std::vector<std::string> &rul
     }
   }
   // no recog for rule names
-  if (is<RuleContext *>(t)) {
-    return dynamic_cast<RuleContext *>(t)->getText();
+  RuleContext *const ruleContext = parsetree_cast<RuleContext>(t);
+  if (ruleContext != nullptr) {
+    return ruleContext->getText();
   }
 
-  if (is<TerminalNodeImpl *>(t)) {
-    return dynamic_cast<TerminalNodeImpl *>(t)->getSymbol()->getText();
+  TerminalNodeImpl *const terminalNode = parsetree_cast<TerminalNodeImpl>(t);
+  if (terminalNode != nullptr) {
+    return terminalNode->getSymbol()->getText();
   }
 
   return "";
@@ -140,13 +145,13 @@ std::vector<ParseTree *> Trees::getAncestors(ParseTree *t) {
 template<typename T>
 static void _findAllNodes(ParseTree *t, size_t index, bool findTokens, std::vector<T> &nodes) {
   // check this node (the root) first
-  if (findTokens && is<TerminalNode *>(t)) {
-    TerminalNode *tnode = dynamic_cast<TerminalNode *>(t);
+  TerminalNode *const tnode = parsetree_cast<TerminalNode>(t);
+  ParserRuleContext *const ctx = parsetree_cast<ParserRuleContext>(t);
+  if (findTokens && (tnode != nullptr)) {
     if (tnode->getSymbol()->getType() == index) {
       nodes.push_back(t);
     }
-  } else if (!findTokens && is<ParserRuleContext *>(t)) {
-    ParserRuleContext *ctx = dynamic_cast<ParserRuleContext *>(t);
+  } else if (!findTokens && (ctx != nullptr)) {
     if (ctx->getRuleIndex() == index) {
       nodes.push_back(t);
     }
@@ -212,8 +217,8 @@ ParserRuleContext* Trees::getRootOfSubtreeEnclosingRegion(ParseTree *t, size_t s
     }
   }
 
-  if (is<ParserRuleContext *>(t)) {
-    ParserRuleContext *r = dynamic_cast<ParserRuleContext *>(t);
+  ParserRuleContext *const r = parsetree_cast<ParserRuleContext>(t);
+  if (r != nullptr) {
     if (startTokenIndex >= r->getStart()->getTokenIndex() && // is range fully contained in t?
         (r->getStop() == nullptr || stopTokenIndex <= r->getStop()->getTokenIndex())) {
       // note: r.getStop()==null likely implies that we bailed out of parser and there's nothing to the right

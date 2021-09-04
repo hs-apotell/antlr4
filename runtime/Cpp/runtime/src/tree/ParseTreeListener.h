@@ -6,6 +6,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 namespace tree {
@@ -21,7 +22,8 @@ namespace tree {
    *
    * 		https://github.com/antlr/antlr4/issues/841
    */
-  class ANTLR4CPP_PUBLIC ParseTreeListener {
+  class ANTLR4CPP_PUBLIC ParseTreeListener : public RTTI {
+    IMPLEMENT_RTTI(ParseTreeListener, RTTI)
   public:
     virtual ~ParseTreeListener();
 
@@ -37,3 +39,5 @@ namespace tree {
 
 } // namespace tree
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(parsetreelistener_cast, antlr4::tree::ParseTreeListener)

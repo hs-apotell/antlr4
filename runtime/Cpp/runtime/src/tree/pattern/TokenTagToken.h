@@ -17,6 +17,7 @@ namespace pattern {
   /// tag corresponds to a lexer rule or token type.
   /// </summary>
   class ANTLR4CPP_PUBLIC TokenTagToken : public CommonToken {
+    IMPLEMENT_RTTI(TokenTagToken, CommonToken)
     /// <summary>
     /// This is the backing field for <seealso cref="#getTokenName"/>.
     /// </summary>

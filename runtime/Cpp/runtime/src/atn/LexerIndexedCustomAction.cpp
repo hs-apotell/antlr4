@@ -50,7 +50,7 @@ bool LexerIndexedCustomAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerIndexedCustomAction *action = dynamic_cast<const LexerIndexedCustomAction *>(&obj);
+  const LexerIndexedCustomAction *action = lexeraction_cast<LexerIndexedCustomAction>(&obj);
   if (action == nullptr) {
     return false;
   }

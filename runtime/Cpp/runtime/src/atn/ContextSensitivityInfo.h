@@ -28,6 +28,7 @@ namespace atn {
   ///
   /// @since 4.3 </seealso>
   class ANTLR4CPP_PUBLIC ContextSensitivityInfo : public DecisionEventInfo {
+    IMPLEMENT_RTTI(ContextSensitivityInfo, DecisionEventInfo)
   public:
     /// <summary>
     /// Constructs a new instance of the <seealso cref="ContextSensitivityInfo"/> class

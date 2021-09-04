@@ -12,6 +12,7 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC OrderedATNConfigSet : public ATNConfigSet {
+    IMPLEMENT_RTTI(OrderedATNConfigSet, ATNConfigSet)
   protected:
     virtual size_t getHash(ATNConfig *c) override;
   };

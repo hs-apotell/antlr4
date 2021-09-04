@@ -160,7 +160,8 @@ namespace antlr4 {
     virtual std::string getText(const std::string &programName, const misc::Interval &interval);
 
   protected:
-    class RewriteOperation {
+    class RewriteOperation : public RTTI {
+      IMPLEMENT_RTTI(RewriteOperation, RTTI)
     public:
       /// What index into rewrites List are we?
       size_t index;
@@ -184,7 +185,10 @@ namespace antlr4 {
       void InitializeInstanceFields();
     };
 
+    IMPLEMENT_CAST_FUNCTIONS(rewriteoperation_cast, antlr4::TokenStreamRewriter::RewriteOperation)
+
     class InsertBeforeOp : public RewriteOperation {
+      IMPLEMENT_RTTI(InsertBeforeOp, RewriteOperation)
     private:
       TokenStreamRewriter *const outerInstance;
 
@@ -195,6 +199,7 @@ namespace antlr4 {
     };
 
     class ReplaceOp : public RewriteOperation {
+      IMPLEMENT_RTTI(ReplaceOp, RewriteOperation)
     private:
       TokenStreamRewriter *const outerInstance;
 
@@ -279,22 +284,21 @@ namespace antlr4 {
     virtual std::string catOpText(std::string *a, std::string *b);
 
     /// Get all operations before an index of a particular kind.
-    template <typename T>
-    std::vector<T *> getKindOfOps(std::vector<RewriteOperation *> rewrites, size_t before) {
+    template <typename T, typename = typename std::enable_if<std::is_base_of<RewriteOperation, T>::value>::type>
+    std::vector<T *> getKindOfOps(const std::vector<RewriteOperation *> &rewrites, size_t before) {
       std::vector<T *> ops;
       for (size_t i = 0; i < before && i < rewrites.size(); i++) {
-        T *op = dynamic_cast<T *>(rewrites[i]);
-        if (op == nullptr) { // ignore deleted or non matching entries
-          continue;
+        T *op = rewriteoperation_cast<T>(rewrites[i]);
+        if (op != nullptr) { // ignore deleted or non matching entries
+          ops.push_back(op);
         }
-        ops.push_back(op);
       }
       return ops;
     }
 
   private:
-    std::vector<RewriteOperation *>& initializeProgram(const std::string &name);
-
+    std::vector<RewriteOperation *>& initializeProgram(const std::string &name);    
   };
 
 } // namespace antlr4
+

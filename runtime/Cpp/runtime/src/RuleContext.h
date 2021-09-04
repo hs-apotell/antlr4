@@ -60,6 +60,7 @@ namespace antlr4 {
    *  @see ParserRuleContext
    */
   class ANTLR4CPP_PUBLIC RuleContext : public tree::ParseTree {
+    IMPLEMENT_RTTI(RuleContext, ParseTree)
   public:
     /// What state invoked the rule associated with this context?
     /// The "return address" is the followState of invokingState

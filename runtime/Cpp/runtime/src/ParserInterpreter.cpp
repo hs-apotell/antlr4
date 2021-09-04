@@ -161,16 +161,17 @@ atn::ATNState* ParserInterpreter::getATNState() {
 
 void ParserInterpreter::visitState(atn::ATNState *p) {
   size_t predictedAlt = 1;
-  if (is<DecisionState *>(p)) {
-    predictedAlt = visitDecisionState(dynamic_cast<DecisionState *>(p));
+  DecisionState *const decisionState = atnstate_cast<DecisionState>(p);
+  if (decisionState != nullptr) {
+    predictedAlt = visitDecisionState(decisionState);
   }
 
   atn::Transition *transition = p->transitions[predictedAlt - 1];
   switch (transition->getSerializationType()) {
     case atn::Transition::EPSILON:
       if (p->getStateType() == ATNState::STAR_LOOP_ENTRY &&
-        (dynamic_cast<StarLoopEntryState *>(p))->isPrecedenceDecision &&
-        !is<LoopEndState *>(transition->target)) {
+        atnstate_cast<StarLoopEntryState>(p)->isPrecedenceDecision &&
+        atnstate_cast<LoopEndState>(transition->target) == nullptr) {
         // We are at the start of a left recursive rule's (...)* loop
         // and we're not taking the exit branch of loop.
         InterpreterRuleContext *localctx = createInterpreterRuleContext(_parentContextStack.top().first,
@@ -282,10 +283,10 @@ void ParserInterpreter::recover(RecognitionException &e) {
 
   if (_input->index() == i) {
     // no input consumed, better add an error node
-    if (is<InputMismatchException *>(&e)) {
-      InputMismatchException &ime = static_cast<InputMismatchException&>(e);
+    InputMismatchException *const ime = runtimeexception_cast<InputMismatchException>(&e);
+    if (ime != nullptr) {
       Token *tok = e.getOffendingToken();
-      size_t expectedTokenType = ime.getExpectedTokens().getMinElement(); // get any element
+      size_t expectedTokenType = ime->getExpectedTokens().getMinElement(); // get any element
       _errorToken = getTokenFactory()->create({ tok->getTokenSource(), tok->getTokenSource()->getInputStream() },
         expectedTokenType, tok->getText(), Token::DEFAULT_CHANNEL, INVALID_INDEX, INVALID_INDEX, // invalid start/stop
         tok->getLine(), tok->getCharPositionInLine());

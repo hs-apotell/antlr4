@@ -9,11 +9,13 @@
 #include "misc/IntervalSet.h"
 #include "support/CPPUtils.h"
 #include "atn/PredictionContext.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 namespace atn {
 
-  class ANTLR4CPP_PUBLIC ATNSimulator {
+  class ANTLR4CPP_PUBLIC ATNSimulator : public RTTI {
+    IMPLEMENT_RTTI(ATNSimulator, RTTI)
   public:
     /// Must distinguish between missing edge and edge we know leads nowhere.
     static const Ref<dfa::DFAState> ERROR;
@@ -85,3 +87,5 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(atnsimulator_cast, antlr4::atn::ATNSimulator)

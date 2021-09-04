@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
+/* Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
  * Use of this file is governed by the BSD 3-clause license that
  * can be found in the LICENSE.txt file in the project root.
  */
@@ -11,6 +11,7 @@
 #include "atn/RuleTransition.h"
 #include "support/Arrays.h"
 #include "support/CPPUtils.h"
+#include "Recognizer.h"
 
 #include "atn/PredictionContext.h"
 
@@ -26,7 +27,6 @@ const Ref<PredictionContext> PredictionContext::EMPTY = std::make_shared<EmptyPr
 //----------------- PredictionContext ----------------------------------------------------------------------------------
 
 PredictionContext::PredictionContext(size_t cachedHashCode) : id(globalNodeCount++), cachedHashCode(cachedHashCode)  {
-  classtype = PredictionContextClass;
 }
 
 PredictionContext::~PredictionContext() {
@@ -44,7 +44,7 @@ Ref<PredictionContext> PredictionContext::fromRuleContext(const ATN &atn, RuleCo
   }
 
   // If we have a parent, convert it to a PredictionContext graph
-  Ref<PredictionContext> parent = PredictionContext::fromRuleContext(atn, dynamic_cast<RuleContext *>(outerContext->parent));
+  Ref<PredictionContext> parent = PredictionContext::fromRuleContext(atn, parsetree_cast<RuleContext>(outerContext->parent));
 
   ATNState *state = atn.states.at(outerContext->invokingState);
   RuleTransition *transition = (RuleTransition *)state->transitions[0];
@@ -102,34 +102,35 @@ Ref<PredictionContext> PredictionContext::merge(const Ref<PredictionContext> &a,
     return a;
   }
 
-  if (a->isType(PredictionContext::SingletonPredictionContextClass) && b->isType(PredictionContext::SingletonPredictionContextClass)) {
-    return mergeSingletons(std::dynamic_pointer_cast<SingletonPredictionContext>(a),
-                           std::dynamic_pointer_cast<SingletonPredictionContext>(b), rootIsWildcard, mergeCache);
+  Ref<SingletonPredictionContext> aa(predictioncontext_cast<SingletonPredictionContext>(a));
+  Ref<SingletonPredictionContext> bb(predictioncontext_cast<SingletonPredictionContext>(b));
+  if (aa && bb) {
+    return mergeSingletons(aa, bb, rootIsWildcard, mergeCache);
   }
 
   // At least one of a or b is array.
   // If one is $ and rootIsWildcard, return $ as * wildcard.
   if (rootIsWildcard) {
-    if (a->isType(PredictionContext::EmptyPredictionContextClass)) {
+    if (predictioncontext_cast<EmptyPredictionContext>(a)) {
       return a;
     }
-    if (b->isType(PredictionContext::EmptyPredictionContextClass)) {
+    if (predictioncontext_cast<EmptyPredictionContext>(b)) {
       return b;
     }
   }
 
   // convert singleton so both are arrays to normalize
   Ref<ArrayPredictionContext> left;
-  if (a->isType(PredictionContext::SingletonPredictionContextClass)) {
-    left = std::make_shared<ArrayPredictionContext>(std::dynamic_pointer_cast<SingletonPredictionContext>(a));
+  if (aa) {
+    left = std::make_shared<ArrayPredictionContext>(aa);
   } else {
-    left = std::dynamic_pointer_cast<ArrayPredictionContext>(a);
+    left = predictioncontext_cast<ArrayPredictionContext>(a);
   }
   Ref<ArrayPredictionContext> right;
-  if (b->isType(PredictionContext::SingletonPredictionContextClass)) {
-    right = std::make_shared<ArrayPredictionContext>(std::dynamic_pointer_cast<SingletonPredictionContext>(b));
+  if (bb) {
+    right = std::make_shared<ArrayPredictionContext>(bb);
   } else {
-    right = std::dynamic_pointer_cast<ArrayPredictionContext>(b);
+    right = predictioncontext_cast<ArrayPredictionContext>(b);
   }
   return mergeArrays(left, right, rootIsWildcard, mergeCache);
 }
@@ -393,11 +394,11 @@ std::string PredictionContext::toDOTString(const Ref<PredictionContext> &context
   });
 
   for (auto current : nodes) {
-    if (current->isType(PredictionContext::SingletonPredictionContextClass)) {
+    if (predictioncontext_cast<SingletonPredictionContext>(current)) {
       std::string s = std::to_string(current->id);
       ss << "  s" << s;
       std::string returnState = std::to_string(current->getReturnState(0));
-      if (current->isType(PredictionContext::EmptyPredictionContextClass)) {
+      if (predictioncontext_cast<EmptyPredictionContext>(current)) {
         returnState = "$";
       }
       ss << " [label=\"" << returnState << "\"];\n";
@@ -495,7 +496,7 @@ Ref<PredictionContext> PredictionContext::getCachedContext(const Ref<PredictionC
     updated = SingletonPredictionContext::create(parents[0], context->getReturnState(0));
     contextCache.insert(updated);
   } else {
-    updated = std::make_shared<ArrayPredictionContext>(parents, std::dynamic_pointer_cast<ArrayPredictionContext>(context)->returnStates);
+    updated = std::make_shared<ArrayPredictionContext>(parents, predictioncontext_cast<ArrayPredictionContext>(context)->returnStates);
     contextCache.insert(updated);
   }
 

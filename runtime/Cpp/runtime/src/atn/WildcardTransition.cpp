@@ -10,7 +10,6 @@
 using namespace antlr4::atn;
 
 WildcardTransition::WildcardTransition(ATNState *target) : Transition(target) {
-  classtype |= WildcardTransitionClass;
 }
 
 Transition::SerializationType WildcardTransition::getSerializationType() const {

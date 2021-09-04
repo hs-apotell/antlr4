@@ -14,6 +14,7 @@ namespace antlr4 {
   /// Disambiguating predicate evaluation occurs when we test a predicate during
   /// prediction.
   class ANTLR4CPP_PUBLIC FailedPredicateException : public RecognitionException {
+    IMPLEMENT_RTTI(FailedPredicateException, RecognitionException)
   public:
     FailedPredicateException(Parser *recognizer);
     FailedPredicateException(Parser *recognizer, const std::string &predicate);

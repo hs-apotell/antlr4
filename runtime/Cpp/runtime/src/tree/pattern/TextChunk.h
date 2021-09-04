@@ -16,6 +16,7 @@ namespace pattern {
   /// pattern string.
   /// </summary>
   class ANTLR4CPP_PUBLIC TextChunk : public Chunk {
+    IMPLEMENT_RTTI(TextChunk, Chunk)
   private:
     /// <summary>
     /// This is the backing field for <seealso cref="#getText"/>.

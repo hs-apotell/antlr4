@@ -22,8 +22,8 @@ std::vector<ParseTree *> XPathTokenElement::evaluate(ParseTree *t) {
   // return all children of t that match nodeName
   std::vector<ParseTree *> nodes;
   for (auto *c : t->children) {
-    if (antlrcpp::is<TerminalNode *>(c)) {
-      TerminalNode *tnode = dynamic_cast<TerminalNode *>(c);
+    TerminalNode *const tnode = parsetree_cast<TerminalNode>(c);
+    if (tnode != nullptr) {
       if ((tnode->getSymbol()->getType() == _tokenType && !_invert) || (tnode->getSymbol()->getType() != _tokenType && _invert)) {
         nodes.push_back(tnode);
       }

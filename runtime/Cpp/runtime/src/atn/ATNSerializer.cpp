@@ -76,11 +76,13 @@ std::vector<size_t> ATNSerializer::serialize() {
     }
 
     size_t stateType = s->getStateType();
-    if (s->isType(ATNState::DecisionStateClass) && (static_cast<DecisionState *>(s))->nonGreedy) {
+    DecisionState *const decisionState = atnstate_cast<DecisionState>(s);
+    if ((decisionState  != nullptr) && decisionState->nonGreedy) {
       nonGreedyStates.push_back(s->stateNumber);
     }
 
-    if (s->isType(ATNState::RuleStartStateClass) && (static_cast<RuleStartState *>(s))->isLeftRecursiveRule) {
+    RuleStartState *const ruleStartState = atnstate_cast<RuleStartState>(s);
+    if ((ruleStartState != nullptr) && ruleStartState->isLeftRecursiveRule) {
       precedenceStates.push_back(s->stateNumber);
     }
 
@@ -96,8 +98,11 @@ std::vector<size_t> ATNSerializer::serialize() {
     if (s->getStateType() == ATNState::LOOP_END) {
       data.push_back((static_cast<LoopEndState *>(s))->loopBackState->stateNumber);
     }
-    else if (s->isType(ATNState::BlockStartStateClass)) {
-      data.push_back((static_cast<BlockStartState *>(s))->endState->stateNumber);
+    else {
+      BlockStartState *const blockStartState = atnstate_cast<BlockStartState>(s);
+      if (blockStartState != nullptr) {
+        data.push_back(blockStartState->endState->stateNumber);
+      }
     }
 
     if (s->getStateType() != ATNState::RULE_STOP) {
@@ -292,7 +297,7 @@ std::vector<size_t> ATNSerializer::serialize() {
       switch (action->getActionType()) {
         case LexerActionType::CHANNEL:
         {
-          int channel = std::dynamic_pointer_cast<LexerChannelAction>(action)->getChannel();
+          int channel = lexeraction_cast<LexerChannelAction>(action)->getChannel();
           data.push_back(channel != -1 ? channel : 0xFFFF);
           data.push_back(0);
           break;
@@ -300,8 +305,8 @@ std::vector<size_t> ATNSerializer::serialize() {
 
         case LexerActionType::CUSTOM:
         {
-          size_t ruleIndex = std::dynamic_pointer_cast<LexerCustomAction>(action)->getRuleIndex();
-          size_t actionIndex = std::dynamic_pointer_cast<LexerCustomAction>(action)->getActionIndex();
+          size_t ruleIndex = lexeraction_cast<LexerCustomAction>(action)->getRuleIndex();
+          size_t actionIndex = lexeraction_cast<LexerCustomAction>(action)->getActionIndex();
           data.push_back(ruleIndex != INVALID_INDEX ? ruleIndex : 0xFFFF);
           data.push_back(actionIndex != INVALID_INDEX ? actionIndex : 0xFFFF);
           break;
@@ -309,7 +314,7 @@ std::vector<size_t> ATNSerializer::serialize() {
 
         case LexerActionType::MODE:
         {
-          int mode = std::dynamic_pointer_cast<LexerModeAction>(action)->getMode();
+          int mode = lexeraction_cast<LexerModeAction>(action)->getMode();
           data.push_back(mode != -1 ? mode : 0xFFFF);
           data.push_back(0);
           break;
@@ -327,7 +332,7 @@ std::vector<size_t> ATNSerializer::serialize() {
 
         case LexerActionType::PUSH_MODE:
         {
-          int mode = std::dynamic_pointer_cast<LexerPushModeAction>(action)->getMode();
+          int mode = lexeraction_cast<LexerPushModeAction>(action)->getMode();
           data.push_back(mode != -1 ? mode : 0xFFFF);
           data.push_back(0);
           break;
@@ -340,7 +345,7 @@ std::vector<size_t> ATNSerializer::serialize() {
 
         case LexerActionType::TYPE:
         {
-          int type = std::dynamic_pointer_cast<LexerTypeAction>(action)->getType();
+          int type = lexeraction_cast<LexerTypeAction>(action)->getType();
           data.push_back(type != -1 ? type : 0xFFFF);
           data.push_back(0);
           break;

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 namespace tree {
@@ -13,7 +14,8 @@ namespace tree {
 
 namespace xpath {
 
-  class ANTLR4CPP_PUBLIC XPathElement {
+  class ANTLR4CPP_PUBLIC XPathElement : public RTTI {
+    IMPLEMENT_RTTI(XPathElement, RTTI)
   public:
     /// Construct element like {@code /ID} or {@code ID} or {@code /*} etc...
     ///  op is null if just node
@@ -38,3 +40,5 @@ namespace xpath {
 } // namespace xpath
 } // namespace tree
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(xpathelement_cast, antlr4::tree::xpath::XPathElement)

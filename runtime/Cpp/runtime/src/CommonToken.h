@@ -10,6 +10,7 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC CommonToken : public WritableToken {
+    IMPLEMENT_RTTI(CommonToken, WritableToken)
   protected:
     /**
      * An empty {@link Pair} which is used as the default value of

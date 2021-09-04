@@ -43,7 +43,7 @@ bool SemanticContext::Predicate::operator == (const SemanticContext &other) cons
   if (this == &other)
     return true;
 
-  const Predicate *p = dynamic_cast<const Predicate*>(&other);
+  const Predicate *p = semanticcontext_cast<Predicate>(&other);
   if (p == nullptr)
     return false;
 
@@ -57,11 +57,9 @@ std::string SemanticContext::Predicate::toString() const {
 //------------------ PrecedencePredicate -------------------------------------------------------------------------------
 
 SemanticContext::PrecedencePredicate::PrecedencePredicate() : precedence(0) {
-  classtype |= PrecedencePredicateClass;
 }
 
 SemanticContext::PrecedencePredicate::PrecedencePredicate(int precedence) : precedence(precedence) {
-  classtype |= PrecedencePredicateClass;
 }
 
 bool SemanticContext::PrecedencePredicate::eval(Recognizer *parser, RuleContext *parserCallStack) {
@@ -92,7 +90,7 @@ bool SemanticContext::PrecedencePredicate::operator == (const SemanticContext &o
   if (this == &other)
     return true;
 
-  const PrecedencePredicate *predicate = dynamic_cast<const PrecedencePredicate *>(&other);
+  const PrecedencePredicate *predicate = semanticcontext_cast<PrecedencePredicate>(&other);
   if (predicate == nullptr)
     return false;
 
@@ -108,16 +106,18 @@ std::string SemanticContext::PrecedencePredicate::toString() const {
 SemanticContext::AND::AND(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
   Set operands;
 
-  if (a->isType(SemanticContext::ANDClass)) {
-    for (auto operand : std::dynamic_pointer_cast<AND>(a)->opnds) {
+  const Ref<AND> andA(semanticcontext_cast<AND>(a));
+  if (andA) {
+    for (auto operand : andA->opnds) {
       operands.insert(operand);
     }
   } else {
     operands.insert(a);
   }
 
-  if (b->isType(SemanticContext::ANDClass)) {
-    for (auto operand : std::dynamic_pointer_cast<AND>(b)->opnds) {
+  const Ref<AND> andB(semanticcontext_cast<AND>(b));
+  if (andB) {
+    for (auto operand : andB->opnds) {
       operands.insert(operand);
     }
   } else {
@@ -147,7 +147,7 @@ bool SemanticContext::AND::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const AND *context = dynamic_cast<const AND *>(&other);
+  const AND *context = semanticcontext_cast<AND>(&other);
   if (context == nullptr)
     return false;
 
@@ -212,16 +212,18 @@ std::string SemanticContext::AND::toString() const {
 SemanticContext::OR::OR(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
   Set operands;
 
-  if (a->isType(SemanticContext::ORClass)) {
-    for (auto operand : std::dynamic_pointer_cast<OR>(a)->opnds) {
+  const Ref<OR> orA(semanticcontext_cast<OR>(a));
+  if (orA) {
+    for (auto operand : orA->opnds) {
       operands.insert(operand);
     }
   } else {
     operands.insert(a);
   }
 
-  if (b->isType(SemanticContext::ORClass)) {
-    for (auto operand : std::dynamic_pointer_cast<OR>(b)->opnds) {
+  const Ref<OR> orB(semanticcontext_cast<OR>(b));
+  if (orB) {
+    for (auto operand : orB->opnds) {
       operands.insert(operand);
     }
   } else {
@@ -249,7 +251,7 @@ bool SemanticContext::OR::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const OR *context = dynamic_cast<const OR *>(&other);
+  const OR *context = semanticcontext_cast<OR>(&other);
   if (context == nullptr)
     return false;
 
@@ -364,8 +366,9 @@ Ref<SemanticContext> SemanticContext::Or(Ref<SemanticContext> const& a, Ref<Sema
 std::vector<Ref<SemanticContext::PrecedencePredicate>> SemanticContext::filterPrecedencePredicates(const Set &collection) {
   std::vector<Ref<SemanticContext::PrecedencePredicate>> result;
   for (auto context : collection) {
-    if (context->isType(SemanticContext::PrecedencePredicateClass)) {
-      result.push_back(std::dynamic_pointer_cast<PrecedencePredicate>(context));
+    Ref<PrecedencePredicate> precedencePredicate(semanticcontext_cast<PrecedencePredicate>(context));
+    if (precedencePredicate) {
+      result.push_back(precedencePredicate);
     }
   }
 

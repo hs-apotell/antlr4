@@ -6,6 +6,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 namespace atn {
@@ -25,7 +26,8 @@ namespace atn {
   ///
   /// @since 4.3
   /// </summary>
-  class ANTLR4CPP_PUBLIC DecisionEventInfo {
+  class ANTLR4CPP_PUBLIC DecisionEventInfo : public RTTI {
+    IMPLEMENT_RTTI(DecisionEventInfo, RTTI)
   public:
     /// <summary>
     /// The invoked decision number which this event is related to.
@@ -68,3 +70,5 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(decisioneventinfo_cast, antlr4::atn::DecisionEventInfo)

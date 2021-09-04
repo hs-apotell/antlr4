@@ -12,6 +12,7 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC LexerInterpreter : public Lexer {
+    IMPLEMENT_RTTI(LexerInterpreter, Lexer)
   public:
     // @deprecated
     LexerInterpreter(const std::string &grammarFileName, const std::vector<std::string> &tokenNames,

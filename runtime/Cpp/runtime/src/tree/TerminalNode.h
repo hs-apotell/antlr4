@@ -11,6 +11,7 @@ namespace antlr4 {
 namespace tree {
 
   class ANTLR4CPP_PUBLIC TerminalNode : public ParseTree {
+    IMPLEMENT_RTTI(TerminalNode, ParseTree)
   public:
     ~TerminalNode() override;
 

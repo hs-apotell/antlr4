@@ -14,6 +14,7 @@ namespace antlr4 {
   ///  when the current input does not match the expected token.
   /// </summary>
   class ANTLR4CPP_PUBLIC InputMismatchException : public RecognitionException {
+    IMPLEMENT_RTTI(InputMismatchException, RecognitionException)
   public:
     InputMismatchException(Parser *recognizer);
     InputMismatchException(InputMismatchException const&) = default;

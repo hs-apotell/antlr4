@@ -14,6 +14,7 @@ namespace atn {
   /// Implements the {@code type} lexer action by calling <seealso cref="Lexer#setType"/>
   /// with the assigned type.
   class ANTLR4CPP_PUBLIC LexerTypeAction : public LexerAction {
+    IMPLEMENT_RTTI(LexerTypeAction, LexerAction)
   public:
     /// <summary>
     /// Constructs a new {@code type} action with the specified token type value. </summary>

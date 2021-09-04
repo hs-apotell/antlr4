@@ -12,8 +12,8 @@ namespace atn {
 
   ///  The start of a regular {@code (...)} block.
   class ANTLR4CPP_PUBLIC BlockStartState : public DecisionState {
+    IMPLEMENT_RTTI(BlockStartState, DecisionState)
   public:
-    BlockStartState() : DecisionState() { classtype |= BlockStartStateClass; }
     ~BlockStartState();
     BlockEndState *endState = nullptr;
   };

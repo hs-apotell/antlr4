@@ -10,6 +10,7 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC UnbufferedTokenStream : public TokenStream {
+    IMPLEMENT_RTTI(UnbufferedTokenStream, TokenStream)
   public:
     UnbufferedTokenStream(TokenSource *tokenSource);
     UnbufferedTokenStream(TokenSource *tokenSource, int bufferSize);

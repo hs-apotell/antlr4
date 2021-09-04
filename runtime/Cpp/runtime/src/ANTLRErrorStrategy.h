@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Token.h"
+#include "RTTI.h"
 
 namespace antlr4 {
 
@@ -26,7 +27,8 @@ namespace antlr4 {
   /// <p/>
   /// TODO: what to do about lexers
   /// </summary>
-  class ANTLR4CPP_PUBLIC ANTLRErrorStrategy {
+  class ANTLR4CPP_PUBLIC ANTLRErrorStrategy : public RTTI {
+    IMPLEMENT_RTTI(ANTLRErrorStrategy, RTTI)
   public:
 
     /// <summary>
@@ -119,3 +121,5 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(antlrerrorstrategy_cast, antlr4::ANTLRErrorStrategy)

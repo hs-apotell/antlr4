@@ -11,6 +11,7 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC EmptyPredictionContext : public SingletonPredictionContext {
+    IMPLEMENT_RTTI(EmptyPredictionContext, SingletonPredictionContext)
   public:
     EmptyPredictionContext();
 

@@ -46,7 +46,7 @@ bool ArrayPredictionContext::operator == (PredictionContext const& o) const {
     return true;
   }
 
-  const ArrayPredictionContext *other = dynamic_cast<const ArrayPredictionContext*>(&o);
+  const ArrayPredictionContext *other = predictioncontext_cast<ArrayPredictionContext>(&o);
   if (other == nullptr || hashCode() != other->hashCode()) {
     return false; // can't be same if hash is different
   }

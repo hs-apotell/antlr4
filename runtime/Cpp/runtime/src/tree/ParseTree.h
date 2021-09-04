@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "RTTI.h"
 #include "support/Any.h"
 
 namespace antlr4 {
@@ -17,7 +18,8 @@ namespace tree {
   ///
   /// The payload is either a <seealso cref="Token"/> or a <seealso cref="RuleContext"/> object.
   // ml: This class unites 4 Java classes: RuleNode, ParseTree, SyntaxTree and Tree.
-  class ANTLR4CPP_PUBLIC ParseTree {
+  class ANTLR4CPP_PUBLIC ParseTree : public RTTI {
+    IMPLEMENT_RTTI(ParseTree, RTTI)
   public:
     ParseTree();
     ParseTree(ParseTree const&) = delete;
@@ -100,3 +102,5 @@ namespace tree {
 
 } // namespace tree
 } // namespace antlr4
+
+IMPLEMENT_CAST_FUNCTIONS(parsetree_cast, antlr4::tree::ParseTree)

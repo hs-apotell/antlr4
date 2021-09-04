@@ -42,7 +42,7 @@ bool LexerChannelAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerChannelAction *action = dynamic_cast<const LexerChannelAction *>(&obj);
+  const LexerChannelAction *action = lexeraction_cast<LexerChannelAction>(&obj);
   if (action == nullptr) {
     return false;
   }

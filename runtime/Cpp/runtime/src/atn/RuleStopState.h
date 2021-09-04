@@ -15,11 +15,9 @@ namespace atn {
   /// references to all calls to this rule to compute FOLLOW sets for
   /// error handling.
   class ANTLR4CPP_PUBLIC RuleStopState final : public ATNState {
+    IMPLEMENT_RTTI(RuleStopState, ATNState)
 
   public:
-    RuleStopState() {
-      classtype |= RuleStopStateClass;
-    }
     virtual size_t getStateType() override;
 
   };

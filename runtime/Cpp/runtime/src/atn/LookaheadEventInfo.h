@@ -13,6 +13,7 @@ namespace atn {
   /// This class represents profiling event information for tracking the lookahead
   /// depth required in order to make a prediction.
   class ANTLR4CPP_PUBLIC LookaheadEventInfo : public DecisionEventInfo {
+    IMPLEMENT_RTTI(LookaheadEventInfo, DecisionEventInfo)
   public:
     /// The alternative chosen by adaptivePredict(), not necessarily
     ///  the outermost alt shown for a rule; left-recursive rules have

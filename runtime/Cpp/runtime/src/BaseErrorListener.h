@@ -19,6 +19,7 @@ namespace antlr4 {
    * necessary.
    */
   class ANTLR4CPP_PUBLIC BaseErrorListener : public ANTLRErrorListener {
+    IMPLEMENT_RTTI(BaseErrorListener, ANTLRErrorListener)
 
     virtual void syntaxError(Recognizer *recognizer, Token * offendingSymbol, size_t line, size_t charPositionInLine,
       const std::string &msg, std::exception_ptr e) override;
