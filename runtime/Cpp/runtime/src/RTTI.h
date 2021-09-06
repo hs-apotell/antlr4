@@ -10,21 +10,31 @@
 
 namespace antlr4
 {
+  static const uint32_t kFNV1aInitialHash32 = 0x811C9DC5;
+  static const uint32_t kFNV1aPrime32 = 0x01000193;
+
   static const uint64_t kFNV1aInitialHash64 = 0xCBF29CE484222325ULL;
   static const uint64_t kFNV1aPrime64 = 0x100000001B3ULL;
 
-  inline constexpr uint64_t RTTIHash(const char *const str, uint64_t hash) noexcept
+  // inline constexpr uint64_t RTTIHash(const char *const str, uint64_t hash) noexcept
+  // {
+  //   return (*str == '\0')
+  //     ? hash
+  //     : RTTIHash(str + 1, (hash ^ static_cast<uint64_t>(*str)) * kFNV1aPrime64);
+  // }
+
+  inline constexpr uint32_t RTTIHash(const char *const str, uint32_t hash) noexcept
   {
     return (*str == '\0')
       ? hash
-      : RTTIHash(str + 1, (hash ^ static_cast<uint64_t>(*str)) * kFNV1aPrime64);
+      : RTTIHash(str + 1, (hash ^ static_cast<uint32_t>(*str)) * kFNV1aPrime32);
   }
 
   class ANTLR4CPP_PUBLIC RTTI
   {
   protected:
-    typedef uint64_t typeid_t;
-    static constexpr typeid_t kTypeId = RTTIHash("RTTI", kFNV1aInitialHash64);
+    typedef uint32_t typeid_t;
+    static constexpr typeid_t kTypeId = RTTIHash("RTTI", kFNV1aInitialHash32);
 
   protected:
     RTTI() = default;
@@ -71,11 +81,11 @@ namespace antlr4
     typedef baseType Base;                                                                          \
     friend class antlr4::RTTI;                                                                      \
     static constexpr typeid_t kTypeId = antlr4::RTTIHash("/" #classType, Base::kTypeId);            \
-    virtual RTTI::typeid_t GetTypeId() const override                                               \
+    inline virtual RTTI::typeid_t GetTypeId() const override                                        \
     { return static_cast<RTTI::typeid_t>(classType::kTypeId); }                                     \
-    virtual void* AsType(typeid_t tid) override                                                     \
+    inline virtual void *AsType(typeid_t tid) override                                              \
     { return static_cast<void *>((tid == classType::kTypeId) ? this : Base::AsType(tid)); }         \
-    virtual const void* AsType(typeid_t tid) const override                                         \
+    inline virtual const void *AsType(typeid_t tid) const override                                  \
     { return static_cast<const void *>((tid == classType::kTypeId) ? this : Base::AsType(tid)); }   \
   private:
 
@@ -85,9 +95,9 @@ namespace antlr4
     typedef baseType2 Base2;                                                                                \
     friend class antlr4::RTTI;                                                                              \
     static constexpr typeid_t kTypeId = antlr4::RTTIHash("/" #classType, Base1::kTypeId ^ Base2::kTypeId);  \
-    virtual RTTI::typeid_t GetTypeId() const override                                                       \
+    inline virtual RTTI::typeid_t GetTypeId() const override                                                \
     { return static_cast<RTTI::typeid_t>(classType::kTypeId); }                                             \
-    virtual void* AsType(typeid_t tid) override                                                             \
+    inline virtual void *AsType(typeid_t tid) override                                                      \
     {                                                                                                       \
       void *p = nullptr;                                                                                    \
       if (tid == classType::kTypeId) p = static_cast<void *>(this);                                         \
@@ -95,7 +105,7 @@ namespace antlr4
       if (p == nullptr) p = Base2::AsType(tid);                                                             \
       return p;                                                                                             \
     }                                                                                                       \
-    virtual const void* AsType(typeid_t tid) const override                                                 \
+    inline virtual const void *AsType(typeid_t tid) const override                                          \
     {                                                                                                       \
       const void *p = nullptr;                                                                              \
       if (tid == classType::kTypeId) p = static_cast<const void *>(this);                                   \
