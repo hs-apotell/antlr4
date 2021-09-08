@@ -62,11 +62,11 @@ void DefaultErrorStrategy::reportError(Parser *recognizer, const RecognitionExce
   }
 
   beginErrorCondition(recognizer);
-  if (runtimeexception_cast<NoViableAltException>(&e) != nullptr) {
+  if (runtimeexception_cast<NoViableAltException *>(&e) != nullptr) {
     reportNoViableAlternative(recognizer, static_cast<const NoViableAltException &>(e));
-  } else if (runtimeexception_cast<InputMismatchException>(&e) != nullptr) {
+  } else if (runtimeexception_cast<InputMismatchException *>(&e) != nullptr) {
     reportInputMismatch(recognizer, static_cast<const InputMismatchException &>(e));
-  } else if (runtimeexception_cast<FailedPredicateException>(&e) != nullptr) {
+  } else if (runtimeexception_cast<FailedPredicateException *>(&e) != nullptr) {
     reportFailedPredicate(recognizer, static_cast<const FailedPredicateException &>(e));
   } else {
     recognizer->notifyErrorListeners(e.getOffendingToken(), e.what(), std::current_exception());
@@ -307,7 +307,7 @@ misc::IntervalSet DefaultErrorStrategy::getErrorRecoverySet(Parser *recognizer) 
   while (ctx->invokingState != ATNState::INVALID_STATE_NUMBER) {
     // compute what follows who invoked us
     atn::ATNState *invokingState = atn.states[ctx->invokingState];
-    atn::RuleTransition *rt = transition_cast<atn::RuleTransition>(invokingState->transitions[0]);
+    atn::RuleTransition *rt = transition_cast<atn::RuleTransition *>(invokingState->transitions[0]);
     misc::IntervalSet follow = atn.nextTokens(rt->followState);
     recoverSet.addAll(follow);
 

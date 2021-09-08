@@ -48,7 +48,7 @@ bool SingletonPredictionContext::operator == (const PredictionContext &o) const 
     return true;
   }
 
-  const SingletonPredictionContext *other = predictioncontext_cast<SingletonPredictionContext>(&o);
+  const SingletonPredictionContext *other = predictioncontext_cast<SingletonPredictionContext *>(&o);
   if (other == nullptr) {
     return false;
   }

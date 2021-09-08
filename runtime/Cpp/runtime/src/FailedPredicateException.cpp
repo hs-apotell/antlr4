@@ -26,7 +26,7 @@ FailedPredicateException::FailedPredicateException(Parser *recognizer, const std
                          recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken()) {
 
   atn::ATNState *s = recognizer->getInterpreter<atn::ATNSimulator>()->atn.states[recognizer->getState()];
-  atn::PredicateTransition *const transition = transition_cast<atn::PredicateTransition>(s->transitions[0]);
+  atn::PredicateTransition *const transition = transition_cast<atn::PredicateTransition *>(s->transitions[0]);
   if (transition != nullptr) {
     _ruleIndex = transition->ruleIndex;
     _predicateIndex = transition->predIndex;

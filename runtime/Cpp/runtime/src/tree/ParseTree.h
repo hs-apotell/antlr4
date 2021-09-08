@@ -103,4 +103,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetree_cast, antlr4::tree::ParseTree)
+IMPLEMENT_VCAST_FUNCTIONS(parsetree_cast, antlr4::tree::ParseTree)

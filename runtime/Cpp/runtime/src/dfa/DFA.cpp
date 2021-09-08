@@ -22,7 +22,7 @@ DFA::DFA(atn::DecisionState *atnStartState, size_t decision)
   : atnStartState(atnStartState), s0(nullptr), decision(decision) {
 
   _precedenceDfa = false;
-  atn::StarLoopEntryState *const starLoopEntryState = atnstate_cast<atn::StarLoopEntryState>(atnStartState);
+  atn::StarLoopEntryState *const starLoopEntryState = atnstate_cast<atn::StarLoopEntryState *>(atnStartState);
   if ((starLoopEntryState != nullptr) && starLoopEntryState->isPrecedenceDecision) {
     _precedenceDfa = true;
     s0 = new DFAState(std::unique_ptr<atn::ATNConfigSet>(new atn::ATNConfigSet()));

@@ -329,7 +329,7 @@ void Parser::addContextToParseTree() {
   if (_ctx->parent == nullptr)
     return;
 
-  ParserRuleContext *parent = parsetree_cast<ParserRuleContext>(_ctx->parent);
+  ParserRuleContext *parent = parsetree_cast<ParserRuleContext *>(_ctx->parent);
   parent->addChild(_ctx);
 }
 
@@ -358,7 +358,7 @@ void Parser::exitRule() {
     triggerExitRuleEvent();
   }
   setState(_ctx->invokingState);
-  _ctx = parsetree_cast<ParserRuleContext>(_ctx->parent);
+  _ctx = parsetree_cast<ParserRuleContext *>(_ctx->parent);
 }
 
 void Parser::enterOuterAlt(ParserRuleContext *localctx, size_t altNum) {
@@ -368,7 +368,7 @@ void Parser::enterOuterAlt(ParserRuleContext *localctx, size_t altNum) {
   // that is previous child of parse tree
   if (_buildParseTrees && _ctx != localctx) {
     if (_ctx->parent != nullptr) {
-      ParserRuleContext *parent = parsetree_cast<ParserRuleContext>(_ctx->parent);
+      ParserRuleContext *parent = parsetree_cast<ParserRuleContext *>(_ctx->parent);
       parent->removeLastChild();
       parent->addChild(localctx);
     }
@@ -424,7 +424,7 @@ void Parser::unrollRecursionContexts(ParserRuleContext *parentctx) {
   if (_parseListeners.size() > 0) {
     while (_ctx != parentctx) {
       triggerExitRuleEvent();
-      _ctx = parsetree_cast<ParserRuleContext>(_ctx->parent);
+      _ctx = parsetree_cast<ParserRuleContext *>(_ctx->parent);
     }
   } else {
     _ctx = parentctx;
@@ -447,7 +447,7 @@ ParserRuleContext* Parser::getInvokingContext(size_t ruleIndex) {
     }
     if (p->parent == nullptr)
       break;
-    p = parsetree_cast<ParserRuleContext>(p->parent);
+    p = parsetree_cast<ParserRuleContext *>(p->parent);
   }
   return nullptr;
 }
@@ -491,7 +491,7 @@ bool Parser::isExpectedToken(size_t symbol) {
       return true;
     }
 
-    ctx = parsetree_cast<ParserRuleContext>(ctx->parent);
+    ctx = parsetree_cast<ParserRuleContext *>(ctx->parent);
   }
 
   if (following.contains(Token::EPSILON) && symbol == EOF) {
@@ -546,7 +546,7 @@ std::vector<std::string> Parser::getRuleInvocationStack(RuleContext *p) {
     }
     if (p->parent == nullptr)
       break;
-    run = parsetree_cast<RuleContext>(run->parent);
+    run = parsetree_cast<RuleContext *>(run->parent);
   }
   return stack;
 }
@@ -598,10 +598,10 @@ void Parser::setProfile(bool profile) {
   atn::ParserATNSimulator *interp = getInterpreter<atn::ProfilingATNSimulator>();
   atn::PredictionMode saveMode = interp != nullptr ? interp->getPredictionMode() : atn::PredictionMode::LL;
   if (profile) {
-    if (atnsimulator_cast<atn::ProfilingATNSimulator>(interp) == nullptr) {
+    if (atnsimulator_cast<atn::ProfilingATNSimulator *>(interp) == nullptr) {
       setInterpreter(new atn::ProfilingATNSimulator(this)); /* mem-check: replacing existing interpreter which gets deleted. */
     }
-  } else if (atnsimulator_cast<atn::ProfilingATNSimulator>(interp) != nullptr) {
+  } else if (atnsimulator_cast<atn::ProfilingATNSimulator *>(interp) != nullptr) {
     /* mem-check: replacing existing interpreter which gets deleted. */
     atn::ParserATNSimulator *sim = new atn::ParserATNSimulator(this, getATN(), interp->decisionToDFA, interp->getSharedContextCache());
     setInterpreter(sim);

@@ -43,7 +43,7 @@ bool SemanticContext::Predicate::operator == (const SemanticContext &other) cons
   if (this == &other)
     return true;
 
-  const Predicate *p = semanticcontext_cast<Predicate>(&other);
+  const Predicate *p = semanticcontext_cast<Predicate *>(&other);
   if (p == nullptr)
     return false;
 
@@ -90,7 +90,7 @@ bool SemanticContext::PrecedencePredicate::operator == (const SemanticContext &o
   if (this == &other)
     return true;
 
-  const PrecedencePredicate *predicate = semanticcontext_cast<PrecedencePredicate>(&other);
+  const PrecedencePredicate *predicate = semanticcontext_cast<PrecedencePredicate *>(&other);
   if (predicate == nullptr)
     return false;
 
@@ -147,7 +147,7 @@ bool SemanticContext::AND::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const AND *context = semanticcontext_cast<AND>(&other);
+  const AND *context = semanticcontext_cast<AND *>(&other);
   if (context == nullptr)
     return false;
 
@@ -251,7 +251,7 @@ bool SemanticContext::OR::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const OR *context = semanticcontext_cast<OR>(&other);
+  const OR *context = semanticcontext_cast<OR *>(&other);
   if (context == nullptr)
     return false;
 

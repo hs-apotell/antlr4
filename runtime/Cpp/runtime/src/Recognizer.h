@@ -93,7 +93,7 @@ namespace antlr4 {
     /// @returns The ATN interpreter used by the recognizer for prediction.
     template <typename T, typename = typename std::enable_if<std::is_base_of<atn::ATNSimulator, T>::value>::type>
     T* getInterpreter() const {
-      return atnsimulator_cast<T>(_interpreter);
+      return atnsimulator_cast<T *>(_interpreter);
     }
 
     /**

@@ -74,7 +74,7 @@ bool PredictionModeClass::hasSLLConflictTerminatingPrediction(PredictionMode mod
 
 bool PredictionModeClass::hasConfigInRuleStopState(ATNConfigSet *configs) {
   for (auto &c : configs->configs) {
-    if (atnstate_cast<RuleStopState>(c->state) != nullptr) {
+    if (atnstate_cast<RuleStopState *>(c->state) != nullptr) {
       return true;
     }
   }
@@ -84,7 +84,7 @@ bool PredictionModeClass::hasConfigInRuleStopState(ATNConfigSet *configs) {
 
 bool PredictionModeClass::allConfigsInRuleStopStates(ATNConfigSet *configs) {
   for (auto &config : configs->configs) {
-    if (atnstate_cast<RuleStopState>(config->state) == nullptr) {
+    if (atnstate_cast<RuleStopState *>(config->state) == nullptr) {
       return false;
     }
   }
