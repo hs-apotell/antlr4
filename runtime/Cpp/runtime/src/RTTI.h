@@ -47,7 +47,7 @@ namespace antlr4
       internal::num_tuple<LLs...>, internal::num_tuple<RLs...>)
     {
       return { rhs[LLs]..., lhs[RLs]... };
-    };
+    }
 
     template<typename T, std::size_t LL, std::size_t RL>
     constexpr std::array<T, LL + RL> join(std::array<T, LL> rhs, std::array<T, RL> lhs)
@@ -105,7 +105,7 @@ namespace antlr4
   public:
     template<
       typename I,
-      typename T = std::remove_pointer<I>::type,
+      typename T = typename std::remove_pointer<I>::type,
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline T *VirtualCast()
     {
@@ -114,7 +114,7 @@ namespace antlr4
 
     template<
       typename I,
-      typename T = std::remove_pointer<I>::type,
+      typename T = typename std::remove_pointer<I>::type,
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline const T *VirtualCast() const
     {
@@ -123,7 +123,7 @@ namespace antlr4
 
     template<
       typename I,
-      typename T = std::remove_pointer<I>::type,
+      typename T = typename std::remove_pointer<I>::type,
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline T *Cast()
     {
@@ -132,7 +132,7 @@ namespace antlr4
 
     template<
       typename I,
-      typename T = std::remove_pointer<I>::type,
+      typename T = typename std::remove_pointer<I>::type,
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline const T *Cast() const
     {
@@ -212,7 +212,7 @@ namespace antlr4
 #define IMPLEMENT_CAST_FUNCTIONS(baseType)                                                                                  \
   template<                                                                                                                 \
     typename I,                                                                                                             \
-    typename T = std::remove_pointer<I>::type,                                                                              \
+    typename T = typename std::remove_pointer<I>::type,                                                                     \
     typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                    \
     typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                          \
   inline ANTLR4CPP_PUBLIC T *antlr_cast(baseType *const u) noexcept {                                                       \
@@ -220,7 +220,7 @@ namespace antlr4
   }                                                                                                                         \
   template<                                                                                                                 \
     typename I,                                                                                                             \
-    typename T = std::remove_pointer<I>::type,                                                                              \
+    typename T = typename std::remove_pointer<I>::type,                                                                     \
     typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                    \
     typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                          \
   inline ANTLR4CPP_PUBLIC const T *antlr_cast(const baseType *const u) noexcept {                                           \
@@ -238,7 +238,7 @@ namespace antlr4
 #define IMPLEMENT_VIRTUAL_CAST_FUNCTIONS(baseType)                                                                                \
   template<                                                                                                                       \
     typename I,                                                                                                                   \
-    typename T = std::remove_pointer<I>::type,                                                                                    \
+    typename T = typename std::remove_pointer<I>::type,                                                                           \
     typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                          \
     typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                                \
   inline ANTLR4CPP_PUBLIC T *antlr_cast(baseType *const u) noexcept {                                                             \
@@ -246,7 +246,7 @@ namespace antlr4
   }                                                                                                                               \
   template<                                                                                                                       \
     typename I,                                                                                                                   \
-    typename T = std::remove_pointer<I>::type,                                                                                    \
+    typename T = typename std::remove_pointer<I>::type,                                                                           \
     typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                          \
     typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                                \
   inline ANTLR4CPP_PUBLIC const T *antlr_cast(const baseType *const u) noexcept {                                                 \
