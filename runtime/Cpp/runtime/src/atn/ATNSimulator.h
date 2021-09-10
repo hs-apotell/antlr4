@@ -88,4 +88,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(atnsimulator_cast, antlr4::atn::ATNSimulator)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNSimulator)

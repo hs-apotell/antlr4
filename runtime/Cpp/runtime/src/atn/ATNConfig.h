@@ -129,7 +129,7 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(atnconfig_cast, antlr4::atn::ATNConfig)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNConfig)
 
 // Hash function for ATNConfig.
 

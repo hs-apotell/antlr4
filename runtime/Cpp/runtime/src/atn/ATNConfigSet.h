@@ -111,4 +111,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(atnconfigset_cast, antlr4::atn::ATNConfigSet)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNConfigSet)

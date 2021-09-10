@@ -40,4 +40,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetreelistener_cast, antlr4::tree::ParseTreeListener)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::ParseTreeListener)

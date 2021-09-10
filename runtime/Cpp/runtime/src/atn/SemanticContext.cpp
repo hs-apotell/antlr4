@@ -43,7 +43,7 @@ bool SemanticContext::Predicate::operator == (const SemanticContext &other) cons
   if (this == &other)
     return true;
 
-  const Predicate *p = semanticcontext_cast<Predicate *>(&other);
+  const Predicate *p = antlr_cast<Predicate *>(&other);
   if (p == nullptr)
     return false;
 
@@ -90,7 +90,7 @@ bool SemanticContext::PrecedencePredicate::operator == (const SemanticContext &o
   if (this == &other)
     return true;
 
-  const PrecedencePredicate *predicate = semanticcontext_cast<PrecedencePredicate *>(&other);
+  const PrecedencePredicate *predicate = antlr_cast<PrecedencePredicate *>(&other);
   if (predicate == nullptr)
     return false;
 
@@ -106,7 +106,7 @@ std::string SemanticContext::PrecedencePredicate::toString() const {
 SemanticContext::AND::AND(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
   Set operands;
 
-  const Ref<AND> andA(semanticcontext_cast<AND>(a));
+  const Ref<AND> andA(antlr_cast<AND>(a));
   if (andA) {
     for (auto operand : andA->opnds) {
       operands.insert(operand);
@@ -115,7 +115,7 @@ SemanticContext::AND::AND(Ref<SemanticContext> const& a, Ref<SemanticContext> co
     operands.insert(a);
   }
 
-  const Ref<AND> andB(semanticcontext_cast<AND>(b));
+  const Ref<AND> andB(antlr_cast<AND>(b));
   if (andB) {
     for (auto operand : andB->opnds) {
       operands.insert(operand);
@@ -147,7 +147,7 @@ bool SemanticContext::AND::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const AND *context = semanticcontext_cast<AND *>(&other);
+  const AND *context = antlr_cast<AND *>(&other);
   if (context == nullptr)
     return false;
 
@@ -212,7 +212,7 @@ std::string SemanticContext::AND::toString() const {
 SemanticContext::OR::OR(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
   Set operands;
 
-  const Ref<OR> orA(semanticcontext_cast<OR>(a));
+  const Ref<OR> orA(antlr_cast<OR>(a));
   if (orA) {
     for (auto operand : orA->opnds) {
       operands.insert(operand);
@@ -221,7 +221,7 @@ SemanticContext::OR::OR(Ref<SemanticContext> const& a, Ref<SemanticContext> cons
     operands.insert(a);
   }
 
-  const Ref<OR> orB(semanticcontext_cast<OR>(b));
+  const Ref<OR> orB(antlr_cast<OR>(b));
   if (orB) {
     for (auto operand : orB->opnds) {
       operands.insert(operand);
@@ -251,7 +251,7 @@ bool SemanticContext::OR::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const OR *context = semanticcontext_cast<OR *>(&other);
+  const OR *context = antlr_cast<OR *>(&other);
   if (context == nullptr)
     return false;
 
@@ -366,7 +366,7 @@ Ref<SemanticContext> SemanticContext::Or(Ref<SemanticContext> const& a, Ref<Sema
 std::vector<Ref<SemanticContext::PrecedencePredicate>> SemanticContext::filterPrecedencePredicates(const Set &collection) {
   std::vector<Ref<SemanticContext::PrecedencePredicate>> result;
   for (auto context : collection) {
-    Ref<PrecedencePredicate> precedencePredicate(semanticcontext_cast<PrecedencePredicate>(context));
+    Ref<PrecedencePredicate> precedencePredicate(antlr_cast<PrecedencePredicate>(context));
     if (precedencePredicate) {
       result.push_back(precedencePredicate);
     }

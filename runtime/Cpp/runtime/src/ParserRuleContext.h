@@ -9,7 +9,7 @@
 #include "support/CPPUtils.h"
 
 template<typename T, typename>
-ANTLR4CPP_PUBLIC T *parsetree_cast(antlr4::tree::ParseTree *const u) noexcept;
+ANTLR4CPP_PUBLIC T *antlr_cast(antlr4::tree::ParseTree *const u) noexcept;
 
 namespace antlr4 {
 
@@ -106,7 +106,7 @@ namespace antlr4 {
 
       size_t j = 0; // what element have we found with ctxType?
       for (auto &child : children) {
-        T *const t = parsetree_cast<T *>(child);
+        T *const t = antlr_cast<T *>(child);
         if ((t != nullptr) && (j++ == i)) {
           return t;
         }
@@ -118,7 +118,7 @@ namespace antlr4 {
     std::vector<T *> getRuleContexts() {
       std::vector<T *> contexts;
       for (auto *child : children) {
-        T *const t = parsetree_cast<T *>(child);
+        T *const t = antlr_cast<T *>(child);
         if (t != nullptr) {
           contexts.push_back(t);
         }

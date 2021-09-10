@@ -71,4 +71,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(decisioneventinfo_cast, antlr4::atn::DecisionEventInfo)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::DecisionEventInfo)

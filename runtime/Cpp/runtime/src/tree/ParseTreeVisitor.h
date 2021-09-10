@@ -58,4 +58,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetreevisitor_cast, antlr4::tree::ParseTreeVisitor)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::ParseTreeVisitor)

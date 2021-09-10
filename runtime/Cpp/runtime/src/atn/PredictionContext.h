@@ -267,4 +267,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(predictioncontext_cast, antlr4::atn::PredictionContext)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::PredictionContext)

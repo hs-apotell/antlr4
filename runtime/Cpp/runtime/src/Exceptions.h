@@ -109,4 +109,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(runtimeexception_cast, antlr4::RuntimeException)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::RuntimeException)

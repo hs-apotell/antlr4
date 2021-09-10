@@ -97,9 +97,9 @@ std::string Trees::getNodeText(ParseTree *t, Parser *recog) {
 
 std::string Trees::getNodeText(ParseTree *t, const std::vector<std::string> &ruleNames) {
   if (ruleNames.size() > 0) {
-    RuleContext *const ruleContext = parsetree_cast<RuleContext *>(t);
-    ErrorNode *const errorNode = parsetree_cast<ErrorNode *>(t);
-    TerminalNode *const terminalNode = parsetree_cast<TerminalNode *>(t);
+    RuleContext *const ruleContext = antlr_cast<RuleContext *>(t);
+    ErrorNode *const errorNode = antlr_cast<ErrorNode *>(t);
+    TerminalNode *const terminalNode = antlr_cast<TerminalNode *>(t);
     if (ruleContext != nullptr) {
       size_t ruleIndex = ruleContext->getRuleIndex();
       std::string ruleName = ruleNames[ruleIndex];
@@ -119,12 +119,12 @@ std::string Trees::getNodeText(ParseTree *t, const std::vector<std::string> &rul
     }
   }
   // no recog for rule names
-  RuleContext *const ruleContext = parsetree_cast<RuleContext *>(t);
+  RuleContext *const ruleContext = antlr_cast<RuleContext *>(t);
   if (ruleContext != nullptr) {
     return ruleContext->getText();
   }
 
-  TerminalNodeImpl *const terminalNode = parsetree_cast<TerminalNodeImpl *>(t);
+  TerminalNodeImpl *const terminalNode = antlr_cast<TerminalNodeImpl *>(t);
   if (terminalNode != nullptr) {
     return terminalNode->getSymbol()->getText();
   }
@@ -145,8 +145,8 @@ std::vector<ParseTree *> Trees::getAncestors(ParseTree *t) {
 template<typename T>
 static void _findAllNodes(ParseTree *t, size_t index, bool findTokens, std::vector<T> &nodes) {
   // check this node (the root) first
-  TerminalNode *const tnode = parsetree_cast<TerminalNode *>(t);
-  ParserRuleContext *const ctx = parsetree_cast<ParserRuleContext *>(t);
+  TerminalNode *const tnode = antlr_cast<TerminalNode *>(t);
+  ParserRuleContext *const ctx = antlr_cast<ParserRuleContext *>(t);
   if (findTokens && (tnode != nullptr)) {
     if (tnode->getSymbol()->getType() == index) {
       nodes.push_back(t);
@@ -217,7 +217,7 @@ ParserRuleContext* Trees::getRootOfSubtreeEnclosingRegion(ParseTree *t, size_t s
     }
   }
 
-  ParserRuleContext *const r = parsetree_cast<ParserRuleContext *>(t);
+  ParserRuleContext *const r = antlr_cast<ParserRuleContext *>(t);
   if (r != nullptr) {
     if (startTokenIndex >= r->getStart()->getTokenIndex() && // is range fully contained in t?
         (r->getStop() == nullptr || stopTokenIndex <= r->getStop()->getTokenIndex())) {

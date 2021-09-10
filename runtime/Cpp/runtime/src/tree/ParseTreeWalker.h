@@ -56,4 +56,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetreewalker_cast, antlr4::tree::ParseTreeWalker)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::ParseTreeWalker)

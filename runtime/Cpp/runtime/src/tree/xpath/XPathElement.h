@@ -41,4 +41,4 @@ namespace xpath {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(xpathelement_cast, antlr4::tree::xpath::XPathElement)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::xpath::XPathElement)

@@ -122,4 +122,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlrerrorstrategy_cast, antlr4::ANTLRErrorStrategy)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::ANTLRErrorStrategy)

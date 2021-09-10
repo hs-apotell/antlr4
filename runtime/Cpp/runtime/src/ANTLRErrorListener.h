@@ -168,4 +168,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlrerrorlistener_cast, antlr4::ANTLRErrorListener)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::ANTLRErrorListener)

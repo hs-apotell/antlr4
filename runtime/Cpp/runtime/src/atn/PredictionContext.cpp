@@ -44,7 +44,7 @@ Ref<PredictionContext> PredictionContext::fromRuleContext(const ATN &atn, RuleCo
   }
 
   // If we have a parent, convert it to a PredictionContext graph
-  Ref<PredictionContext> parent = PredictionContext::fromRuleContext(atn, parsetree_cast<RuleContext *>(outerContext->parent));
+  Ref<PredictionContext> parent = PredictionContext::fromRuleContext(atn, antlr_cast<RuleContext *>(outerContext->parent));
 
   ATNState *state = atn.states.at(outerContext->invokingState);
   RuleTransition *transition = (RuleTransition *)state->transitions[0];
@@ -102,8 +102,8 @@ Ref<PredictionContext> PredictionContext::merge(const Ref<PredictionContext> &a,
     return a;
   }
 
-  Ref<SingletonPredictionContext> aa(predictioncontext_cast<SingletonPredictionContext>(a));
-  Ref<SingletonPredictionContext> bb(predictioncontext_cast<SingletonPredictionContext>(b));
+  Ref<SingletonPredictionContext> aa(antlr_cast<SingletonPredictionContext>(a));
+  Ref<SingletonPredictionContext> bb(antlr_cast<SingletonPredictionContext>(b));
   if (aa && bb) {
     return mergeSingletons(aa, bb, rootIsWildcard, mergeCache);
   }
@@ -111,10 +111,10 @@ Ref<PredictionContext> PredictionContext::merge(const Ref<PredictionContext> &a,
   // At least one of a or b is array.
   // If one is $ and rootIsWildcard, return $ as * wildcard.
   if (rootIsWildcard) {
-    if (predictioncontext_cast<EmptyPredictionContext>(a)) {
+    if (antlr_cast<EmptyPredictionContext>(a)) {
       return a;
     }
-    if (predictioncontext_cast<EmptyPredictionContext>(b)) {
+    if (antlr_cast<EmptyPredictionContext>(b)) {
       return b;
     }
   }
@@ -124,13 +124,13 @@ Ref<PredictionContext> PredictionContext::merge(const Ref<PredictionContext> &a,
   if (aa) {
     left = std::make_shared<ArrayPredictionContext>(aa);
   } else {
-    left = predictioncontext_cast<ArrayPredictionContext>(a);
+    left = antlr_cast<ArrayPredictionContext>(a);
   }
   Ref<ArrayPredictionContext> right;
   if (bb) {
     right = std::make_shared<ArrayPredictionContext>(bb);
   } else {
-    right = predictioncontext_cast<ArrayPredictionContext>(b);
+    right = antlr_cast<ArrayPredictionContext>(b);
   }
   return mergeArrays(left, right, rootIsWildcard, mergeCache);
 }
@@ -394,11 +394,11 @@ std::string PredictionContext::toDOTString(const Ref<PredictionContext> &context
   });
 
   for (auto current : nodes) {
-    if (predictioncontext_cast<SingletonPredictionContext>(current)) {
+    if (antlr_cast<SingletonPredictionContext>(current)) {
       std::string s = std::to_string(current->id);
       ss << "  s" << s;
       std::string returnState = std::to_string(current->getReturnState(0));
-      if (predictioncontext_cast<EmptyPredictionContext>(current)) {
+      if (antlr_cast<EmptyPredictionContext>(current)) {
         returnState = "$";
       }
       ss << " [label=\"" << returnState << "\"];\n";
@@ -496,7 +496,7 @@ Ref<PredictionContext> PredictionContext::getCachedContext(const Ref<PredictionC
     updated = SingletonPredictionContext::create(parents[0], context->getReturnState(0));
     contextCache.insert(updated);
   } else {
-    updated = std::make_shared<ArrayPredictionContext>(parents, predictioncontext_cast<ArrayPredictionContext>(context)->returnStates);
+    updated = std::make_shared<ArrayPredictionContext>(parents, antlr_cast<ArrayPredictionContext>(context)->returnStates);
     contextCache.insert(updated);
   }
 

@@ -77,4 +77,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(transition_cast, antlr4::atn::Transition)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::Transition)

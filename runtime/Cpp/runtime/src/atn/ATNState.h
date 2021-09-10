@@ -141,4 +141,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(atnstate_cast, antlr4::atn::ATNState)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNState)

@@ -125,4 +125,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(token_cast, antlr4::Token)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::Token)

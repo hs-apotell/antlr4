@@ -43,7 +43,7 @@ bool LexerModeAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerModeAction *action = lexeraction_cast<LexerModeAction *>(&obj);
+  const LexerModeAction *action = antlr_cast<LexerModeAction *>(&obj);
   if (action == nullptr) {
     return false;
   }

@@ -214,7 +214,7 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(semanticcontext_cast, antlr4::atn::SemanticContext)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::SemanticContext)
 
 // Hash function for SemanticContext, used in the MurmurHash::update function
 

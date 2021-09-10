@@ -15,10 +15,10 @@ namespace antlr4 {
 }
 
 template<typename T, typename>
-ANTLR4CPP_PUBLIC T *atnsimulator_cast(antlr4::atn::ATNSimulator *const u) noexcept;
+ANTLR4CPP_PUBLIC T *antlr_cast(antlr4::atn::ATNSimulator *const u) noexcept;
 
 template<typename T, typename>
-ANTLR4CPP_PUBLIC const T *atnsimulator_cast(const antlr4::atn::ATNSimulator *const u) noexcept;
+ANTLR4CPP_PUBLIC const T *antlr_cast(const antlr4::atn::ATNSimulator *const u) noexcept;
 
 namespace antlr4 {
 
@@ -93,7 +93,7 @@ namespace antlr4 {
     /// @returns The ATN interpreter used by the recognizer for prediction.
     template <typename T, typename = typename std::enable_if<std::is_base_of<atn::ATNSimulator, T>::value>::type>
     T* getInterpreter() const {
-      return atnsimulator_cast<T *>(_interpreter);
+      return antlr_cast<T *>(_interpreter);
     }
 
     /**
@@ -183,4 +183,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(recognizer_cast, antlr4::Recognizer)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::Recognizer)

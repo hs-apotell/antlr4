@@ -225,4 +225,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(intstream_cast, antlr4::IntStream)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::IntStream)

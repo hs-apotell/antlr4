@@ -86,4 +86,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_VCAST_FUNCTIONS(tokensource_cast, antlr4::TokenSource)
+IMPLEMENT_VIRTUAL_CAST_FUNCTIONS(antlr4::TokenSource)

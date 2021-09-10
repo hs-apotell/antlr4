@@ -67,4 +67,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(lexeraction_cast, antlr4::atn::LexerAction)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::LexerAction)

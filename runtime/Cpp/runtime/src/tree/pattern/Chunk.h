@@ -45,4 +45,4 @@ namespace pattern {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(chunk_cast, antlr4::tree::pattern::Chunk)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::pattern::Chunk)

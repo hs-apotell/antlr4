@@ -33,4 +33,4 @@ namespace dfa {
 } // namespace dfa
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(dfaserializer_cast, antlr4::dfa::DFASerializer)
+IMPLEMENT_CAST_FUNCTIONS(antlr4::dfa::DFASerializer)
