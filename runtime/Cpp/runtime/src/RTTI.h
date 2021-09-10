@@ -109,7 +109,7 @@ namespace antlr4
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline T *VirtualCast()
     {
-      return static_cast<T *>(AsType(T::kTypeId));
+      return IsOfType(T::kTypeId) ? static_cast<T *>(AsType(T::kTypeId)) : nullptr;
     }
 
     template<
@@ -118,7 +118,7 @@ namespace antlr4
       typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
     inline const T *VirtualCast() const
     {
-      return static_cast<const T *>(AsType(T::kTypeId));
+      return IsOfType(T::kTypeId) ? static_cast<const T *>(AsType(T::kTypeId)) : nullptr;
     }
 
     template<
