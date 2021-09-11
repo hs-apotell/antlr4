@@ -104,11 +104,19 @@ if(WIN32)
 endif(WIN32)
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   if(WITH_STATIC_CRT)
-    target_compile_options(antlr4_shared PRIVATE "/MT$<$<CONFIG:Debug>:d>")
-    target_compile_options(antlr4_static PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+    set_property(
+      TARGET antlr4_shared
+      PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set_property(
+      TARGET antlr4_static
+      PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
   else()
-    target_compile_options(antlr4_shared PRIVATE "/MD$<$<CONFIG:Debug>:d>")
-    target_compile_options(antlr4_static PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+    set_property(
+      TARGET antlr4_shared
+      PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    set_property(
+      TARGET antlr4_static
+      PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
   endif()
 endif()
 

@@ -89,11 +89,11 @@ namespace antlr4
     virtual const void *AsType(typeid_t tid) const = 0;
     virtual const typeid_t *GetTypeIds(size_t &count) const = 0;
 
-    bool IsOfType(typeid_t tid) const
+    inline bool IsOfType(typeid_t tid) const
     {
       size_t count = 0;
       const typeid_t *const typeIds = GetTypeIds(count);
-      for (int i = static_cast<int>(count - 1); i >= 0; --i)
+      for (size_t i = 0; i < count; ++i)
       {
         if (typeIds[i] == tid)
           return true;
@@ -164,13 +164,14 @@ namespace antlr4
 } // namespace antlr4
 
 #define IMPLEMENT_RTTI(classType, baseType)                                                               \
-  protected:                                                                                              \
+  public:                                                                                                 \
     typedef classType thistype_t;                                                                         \
     typedef baseType basetype_t;                                                                          \
-    friend class antlr4::RTTI;                                                                            \
     static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/" #classType, basetype_t::kTypeId);  \
     static constexpr auto kTypeIds = antlr4::internal::join(                                              \
-      basetype_t::kTypeIds, std::array<typeid_t, 1>{thistype_t::kTypeId});                                \
+      std::array<typeid_t, 1>{thistype_t::kTypeId}, basetype_t::kTypeIds);                                \
+  protected:                                                                                              \
+    friend class antlr4::RTTI;                                                                            \
     inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }              \
     inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override                         \
     { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }                          \
@@ -181,15 +182,16 @@ namespace antlr4
   private:
 
 #define IMPLEMENT_RTTI_2_BASES(classType, baseType1, baseType2)                                                                   \
-  protected:                                                                                                                      \
+  public:                                                                                                                         \
     typedef classType thistype_t;                                                                                                 \
     typedef baseType1 base1type_t;                                                                                                \
     typedef baseType2 base2type_t;                                                                                                \
-    friend class antlr4::RTTI;                                                                                                    \
     static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/" #classType, base1type_t::kTypeId ^ base2type_t::kTypeId);  \
     static constexpr auto kTypeIds = antlr4::internal::join(                                                                      \
-      base1type_t::kTypeIds,                                                                                                      \
-      antlr4::internal::join(base2type_t::kTypeIds, std::array<typeid_t, 1>{thistype_t::kTypeId}));                               \
+      std::array<typeid_t, 1>{thistype_t::kTypeId},                                                                               \
+      antlr4::internal::join(base1type_t::kTypeIds, base2type_t::kTypeIds));                                                      \
+  protected:                                                                                                                      \
+    friend class antlr4::RTTI;                                                                                                    \
     inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }                                      \
     inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override                                                 \
     { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }                                                  \

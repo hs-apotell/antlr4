@@ -8,6 +8,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 #ifdef _MSC_VER
   #pragma warning(push)
@@ -114,14 +115,33 @@ struct ANTLR4CPP_PUBLIC Any
   }
 
 private:
-  struct Base {
+  struct Base : public antlr4::RTTI {
+    IMPLEMENT_RTTI(Base, antlr4::RTTI);
+
+  public:
     virtual ~Base() {};
     virtual Base* clone() const = 0;
   };
 
-  template<typename T>
-  struct Derived : Base
-  {
+  template<typename T, typename = typename std::enable_if<std::is_base_of<antlr4::RTTI, T>::value>::type>
+  struct Derived : Base {
+  public:
+    typedef Derived<T> thistype_t;
+    typedef Base basetype_t;
+    static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/Derived", T::kTypeId);
+    static constexpr auto kTypeIds = antlr4::internal::join(
+      std::array<typeid_t, 1>{thistype_t::kTypeId}, basetype_t::kTypeIds);
+  protected:
+    friend class antlr4::RTTI;
+    inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }
+    inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override
+    { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }
+    inline virtual void *AsType(typeid_t tid) override
+    { return (tid == thistype_t::kTypeId) ? static_cast<void *>(this) : basetype_t::AsType(tid); }
+    inline virtual const void *AsType(typeid_t tid) const override
+    { return (tid == thistype_t::kTypeId) ? static_cast<const void *>(this) : basetype_t::AsType(tid); }
+
+  public:
     template<typename U> Derived(U&& value_) : value(std::forward<U>(value_)) {
     }
 
@@ -156,7 +176,7 @@ private:
   Derived<StorageType<U>>* getDerived(bool checkCast) const {
     typedef StorageType<U> T;
 
-    auto derived = dynamic_cast<Derived<T>*>(_ptr);
+    auto derived = antlr4_cast<Derived<T>*>(_ptr);
 
     if (checkCast && !derived)
       throw std::bad_cast();
