@@ -116,12 +116,13 @@ struct ANTLR4CPP_PUBLIC Any
 
 private:
   struct Base : public antlr4::RTTI {
-    IMPLEMENT_RTTI(Base, antlr4::RTTI);
+    IMPLEMENT_RTTI(Base, antlr4::RTTI)
 
   public:
     virtual ~Base() {};
     virtual Base* clone() const = 0;
   };
+  IMPLEMENT_VIRTUAL_CAST_FUNCTIONS(Base)
 
   template<typename T, typename = typename std::enable_if<std::is_base_of<antlr4::RTTI, T>::value>::type>
   struct Derived : Base {
@@ -172,11 +173,9 @@ private:
       return nullptr;
   }
 
-  template<class U>
-  Derived<StorageType<U>>* getDerived(bool checkCast) const {
-    typedef StorageType<U> T;
-
-    auto derived = antlr4_cast<Derived<T>*>(_ptr);
+  template<class U, typename T = StorageType<U>>
+  Derived<T>* getDerived(bool checkCast) const {
+    auto derived = antlr_cast<Derived<T>*>(_ptr);
 
     if (checkCast && !derived)
       throw std::bad_cast();
