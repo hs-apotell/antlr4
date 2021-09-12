@@ -44,7 +44,7 @@ namespace antlr4
     template<typename T, std::size_t LL, std::size_t RL, std::size_t ... LLs, std::size_t ... RLs>
     constexpr std::array<T, LL + RL> join(
       const std::array<T, LL> rhs, const std::array<T, RL> lhs,
-      internal::num_tuple<LLs...>, internal::num_tuple<RLs...>)
+      num_tuple<LLs...>, num_tuple<RLs...>)
     {
       return { rhs[LLs]..., lhs[RLs]... };
     }
@@ -54,8 +54,8 @@ namespace antlr4
     {
       return join(
         rhs, lhs,
-        typename internal::counter_tuple<LL>::type(),
-        typename internal::counter_tuple<RL>::type());
+        typename counter_tuple<LL>::type(),
+        typename counter_tuple<RL>::type());
     }
 
     static constexpr uint32_t kFNV1aSeed32 = 0x811C9DC5;
