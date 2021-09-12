@@ -17,7 +17,7 @@ namespace pattern {
   /// chunks where the tag corresponds to a parser rule.
   /// </summary>
   class ANTLR4CPP_PUBLIC RuleTagToken : public Token {
-    IMPLEMENT_RTTI(RuleTagToken, Token)
+    ANTLR_IMPLEMENT_RTTI(RuleTagToken, Token)
     /// <summary>
     /// This is the backing field for <seealso cref="#getRuleName"/>.
     /// </summary>

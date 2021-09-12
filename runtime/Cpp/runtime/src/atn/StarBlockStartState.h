@@ -12,7 +12,7 @@ namespace atn {
 
   /// The block that begins a closure loop.
   class ANTLR4CPP_PUBLIC StarBlockStartState final : public BlockStartState {
-    IMPLEMENT_RTTI(StarBlockStartState, BlockStartState)
+    ANTLR_IMPLEMENT_RTTI(StarBlockStartState, BlockStartState)
 
   public:
     virtual size_t getStateType() override;

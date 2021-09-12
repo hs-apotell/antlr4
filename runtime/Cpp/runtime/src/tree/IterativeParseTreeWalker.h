@@ -45,7 +45,7 @@ namespace tree {
    * process deeply nested parse trees.
    */
   class ANTLR4CPP_PUBLIC IterativeParseTreeWalker : public ParseTreeWalker {
-    IMPLEMENT_RTTI(IterativeParseTreeWalker, ParseTreeWalker)
+    ANTLR_IMPLEMENT_RTTI(IterativeParseTreeWalker, ParseTreeWalker)
   public:
     virtual void walk(ParseTreeListener *listener, ParseTree *t) const override;
   };

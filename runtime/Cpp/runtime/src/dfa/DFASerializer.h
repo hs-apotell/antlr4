@@ -13,7 +13,7 @@ namespace dfa {
 
   /// A DFA walker that knows how to dump them to serialized strings.
   class ANTLR4CPP_PUBLIC DFASerializer : public RTTI {
-    IMPLEMENT_RTTI(DFASerializer, RTTI)
+    ANTLR_IMPLEMENT_RTTI(DFASerializer, RTTI)
   public:
     DFASerializer(const DFA *dfa, const std::vector<std::string>& tnames);
     DFASerializer(const DFA *dfa, const Vocabulary &vocabulary);
@@ -33,4 +33,4 @@ namespace dfa {
 } // namespace dfa
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::dfa::DFASerializer)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::dfa::DFASerializer)

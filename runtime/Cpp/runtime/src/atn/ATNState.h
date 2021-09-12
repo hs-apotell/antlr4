@@ -74,7 +74,7 @@ namespace atn {
   class ATN;
 
   class ANTLR4CPP_PUBLIC ATNState : public RTTI {
-    IMPLEMENT_RTTI(ATNState, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ATNState, RTTI)
   public:
     ATNState();
     ATNState(ATNState const&) = delete;
@@ -141,4 +141,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNState)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::ATNState)

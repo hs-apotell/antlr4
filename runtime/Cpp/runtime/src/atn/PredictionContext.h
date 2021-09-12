@@ -21,7 +21,7 @@ namespace atn {
   typedef std::unordered_set<Ref<PredictionContext>, PredictionContextHasher, PredictionContextComparer> PredictionContextCache;
 
   class ANTLR4CPP_PUBLIC PredictionContext : public RTTI {
-    IMPLEMENT_RTTI(PredictionContext, RTTI)
+    ANTLR_IMPLEMENT_RTTI(PredictionContext, RTTI)
   public:
     /// Represents $ in local context prediction, which means wildcard.
     /// *+x = *.
@@ -267,4 +267,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::PredictionContext)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::PredictionContext)

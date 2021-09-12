@@ -19,7 +19,7 @@ namespace atn {
   ///  I have scoped the AND, OR, and Predicate subclasses of
   ///  SemanticContext within the scope of this outer class.
   class ANTLR4CPP_PUBLIC SemanticContext : public RTTI, public std::enable_shared_from_this<SemanticContext> {
-    IMPLEMENT_RTTI(SemanticContext, RTTI)
+    ANTLR_IMPLEMENT_RTTI(SemanticContext, RTTI)
   public:
     struct Hasher
     {
@@ -103,7 +103,7 @@ namespace atn {
   };
 
   class ANTLR4CPP_PUBLIC SemanticContext::Predicate : public SemanticContext {
-    IMPLEMENT_RTTI(Predicate, SemanticContext)
+    ANTLR_IMPLEMENT_RTTI(Predicate, SemanticContext)
   public:
     const size_t ruleIndex;
     const size_t predIndex;
@@ -122,7 +122,7 @@ namespace atn {
   };
 
   class ANTLR4CPP_PUBLIC SemanticContext::PrecedencePredicate : public SemanticContext {
-    IMPLEMENT_RTTI(PrecedencePredicate, SemanticContext)
+    ANTLR_IMPLEMENT_RTTI(PrecedencePredicate, SemanticContext)
   public:
     const int precedence;
 
@@ -147,7 +147,7 @@ namespace atn {
    * @since 4.3
    */
   class ANTLR4CPP_PUBLIC SemanticContext::Operator : public SemanticContext {
-    IMPLEMENT_RTTI(Operator, SemanticContext)
+    ANTLR_IMPLEMENT_RTTI(Operator, SemanticContext)
   public:
     virtual ~Operator() override;
 
@@ -168,7 +168,7 @@ namespace atn {
    * is false.
    */
   class ANTLR4CPP_PUBLIC SemanticContext::AND : public SemanticContext::Operator {
-    IMPLEMENT_RTTI(AND, Operator)
+    ANTLR_IMPLEMENT_RTTI(AND, Operator)
   public:
     std::vector<Ref<SemanticContext>> opnds;
 
@@ -192,7 +192,7 @@ namespace atn {
    * contexts is true.
    */
   class ANTLR4CPP_PUBLIC SemanticContext::OR : public SemanticContext::Operator {
-    IMPLEMENT_RTTI(OR, Operator)
+    ANTLR_IMPLEMENT_RTTI(OR, Operator)
   public:
     std::vector<Ref<SemanticContext>> opnds;
 
@@ -214,7 +214,7 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::SemanticContext)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::SemanticContext)
 
 // Hash function for SemanticContext, used in the MurmurHash::update function
 

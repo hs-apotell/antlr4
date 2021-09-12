@@ -12,7 +12,7 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathTokenElement : public XPathElement {
-    IMPLEMENT_RTTI(XPathTokenElement, XPathElement)
+    ANTLR_IMPLEMENT_RTTI(XPathTokenElement, XPathElement)
   public:
     XPathTokenElement(const std::string &tokenName, size_t tokenType);
 

@@ -12,7 +12,7 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathWildcardElement : public XPathElement {
-    IMPLEMENT_RTTI(XPathWildcardElement, XPathElement)
+    ANTLR_IMPLEMENT_RTTI(XPathWildcardElement, XPathElement)
   public:
     XPathWildcardElement();
 

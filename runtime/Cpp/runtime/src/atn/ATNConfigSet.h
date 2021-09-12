@@ -15,7 +15,7 @@ namespace atn {
   /// Specialized set that can track info about the set, with support for combining similar configurations using a
   /// graph-structured stack.
   class ANTLR4CPP_PUBLIC ATNConfigSet : public RTTI {
-    IMPLEMENT_RTTI(ATNConfigSet, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ATNConfigSet, RTTI)
   public:
     /// Track the elements as they are added to the set; supports get(i)
     std::vector<Ref<ATNConfig>> configs;
@@ -111,4 +111,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNConfigSet)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::ATNConfigSet)

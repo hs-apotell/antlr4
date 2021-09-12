@@ -25,7 +25,7 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerCustomAction final : public LexerAction {
-    IMPLEMENT_RTTI(LexerCustomAction, LexerAction)
+    ANTLR_IMPLEMENT_RTTI(LexerCustomAction, LexerAction)
   public:
     /// <summary>
     /// Constructs a custom lexer action with the specified rule and action

@@ -17,7 +17,7 @@ namespace antlr4 {
   /// as the EOF token for every call to <seealso cref="#nextToken"/> after the end of the
   /// list is reached. Otherwise, an EOF token will be created.
   class ANTLR4CPP_PUBLIC ListTokenSource : public TokenSource {
-    IMPLEMENT_RTTI(ListTokenSource, TokenSource)
+    ANTLR_IMPLEMENT_RTTI(ListTokenSource, TokenSource)
   protected:
     // This list will be emptied token by token as we call nextToken().
     // Token streams can be used to buffer tokens for a while.

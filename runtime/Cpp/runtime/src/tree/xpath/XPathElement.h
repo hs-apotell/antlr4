@@ -15,7 +15,7 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathElement : public RTTI {
-    IMPLEMENT_RTTI(XPathElement, RTTI)
+    ANTLR_IMPLEMENT_RTTI(XPathElement, RTTI)
   public:
     /// Construct element like {@code /ID} or {@code ID} or {@code /*} etc...
     ///  op is null if just node
@@ -41,4 +41,4 @@ namespace xpath {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::xpath::XPathElement)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::tree::xpath::XPathElement)

@@ -12,7 +12,7 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC PrecedencePredicateTransition final : public AbstractPredicateTransition {
-    IMPLEMENT_RTTI(PrecedencePredicateTransition, AbstractPredicateTransition)
+    ANTLR_IMPLEMENT_RTTI(PrecedencePredicateTransition, AbstractPredicateTransition)
   public:
     const int precedence;
 

@@ -15,7 +15,7 @@ namespace atn {
   /// it for completeness. In reality, the <seealso cref="PlusLoopbackState"/> node is the
   /// real decision-making note for {@code A+}.
   class ANTLR4CPP_PUBLIC PlusBlockStartState final : public BlockStartState {
-    IMPLEMENT_RTTI(PlusBlockStartState, BlockStartState)
+    ANTLR_IMPLEMENT_RTTI(PlusBlockStartState, BlockStartState)
   public:
     PlusLoopbackState *loopBackState = nullptr;
 

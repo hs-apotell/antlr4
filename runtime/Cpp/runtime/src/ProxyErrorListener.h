@@ -14,7 +14,7 @@ namespace antlr4 {
   /// collection of delegate listeners. This reduces the effort required to support multiple
   /// listeners.
   class ANTLR4CPP_PUBLIC ProxyErrorListener : public ANTLRErrorListener {
-    IMPLEMENT_RTTI(ProxyErrorListener, ANTLRErrorListener)
+    ANTLR_IMPLEMENT_RTTI(ProxyErrorListener, ANTLRErrorListener)
   private:
     std::set<ANTLRErrorListener *> _delegates; // Not owned.
 

@@ -11,7 +11,7 @@ namespace antlr4 {
 namespace tree {
 
   class ANTLR4CPP_PUBLIC AbstractParseTreeVisitor : public ParseTreeVisitor {
-    IMPLEMENT_RTTI(AbstractParseTreeVisitor, ParseTreeVisitor)
+    ANTLR_IMPLEMENT_RTTI(AbstractParseTreeVisitor, ParseTreeVisitor)
   public:
     /// The default implementation calls <seealso cref="ParseTree#accept"/> on the
     /// specified tree.

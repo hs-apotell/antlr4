@@ -71,7 +71,7 @@ namespace pattern {
   class ANTLR4CPP_PUBLIC ParseTreePatternMatcher {
   public:
     class CannotInvokeStartRule : public RuntimeException {
-      IMPLEMENT_RTTI(CannotInvokeStartRule, RuntimeException)
+      ANTLR_IMPLEMENT_RTTI(CannotInvokeStartRule, RuntimeException)
     public:
       CannotInvokeStartRule(const RuntimeException &e);
       ~CannotInvokeStartRule();
@@ -80,7 +80,7 @@ namespace pattern {
     // Fixes https://github.com/antlr/antlr4/issues/413
     // "Tree pattern compilation doesn't check for a complete parse"
     class StartRuleDoesNotConsumeFullPattern : public RuntimeException {
-      IMPLEMENT_RTTI(StartRuleDoesNotConsumeFullPattern, RuntimeException)
+      ANTLR_IMPLEMENT_RTTI(StartRuleDoesNotConsumeFullPattern, RuntimeException)
     public:
       StartRuleDoesNotConsumeFullPattern() = default;
       StartRuleDoesNotConsumeFullPattern(StartRuleDoesNotConsumeFullPattern const&) = default;

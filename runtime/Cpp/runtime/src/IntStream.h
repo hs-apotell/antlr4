@@ -27,7 +27,7 @@ namespace antlr4 {
   /// </ul>
   /// </summary>
   class ANTLR4CPP_PUBLIC IntStream : public RTTI {
-    IMPLEMENT_RTTI(IntStream, RTTI)
+    ANTLR_IMPLEMENT_RTTI(IntStream, RTTI)
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t EOF = std::numeric_limits<size_t>::max();
@@ -225,4 +225,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::IntStream)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::IntStream)

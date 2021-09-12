@@ -14,7 +14,7 @@ namespace antlr4 {
   /// (so we can ignore tabs), token channel, index, and source from which
   /// we obtained this token.
   class ANTLR4CPP_PUBLIC Token : public RTTI {
-    IMPLEMENT_RTTI(Token, RTTI)
+    ANTLR_IMPLEMENT_RTTI(Token, RTTI)
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t INVALID_TYPE = 0;
@@ -125,4 +125,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::Token)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::Token)

@@ -22,7 +22,7 @@ namespace antlr4 {
    * provide equivalent functionality.</p>
    */
   class ANTLR4CPP_PUBLIC InterpreterRuleContext : public ParserRuleContext {
-    IMPLEMENT_RTTI(InterpreterRuleContext, ParserRuleContext)
+    ANTLR_IMPLEMENT_RTTI(InterpreterRuleContext, ParserRuleContext)
   public:
     InterpreterRuleContext();
 

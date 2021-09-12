@@ -31,7 +31,7 @@ namespace antlr4 {
   /// @author Sam Harwell
   /// </summary>
   class ANTLR4CPP_PUBLIC DiagnosticErrorListener : public BaseErrorListener {
-    IMPLEMENT_RTTI(DiagnosticErrorListener, BaseErrorListener)
+    ANTLR_IMPLEMENT_RTTI(DiagnosticErrorListener, BaseErrorListener)
     /// <summary>
     /// When {@code true}, only exactly known ambiguities are reported.
     /// </summary>

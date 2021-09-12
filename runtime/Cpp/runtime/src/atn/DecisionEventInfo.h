@@ -27,7 +27,7 @@ namespace atn {
   /// @since 4.3
   /// </summary>
   class ANTLR4CPP_PUBLIC DecisionEventInfo : public RTTI {
-    IMPLEMENT_RTTI(DecisionEventInfo, RTTI)
+    ANTLR_IMPLEMENT_RTTI(DecisionEventInfo, RTTI)
   public:
     /// <summary>
     /// The invoked decision number which this event is related to.
@@ -71,4 +71,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::DecisionEventInfo)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::DecisionEventInfo)

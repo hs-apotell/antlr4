@@ -21,7 +21,7 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerAction : public RTTI {
-    IMPLEMENT_RTTI(LexerAction, RTTI)
+    ANTLR_IMPLEMENT_RTTI(LexerAction, RTTI)
   public:
     virtual ~LexerAction();
 
@@ -67,4 +67,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::LexerAction)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::LexerAction)

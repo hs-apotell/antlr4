@@ -15,7 +15,7 @@ namespace antlr4 {
   ///  of a new factory means that it notifies it's token source and error strategy.
   template<typename Symbol>
   class ANTLR4CPP_PUBLIC TokenFactory : public RTTI {
-    IMPLEMENT_RTTI(TokenFactory, RTTI)
+    ANTLR_IMPLEMENT_RTTI(TokenFactory, RTTI)
   public:
     virtual ~TokenFactory() {}
 

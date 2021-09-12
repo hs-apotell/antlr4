@@ -37,7 +37,7 @@ namespace antlr4 {
   ///  satisfy the superclass interface.
   /// </summary>
   class ANTLR4CPP_PUBLIC ParserRuleContext : public RuleContext {
-    IMPLEMENT_RTTI(ParserRuleContext, RuleContext)
+    ANTLR_IMPLEMENT_RTTI(ParserRuleContext, RuleContext)
   public:
     static ParserRuleContext EMPTY;
 

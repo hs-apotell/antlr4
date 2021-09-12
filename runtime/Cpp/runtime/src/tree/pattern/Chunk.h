@@ -24,7 +24,7 @@ namespace pattern {
   /// regular tokens of the text surrounding the tags.
   /// </summary>
   class ANTLR4CPP_PUBLIC Chunk : public RTTI {
-    IMPLEMENT_RTTI(Chunk, RTTI)
+    ANTLR_IMPLEMENT_RTTI(Chunk, RTTI)
   public:
     Chunk() = default;
     Chunk(Chunk const&) = default;
@@ -45,4 +45,4 @@ namespace pattern {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::tree::pattern::Chunk)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::tree::pattern::Chunk)

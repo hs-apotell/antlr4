@@ -116,13 +116,13 @@ struct ANTLR4CPP_PUBLIC Any
 
 private:
   struct Base : public antlr4::RTTI {
-    IMPLEMENT_RTTI(Base, antlr4::RTTI)
+    ANTLR_IMPLEMENT_RTTI(Base, antlr4::RTTI)
 
   public:
     virtual ~Base() {};
     virtual Base* clone() const = 0;
   };
-  IMPLEMENT_VIRTUAL_CAST_FUNCTIONS(Base)
+  ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(Base)
 
   template<typename T, typename = typename std::enable_if<std::is_base_of<antlr4::RTTI, T>::value>::type>
   struct Derived : Base {

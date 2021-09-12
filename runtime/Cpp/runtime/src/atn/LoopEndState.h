@@ -12,7 +12,7 @@ namespace atn {
 
   /// Mark the end of a * or + loop.
   class ANTLR4CPP_PUBLIC LoopEndState final : public ATNState {
-    IMPLEMENT_RTTI(LoopEndState, ATNState)
+    ANTLR_IMPLEMENT_RTTI(LoopEndState, ATNState)
   public:
     ATNState *loopBackState = nullptr;
 

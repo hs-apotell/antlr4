@@ -19,7 +19,7 @@ namespace atn {
   ///  an ATN state.
   /// </summary>
   class ANTLR4CPP_PUBLIC ATNConfig : public RTTI {
-    IMPLEMENT_RTTI(ATNConfig, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ATNConfig, RTTI)
   public:
     struct Hasher
     {
@@ -129,7 +129,7 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::ATNConfig)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::ATNConfig)
 
 // Hash function for ATNConfig.
 

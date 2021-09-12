@@ -163,7 +163,7 @@ namespace antlr4
 
 } // namespace antlr4
 
-#define IMPLEMENT_RTTI(classType, baseType)                                                               \
+#define ANTLR_IMPLEMENT_RTTI(classType, baseType)                                                         \
   public:                                                                                                 \
     typedef classType thistype_t;                                                                         \
     typedef baseType basetype_t;                                                                          \
@@ -181,7 +181,7 @@ namespace antlr4
     { return (tid == thistype_t::kTypeId) ? static_cast<const void *>(this) : basetype_t::AsType(tid); }  \
   private:
 
-#define IMPLEMENT_RTTI_2_BASES(classType, baseType1, baseType2)                                                                   \
+#define ANTLR_IMPLEMENT_RTTI_2_BASES(classType, baseType1, baseType2)                                                             \
   public:                                                                                                                         \
     typedef classType thistype_t;                                                                                                 \
     typedef baseType1 base1type_t;                                                                                                \
@@ -211,7 +211,7 @@ namespace antlr4
     }                                                                                                                             \
   private:
 
-#define IMPLEMENT_CAST_FUNCTIONS(baseType)                                                                                  \
+#define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType)                                                                       \
   template<                                                                                                                 \
     typename I,                                                                                                             \
     typename T = typename std::remove_pointer<I>::type,                                                                     \
@@ -237,7 +237,7 @@ namespace antlr4
     return (u && (u->template Cast<const T>() != nullptr)) ? std::static_pointer_cast<const T>(u) : Ref<const T>(nullptr);  \
   }
 
-#define IMPLEMENT_VIRTUAL_CAST_FUNCTIONS(baseType)                                                                                \
+#define ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(baseType)                                                                     \
   template<                                                                                                                       \
     typename I,                                                                                                                   \
     typename T = typename std::remove_pointer<I>::type,                                                                           \

@@ -25,7 +25,7 @@ namespace atn {
   ///  ATN transitions.
   /// </summary>
   class ANTLR4CPP_PUBLIC Transition : public RTTI {
-    IMPLEMENT_RTTI(Transition, RTTI)
+    ANTLR_IMPLEMENT_RTTI(Transition, RTTI)
   public:
     // constants for serialization
     enum SerializationType {
@@ -77,4 +77,4 @@ namespace atn {
 } // namespace atn
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::atn::Transition)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::atn::Transition)

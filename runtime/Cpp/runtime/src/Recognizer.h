@@ -23,7 +23,7 @@ ANTLR4CPP_PUBLIC const T *antlr_cast(const antlr4::atn::ATNSimulator *const u) n
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC Recognizer : public RTTI {
-    IMPLEMENT_RTTI(Recognizer, RTTI)
+    ANTLR_IMPLEMENT_RTTI(Recognizer, RTTI)
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t EOF = std::numeric_limits<size_t>::max();
@@ -183,4 +183,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlr4::Recognizer)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::Recognizer)

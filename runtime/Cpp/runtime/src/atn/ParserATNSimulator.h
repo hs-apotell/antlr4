@@ -243,7 +243,7 @@ namespace atn {
    * the input.</p>
    */
   class ANTLR4CPP_PUBLIC ParserATNSimulator : public ATNSimulator {
-    IMPLEMENT_RTTI(ParserATNSimulator, ATNSimulator)
+    ANTLR_IMPLEMENT_RTTI(ParserATNSimulator, ATNSimulator)
   public:
     /// Testing only!
     ParserATNSimulator(const ATN &atn, std::vector<dfa::DFA> &decisionToDFA,
