@@ -13,9 +13,8 @@ namespace atn {
   /// Decision state for {@code A+} and {@code (A|B)+}. It has two transitions:
   /// one to the loop back to start of the block and one to exit.
   class ANTLR4CPP_PUBLIC PlusLoopbackState final : public DecisionState {
-    IMPLEMENT_RTTI(PlusLoopbackState, DecisionState)
-
   public:
+    PlusLoopbackState() : DecisionState() { classtype |= PlusLoopbackStateClass; }
     virtual size_t getStateType() override;
   };
 

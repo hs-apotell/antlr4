@@ -16,7 +16,7 @@ namespace antlr4 {
 
   /// How to emit recognition errors (an interface in Java).
   class ANTLR4CPP_PUBLIC ANTLRErrorListener : public RTTI {
-    IMPLEMENT_RTTI(ANTLRErrorListener, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ANTLRErrorListener, RTTI)
   public:
     virtual ~ANTLRErrorListener();
 
@@ -168,4 +168,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlrerrorlistener_cast, antlr4::ANTLRErrorListener)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::ANTLRErrorListener)

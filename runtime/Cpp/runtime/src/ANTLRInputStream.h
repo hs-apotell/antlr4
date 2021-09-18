@@ -13,7 +13,6 @@ namespace antlr4 {
   // like a string. Can also pass in a string or char[] to use.
   // Input is expected to be encoded in UTF-8 and converted to UTF-32 internally.
   class ANTLR4CPP_PUBLIC ANTLRInputStream : public CharStream {
-    IMPLEMENT_RTTI(ANTLRInputStream, CharStream)
   protected:
     /// The data being scanned.
     // UTF-32

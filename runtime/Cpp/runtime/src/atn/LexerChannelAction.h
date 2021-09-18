@@ -21,7 +21,6 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerChannelAction final : public LexerAction {
-    IMPLEMENT_RTTI(LexerChannelAction, LexerAction)
   public:
     /// <summary>
     /// Constructs a new {@code channel} action with the specified channel value. </summary>

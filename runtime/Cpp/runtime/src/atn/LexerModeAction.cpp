@@ -13,6 +13,7 @@ using namespace antlr4::atn;
 using namespace antlr4::misc;
 
 LexerModeAction::LexerModeAction(int mode) : _mode(mode) {
+  classtype |= LexerModeActionClass;
 }
 
 int LexerModeAction::getMode() {
@@ -43,11 +44,11 @@ bool LexerModeAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerModeAction *action = lexeraction_cast<LexerModeAction>(&obj);
-  if (action == nullptr) {
+  if (!obj.isType(LexerModeActionClass)) {
     return false;
   }
 
+  const LexerModeAction *action = static_cast<const LexerModeAction *>(&obj);
   return _mode == action->_mode;
 }
 

@@ -10,8 +10,8 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC WritableToken : public Token {
-    IMPLEMENT_RTTI(WritableToken, Token)
   public:
+    WritableToken();
     virtual ~WritableToken();
     virtual void setText(const std::string &text) = 0;
     virtual void setType(size_t ttype) = 0;

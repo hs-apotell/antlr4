@@ -12,6 +12,7 @@ using namespace antlr4::atn;
 using namespace antlr4::misc;
 
 LexerChannelAction::LexerChannelAction(int channel) : _channel(channel) {
+  classtype |= LexerChannelActionClass;
 }
 
 int LexerChannelAction::getChannel() const {
@@ -42,11 +43,11 @@ bool LexerChannelAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerChannelAction *action = lexeraction_cast<LexerChannelAction>(&obj);
-  if (action == nullptr) {
+  if (!obj.isType(LexerChannelActionClass)) {
     return false;
   }
 
+  const LexerChannelAction *action = static_cast<const LexerChannelAction *>(&obj);
   return _channel == action->_channel;
 }
 

@@ -14,7 +14,6 @@ namespace antlr4 {
   /// lookahead prediction in parser). "Unbuffered" here refers to fact
   /// that it doesn't buffer all data, not that's it's on demand loading of char.
   class ANTLR4CPP_PUBLIC UnbufferedCharStream : public CharStream {
-    IMPLEMENT_RTTI(UnbufferedCharStream, CharStream)
   public:
     /// The name or source of this char stream.
     std::string name;

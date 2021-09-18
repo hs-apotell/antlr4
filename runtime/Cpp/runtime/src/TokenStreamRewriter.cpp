@@ -317,7 +317,7 @@ std::unordered_map<size_t, TokenStreamRewriter::RewriteOperation*> TokenStreamRe
   // WALK REPLACES
   for (size_t i = 0; i < rewrites.size(); ++i) {
     TokenStreamRewriter::RewriteOperation *op = rewrites[i];
-    ReplaceOp *rop = rewriteoperation_cast<ReplaceOp>(op);
+    ReplaceOp *rop = antlr_cast<ReplaceOp *>(op);
     if (rop == nullptr)
       continue;
 
@@ -366,7 +366,7 @@ std::unordered_map<size_t, TokenStreamRewriter::RewriteOperation*> TokenStreamRe
 
   // WALK INSERTS
   for (size_t i = 0; i < rewrites.size(); i++) {
-    InsertBeforeOp *iop = rewriteoperation_cast<InsertBeforeOp>(rewrites[i]);
+    InsertBeforeOp *iop = antlr_cast<InsertBeforeOp *>(rewrites[i]);
     if (iop == nullptr)
       continue;
 

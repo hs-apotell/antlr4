@@ -22,7 +22,7 @@ namespace tree {
   ///  upon no viable alternative exceptions.
   /// </summary>
   class ANTLR4CPP_PUBLIC ErrorNodeImpl : public virtual TerminalNodeImpl, public virtual ErrorNode {
-    IMPLEMENT_RTTI_2_BASES(ErrorNodeImpl, TerminalNodeImpl, ErrorNode)
+    ANTLR_IMPLEMENT_RTTI_2_BASES(ErrorNodeImpl, TerminalNodeImpl, ErrorNode)
   public:
     ErrorNodeImpl(Token *token);
     ~ErrorNodeImpl() override;

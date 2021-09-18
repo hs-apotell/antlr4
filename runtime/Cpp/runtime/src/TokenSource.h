@@ -26,7 +26,7 @@ namespace antlr4 {
   /// going, looking for a valid token.
   /// </summary>
   class ANTLR4CPP_PUBLIC TokenSource : public RTTI {
-    IMPLEMENT_RTTI(TokenSource, RTTI)
+    ANTLR_IMPLEMENT_RTTI(TokenSource, RTTI)
   public:
     virtual ~TokenSource();
 
@@ -86,4 +86,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(tokensource_cast, antlr4::TokenSource)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::TokenSource)

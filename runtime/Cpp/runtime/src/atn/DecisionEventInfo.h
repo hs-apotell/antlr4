@@ -6,7 +6,6 @@
 #pragma once
 
 #include "antlr4-common.h"
-#include "RTTI.h"
 
 namespace antlr4 {
 namespace atn {
@@ -26,9 +25,21 @@ namespace atn {
   ///
   /// @since 4.3
   /// </summary>
-  class ANTLR4CPP_PUBLIC DecisionEventInfo : public RTTI {
-    IMPLEMENT_RTTI(DecisionEventInfo, RTTI)
+  class ANTLR4CPP_PUBLIC DecisionEventInfo {
   public:
+    enum ClassType {
+      DecisionEventInfoClass = 1,
+      AmbiguityInfoClass = 2,
+      ContextSensitivityInfoClass = 4,
+      ErrorInfoClass = 8,
+      LookaheadEventInfoClass = 16,
+      PredicateEvalInfoClass = 32,
+    };
+
+    long classtype = DecisionEventInfoClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
+
     /// <summary>
     /// The invoked decision number which this event is related to.
     /// </summary>
@@ -70,5 +81,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(decisioneventinfo_cast, antlr4::atn::DecisionEventInfo)

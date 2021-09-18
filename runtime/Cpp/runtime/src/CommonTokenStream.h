@@ -34,7 +34,6 @@ namespace antlr4 {
    * channel.</p>
    */
   class ANTLR4CPP_PUBLIC CommonTokenStream : public BufferedTokenStream {
-    IMPLEMENT_RTTI(CommonTokenStream, BufferedTokenStream)
   public:
     /**
      * Constructs a new {@link CommonTokenStream} using the specified token

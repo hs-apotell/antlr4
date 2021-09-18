@@ -8,6 +8,7 @@
 using namespace antlr4::atn;
 
 PredicateTransition::PredicateTransition(ATNState *target, size_t ruleIndex, size_t predIndex, bool isCtxDependent) : AbstractPredicateTransition(target), ruleIndex(ruleIndex), predIndex(predIndex), isCtxDependent(isCtxDependent) {
+  classtype |= PredicateTransitionClass;
 }
 
 Transition::SerializationType PredicateTransition::getSerializationType() const {

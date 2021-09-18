@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace dfa {
 
   class ANTLR4CPP_PUBLIC LexerDFASerializer : public DFASerializer {
-    IMPLEMENT_RTTI(LexerDFASerializer, DFASerializer)
   public:
     LexerDFASerializer(DFA *dfa);
     virtual ~LexerDFASerializer();

@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "RTTI.h"
 #include "misc/IntervalSet.h"
 
 namespace antlr4 {
@@ -71,12 +70,18 @@ namespace atn {
   ///
   /// <embed src="images/OptionalNonGreedy.svg" type="image/svg+xml"/>
   /// </summary>
-  class ATN;
 
-  class ANTLR4CPP_PUBLIC ATNState : public RTTI {
-    IMPLEMENT_RTTI(ATNState, RTTI)
+// GCC generates a warning here if ATN has already been declared due to the
+// attributes added by ANTLR4CPP_PUBLIC.
+// See: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=39159
+// Only forward-declare if it hasn't already been declared.
+#ifndef ANTLR4CPP_ATN_DECLARED
+  class ANTLR4CPP_PUBLIC ATN;
+#endif
+
+  class ANTLR4CPP_PUBLIC ATNState {
   public:
-    ATNState();
+    ATNState() = default;
     ATNState(ATNState const&) = delete;
 
     virtual ~ATNState();
@@ -109,6 +114,29 @@ namespace atn {
       LOOP_END = 12
     };
 
+    enum ClassType {
+      ATNStateClass = 1,
+      BasicStateClass = 2,
+      BlockEndStateClass = 4,
+      DecisionStateClass = 8,
+      LoopEndStateClass = 16,
+      RuleStartStateClass = 32,
+      RuleStopStateClass = 64,
+      StarLoopbackStateClass = 128,
+      BlockStartStateClass  = 256,
+      PlusLoopbackStateClass = 512,
+      StarLoopEntryStateClass = 1024,
+      TokensStartStateClass = 2048,
+      BasicBlockStartStateClass = 4096,
+      PlusBlockStartStateClass = 8192,
+      StarBlockStartStateClass = 16384
+
+    };
+
+    long classtype = ATNStateClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
+
     static const std::vector<std::string> serializationNames;
 
     size_t stateNumber = INVALID_STATE_NUMBER;
@@ -140,5 +168,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(atnstate_cast, antlr4::atn::ATNState)

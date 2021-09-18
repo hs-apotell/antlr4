@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "RTTI.h"
 #include "atn/ATN.h"
 #include "atn/ATNState.h"
 
@@ -20,8 +19,7 @@ namespace atn {
 
   typedef std::unordered_set<Ref<PredictionContext>, PredictionContextHasher, PredictionContextComparer> PredictionContextCache;
 
-  class ANTLR4CPP_PUBLIC PredictionContext : public RTTI {
-    IMPLEMENT_RTTI(PredictionContext, RTTI)
+  class ANTLR4CPP_PUBLIC PredictionContext {
   public:
     /// Represents $ in local context prediction, which means wildcard.
     /// *+x = *.
@@ -40,6 +38,17 @@ namespace atn {
       EMPTY_RETURN_STATE = static_cast<size_t>(-10), // std::numeric_limits<size_t>::max() - 9; doesn't work in VS 2013
     };
 #endif
+
+    enum ClassType {
+      PredictionContextClass = 1,
+      SingletonPredictionContextClass = 2,
+      EmptyPredictionContextClass = 4,
+      ArrayPredictionContextClass = 8,
+    };
+    
+    long classtype = PredictionContextClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
 
   private:
 #if __cplusplus >= 201703L
@@ -266,5 +275,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(predictioncontext_cast, antlr4::atn::PredictionContext)

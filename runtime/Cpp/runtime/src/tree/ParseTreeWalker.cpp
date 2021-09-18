@@ -21,14 +21,17 @@ ParseTreeWalker::~ParseTreeWalker() {
 }
 
 void ParseTreeWalker::walk(ParseTreeListener *listener, ParseTree *t) const {
-  ErrorNode *const errorNode = parsetree_cast<ErrorNode>(t);
-  TerminalNode *const terminalNode = parsetree_cast<TerminalNode>(t);
+  ErrorNode *const errorNode = antlr_cast<ErrorNode *>(t);
   if (errorNode != nullptr) {
     listener->visitErrorNode(errorNode);
     return;
-  } else if (terminalNode != nullptr) {
-    listener->visitTerminal(terminalNode);
-    return;
+  }
+  else {
+    TerminalNode *const terminalNode = antlr_cast<TerminalNode *>(t);
+    if (terminalNode != nullptr) {
+      listener->visitTerminal(terminalNode);
+      return;
+    }
   }
 
   enterRule(listener, t);
@@ -39,13 +42,13 @@ void ParseTreeWalker::walk(ParseTreeListener *listener, ParseTree *t) const {
 }
 
 void ParseTreeWalker::enterRule(ParseTreeListener *listener, ParseTree *r) const {
-  ParserRuleContext *ctx = parsetree_cast<ParserRuleContext>(r);
+  ParserRuleContext *ctx = antlr_cast<ParserRuleContext *>(r);
   listener->enterEveryRule(ctx);
   ctx->enterRule(listener);
 }
 
 void ParseTreeWalker::exitRule(ParseTreeListener *listener, ParseTree *r) const {
-  ParserRuleContext *ctx = parsetree_cast<ParserRuleContext>(r);
+  ParserRuleContext *ctx = antlr_cast<ParserRuleContext *>(r);
   ctx->exitRule(listener);
   listener->exitEveryRule(ctx);
 }

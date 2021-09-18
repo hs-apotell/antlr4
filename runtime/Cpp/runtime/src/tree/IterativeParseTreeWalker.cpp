@@ -23,8 +23,8 @@ void IterativeParseTreeWalker::walk(ParseTreeListener *listener, ParseTree *t) c
 
   while (currentNode != nullptr) {
     // pre-order visit
-    ErrorNode *const errorNode = parsetree_cast<ErrorNode>(currentNode);
-    TerminalNode *const terminalNode = parsetree_cast<TerminalNode>(currentNode);
+    ErrorNode *const errorNode = antlr_cast<ErrorNode *>(currentNode);
+    TerminalNode *const terminalNode = antlr_cast<TerminalNode *>(currentNode);
     if (errorNode != nullptr) {
       listener->visitErrorNode(errorNode);
     } else if (terminalNode != nullptr) {
@@ -45,7 +45,7 @@ void IterativeParseTreeWalker::walk(ParseTreeListener *listener, ParseTree *t) c
     // No child nodes, so walk tree.
     do {
       // post-order visit
-      if (parsetree_cast<TerminalNode>(currentNode) == nullptr) {
+      if (antlr_cast<TerminalNode *>(currentNode) == nullptr) {
         exitRule(listener, currentNode);
       }
 

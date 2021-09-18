@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC EpsilonTransition final : public Transition {
-    IMPLEMENT_RTTI(EpsilonTransition, Transition)
   public:
     EpsilonTransition(ATNState *target);
     EpsilonTransition(ATNState *target, size_t outermostPrecedenceReturn);

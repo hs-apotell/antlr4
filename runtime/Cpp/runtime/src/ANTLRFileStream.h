@@ -13,7 +13,6 @@ namespace antlr4 {
   /// when you construct the object (or call load()).
   // TODO: this class needs testing.
   class ANTLR4CPP_PUBLIC ANTLRFileStream : public ANTLRInputStream {
-    IMPLEMENT_RTTI(ANTLRFileStream, ANTLRInputStream)
   public:
     ANTLRFileStream() = default;
     ANTLRFileStream(const std::string &) = delete;

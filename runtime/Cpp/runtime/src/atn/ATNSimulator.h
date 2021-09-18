@@ -9,13 +9,11 @@
 #include "misc/IntervalSet.h"
 #include "support/CPPUtils.h"
 #include "atn/PredictionContext.h"
-#include "RTTI.h"
 
 namespace antlr4 {
 namespace atn {
 
-  class ANTLR4CPP_PUBLIC ATNSimulator : public RTTI {
-    IMPLEMENT_RTTI(ATNSimulator, RTTI)
+  class ANTLR4CPP_PUBLIC ATNSimulator {
   public:
     /// Must distinguish between missing edge and edge we know leads nowhere.
     static const Ref<dfa::DFAState> ERROR;
@@ -57,6 +55,17 @@ namespace atn {
     /// @deprecated Use <seealso cref="ATNDeserializer#stateFactory"/> instead.
     static ATNState *stateFactory(int type, int ruleIndex);
 
+    enum ClassType {
+      ATNSimulatorClass = 1,
+      ParserATNSimulatorClass = 2,
+      LexerATNSimulatorClass = 4,
+      ProfilingATNSimulatorClass = 8,
+    };
+
+    long classtype = ATNSimulatorClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
+
   protected:
     static antlrcpp::SingleWriteMultipleReadLock _stateLock; // Lock for DFA states.
     static antlrcpp::SingleWriteMultipleReadLock _edgeLock; // Lock for the sparse edge map in DFA states.
@@ -87,5 +96,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(atnsimulator_cast, antlr4::atn::ATNSimulator)

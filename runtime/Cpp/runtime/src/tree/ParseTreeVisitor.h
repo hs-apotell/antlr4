@@ -20,7 +20,7 @@ namespace tree {
   /// operations with no return type. </param>
   // ml: no template parameter here, to avoid the need for virtual template functions. Instead we have our Any class.
   class ANTLR4CPP_PUBLIC ParseTreeVisitor : public RTTI {
-    IMPLEMENT_RTTI(ParseTreeVisitor, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ParseTreeVisitor, RTTI)
   public:
     virtual ~ParseTreeVisitor();
 
@@ -58,4 +58,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetreevisitor_cast, antlr4::tree::ParseTreeVisitor)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::tree::ParseTreeVisitor)

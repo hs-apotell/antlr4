@@ -14,7 +14,6 @@ namespace atn {
 
   /// "dup" of ParserInterpreter
   class ANTLR4CPP_PUBLIC LexerATNSimulator : public ATNSimulator {
-    IMPLEMENT_RTTI(LexerATNSimulator, ATNSimulator)
   protected:
     class SimState {
     public:

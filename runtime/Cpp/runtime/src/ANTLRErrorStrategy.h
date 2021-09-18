@@ -28,7 +28,7 @@ namespace antlr4 {
   /// TODO: what to do about lexers
   /// </summary>
   class ANTLR4CPP_PUBLIC ANTLRErrorStrategy : public RTTI {
-    IMPLEMENT_RTTI(ANTLRErrorStrategy, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ANTLRErrorStrategy, RTTI)
   public:
 
     /// <summary>
@@ -122,4 +122,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(antlrerrorstrategy_cast, antlr4::ANTLRErrorStrategy)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::ANTLRErrorStrategy)

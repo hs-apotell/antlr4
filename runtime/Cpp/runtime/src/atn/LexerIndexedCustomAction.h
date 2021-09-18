@@ -25,7 +25,6 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerIndexedCustomAction final : public LexerAction {
-    IMPLEMENT_RTTI(LexerIndexedCustomAction, LexerAction)
   public:
     /// <summary>
     /// Constructs a new indexed custom action by associating a character offset

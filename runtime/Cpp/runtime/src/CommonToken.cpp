@@ -23,11 +23,13 @@ using namespace antlrcpp;
 const std::pair<TokenSource*, CharStream*> CommonToken::EMPTY_SOURCE;
 
 CommonToken::CommonToken(size_t type) {
+  classtype |= CommonTokenClass;
   InitializeInstanceFields();
   _type = type;
 }
 
 CommonToken::CommonToken(std::pair<TokenSource*, CharStream*> source, size_t type, size_t channel, size_t start, size_t stop) {
+  classtype |= CommonTokenClass;
   InitializeInstanceFields();
   _source = source;
   _type = type;
@@ -41,6 +43,7 @@ CommonToken::CommonToken(std::pair<TokenSource*, CharStream*> source, size_t typ
 }
 
 CommonToken::CommonToken(size_t type, const std::string &text) {
+  classtype |= CommonTokenClass;
   InitializeInstanceFields();
   _type = type;
   _channel = DEFAULT_CHANNEL;
@@ -49,6 +52,7 @@ CommonToken::CommonToken(size_t type, const std::string &text) {
 }
 
 CommonToken::CommonToken(Token *oldToken) {
+  classtype |= CommonTokenClass;
   InitializeInstanceFields();
   _type = oldToken->getType();
   _line = oldToken->getLine();
@@ -58,8 +62,8 @@ CommonToken::CommonToken(Token *oldToken) {
   _start = oldToken->getStartIndex();
   _stop = oldToken->getStopIndex();
 
-  CommonToken *const commonToken = token_cast<CommonToken>(oldToken);
-  if (commonToken != nullptr) {
+  if (oldToken->isType(CommonTokenClass)) {
+    CommonToken *const commonToken = static_cast<CommonToken *>(oldToken);
     _text = commonToken->_text;
     _source = commonToken->_source;
   } else {

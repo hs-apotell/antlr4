@@ -94,9 +94,8 @@ size_t BufferedTokenStream::fetch(size_t n) {
   size_t i = 0;
   while (i < n) {
     std::unique_ptr<Token> t(_tokenSource->nextToken());
-    WritableToken *const writableToken = token_cast<WritableToken>(t.get());
-    if (writableToken != nullptr) {
-      writableToken->setTokenIndex(_tokens.size());
+    if (t.get()->isType(WritableToken::WritableTokenClass)) {
+      static_cast<WritableToken *>(t.get())->setTokenIndex(_tokens.size());
     }
 
     _tokens.push_back(std::move(t));

@@ -14,7 +14,6 @@ namespace antlr4 {
    * {@link CommonToken} objects.
    */
   class ANTLR4CPP_PUBLIC CommonTokenFactory : public TokenFactory<CommonToken> {
-    IMPLEMENT_RTTI(CommonTokenFactory, TokenFactory<CommonToken>)
   public:
     /**
      * The default {@link CommonTokenFactory} instance.

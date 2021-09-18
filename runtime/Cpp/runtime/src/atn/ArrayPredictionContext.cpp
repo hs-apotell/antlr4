@@ -12,13 +12,15 @@ using namespace antlr4::atn;
 
 ArrayPredictionContext::ArrayPredictionContext(Ref<SingletonPredictionContext> const& a)
   : ArrayPredictionContext({ a->parent }, { a->returnState }) {
+  classtype |= ArrayPredictionContextClass;
 }
 
 ArrayPredictionContext::ArrayPredictionContext(std::vector<Ref<PredictionContext>> const& parents_,
                                                std::vector<size_t> const& returnStates)
   : PredictionContext(calculateHashCode(parents_, returnStates)), parents(parents_), returnStates(returnStates) {
-    assert(parents.size() > 0);
-    assert(returnStates.size() > 0);
+  classtype |= ArrayPredictionContextClass;
+  assert(parents.size() > 0);
+  assert(returnStates.size() > 0);
 }
 
 ArrayPredictionContext::~ArrayPredictionContext() {
@@ -46,9 +48,13 @@ bool ArrayPredictionContext::operator == (PredictionContext const& o) const {
     return true;
   }
 
-  const ArrayPredictionContext *other = predictioncontext_cast<ArrayPredictionContext>(&o);
-  if (other == nullptr || hashCode() != other->hashCode()) {
+  if (!o.isType(PredictionContext::ArrayPredictionContextClass)) {
     return false; // can't be same if hash is different
+  }
+
+  const ArrayPredictionContext *other = static_cast<const ArrayPredictionContext *>(&o);
+  if (hashCode() != other->hashCode()) {
+    return false;
   }
 
   return antlrcpp::Arrays::equals(returnStates, other->returnStates) &&

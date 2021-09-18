@@ -39,7 +39,7 @@ void ParserRuleContext::copyFrom(ParserRuleContext *ctx) {
   // copy any error nodes to alt label node
   if (!ctx->children.empty()) {
     for (auto *child : ctx->children) {
-      auto *errorNode = parsetree_cast<ErrorNode>(child);
+      auto *errorNode = antlr_cast<ErrorNode *>(child);
       if (errorNode != nullptr) {
         errorNode->setParent(this);
         children.push_back(errorNode);
@@ -83,7 +83,7 @@ tree::TerminalNode* ParserRuleContext::getToken(size_t ttype, size_t i) {
 
   size_t j = 0; // what token with ttype have we found?
   for (auto *o : children) {
-    tree::TerminalNode *tnode = parsetree_cast<tree::TerminalNode>(o);
+    tree::TerminalNode *tnode = antlr_cast<tree::TerminalNode *>(o);
     if (tnode != nullptr) {
       Token *symbol = tnode->getSymbol();
       if (symbol->getType() == ttype) {
@@ -100,7 +100,7 @@ tree::TerminalNode* ParserRuleContext::getToken(size_t ttype, size_t i) {
 std::vector<tree::TerminalNode *> ParserRuleContext::getTokens(size_t ttype) {
   std::vector<tree::TerminalNode *> tokens;
   for (auto &o : children) {
-    tree::TerminalNode *tnode = parsetree_cast<tree::TerminalNode>(o);
+    tree::TerminalNode *tnode = antlr_cast<tree::TerminalNode *>(o);
     if (tnode != nullptr) {
       Token *symbol = tnode->getSymbol();
       if (symbol->getType() == ttype) {

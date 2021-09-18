@@ -12,9 +12,8 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC BasicBlockStartState final : public BlockStartState {
-    IMPLEMENT_RTTI(BasicBlockStartState, BlockStartState)
-
   public:
+    BasicBlockStartState() : BlockStartState() { classtype |= BasicBlockStartStateClass; }
     virtual size_t getStateType() override;
 
   };

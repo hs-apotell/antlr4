@@ -13,7 +13,6 @@ namespace antlr4 {
   /// An <seealso cref="IntStream"/> whose symbols are <seealso cref="Token"/> instances.
   /// </summary>
   class ANTLR4CPP_PUBLIC TokenStream : public IntStream {
-    IMPLEMENT_RTTI(TokenStream, IntStream)
     /// <summary>
     /// Get the <seealso cref="Token"/> instance associated with the value returned by
     /// <seealso cref="#LA LA(k)"/>. This method has the same pre- and post-conditions as

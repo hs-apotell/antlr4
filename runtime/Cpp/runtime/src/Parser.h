@@ -16,11 +16,10 @@ namespace antlr4 {
 
   /// This is all the parsing support code essentially; most of it is error recovery stuff.
   class ANTLR4CPP_PUBLIC Parser : public Recognizer {
-    IMPLEMENT_RTTI(Parser, Recognizer)
   public:
 
     class TraceListener : public tree::ParseTreeListener {
-      IMPLEMENT_RTTI(TraceListener, tree::ParseTreeListener)
+      ANTLR_IMPLEMENT_RTTI(TraceListener, tree::ParseTreeListener)
     public:
       TraceListener(Parser *outerInstance);
       virtual ~TraceListener();
@@ -35,7 +34,7 @@ namespace antlr4 {
     };
 
     class TrimToSizeListener : public tree::ParseTreeListener {
-      IMPLEMENT_RTTI(TrimToSizeListener, tree::ParseTreeListener)
+      ANTLR_IMPLEMENT_RTTI(TrimToSizeListener, tree::ParseTreeListener)
     public:
       static TrimToSizeListener INSTANCE;
 

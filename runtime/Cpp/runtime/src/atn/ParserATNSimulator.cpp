@@ -49,11 +49,13 @@ const bool ParserATNSimulator::TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT = ParserATNSimu
 ParserATNSimulator::ParserATNSimulator(const ATN &atn, std::vector<dfa::DFA> &decisionToDFA,
                                        PredictionContextCache &sharedContextCache)
 : ParserATNSimulator(nullptr, atn, decisionToDFA, sharedContextCache) {
+  classtype |= ParserATNSimulatorClass;
 }
 
 ParserATNSimulator::ParserATNSimulator(Parser *parser, const ATN &atn, std::vector<dfa::DFA> &decisionToDFA,
                                        PredictionContextCache &sharedContextCache)
 : ATNSimulator(atn, sharedContextCache), decisionToDFA(decisionToDFA), parser(parser) {
+  classtype |= ParserATNSimulatorClass;
   InitializeInstanceFields();
 }
 
@@ -105,7 +107,7 @@ size_t ParserATNSimulator::adaptivePredict(TokenStream *input, size_t decision, 
 
   if (s0 == nullptr) {
     bool fullCtx = false;
-    std::unique_ptr<ATNConfigSet> s0_closure = computeStartState(atnstate_cast<ATNState>(dfa.atnStartState),
+    std::unique_ptr<ATNConfigSet> s0_closure = computeStartState(dfa.atnStartState,
                                                                  &ParserRuleContext::EMPTY, fullCtx);
 
     _stateLock.writeLock();
@@ -453,7 +455,7 @@ std::unique_ptr<ATNConfigSet> ParserATNSimulator::computeReachSet(ATNConfigSet *
 
   // First figure out where we can reach on input t
   for (auto &c : closure_->configs) {
-    if (atnstate_cast<RuleStopState>(c->state) != nullptr) {
+    if (c->state->isType(ATNState::RuleStopStateClass)) {
       assert(c->context->isEmpty());
 
       if (fullCtx || t == Token::EOF) {
@@ -566,7 +568,7 @@ ATNConfigSet* ParserATNSimulator::removeAllConfigsNotInRuleStopState(ATNConfigSe
   ATNConfigSet *result = new ATNConfigSet(configs->fullCtx); /* mem-check: released by caller */
 
   for (auto &config : configs->configs) {
-    if (atnstate_cast<RuleStopState>(config->state) != nullptr) {
+    if (config->state->isType(ATNState::RuleStopStateClass)) {
       result->add(config, &mergeCache);
       continue;
     }
@@ -740,7 +742,7 @@ size_t ParserATNSimulator::getSynValidOrSemInvalidAltThatFinishedDecisionEntryRu
 size_t ParserATNSimulator::getAltThatFinishedDecisionEntryRule(ATNConfigSet *configs) {
   misc::IntervalSet alts;
   for (auto &c : configs->configs) {
-    if (c->getOuterContextDepth() > 0 || ((atnstate_cast<RuleStopState>(c->state) != nullptr) && c->context->hasEmptyPath())) {
+    if (c->getOuterContextDepth() > 0 || (c->state->isType(ATNState::RuleStopStateClass) && c->context->hasEmptyPath())) {
       alts.add(c->alt);
     }
   }
@@ -824,7 +826,7 @@ void ParserATNSimulator::closureCheckingStopState(Ref<ATNConfig> const& config, 
     std::cout << "closure(" << config->toString(true) << ")" << std::endl;
 #endif
 
-  if (atnstate_cast<RuleStopState>(config->state) != nullptr) {
+  if (config->state->isType(ATNState::RuleStopStateClass)) {
     // We hit rule end. If we have context info, use it
     // run thru all possible stack tops in ctx
     if (!config->context->isEmpty()) {
@@ -885,11 +887,11 @@ void ParserATNSimulator::closure_(Ref<ATNConfig> const& config, ATNConfigSet *co
       continue;
 
     Transition *t = p->transitions[i];
-    bool continueCollecting = (transition_cast<ActionTransition>(t) == nullptr) && collectPredicates;
+    bool continueCollecting = !t->isType(Transition::ActionTransitionClass) && collectPredicates;
     Ref<ATNConfig> c = getEpsilonTarget(config, t, continueCollecting, depth == 0, fullCtx, treatEofAsEpsilon);
     if (c != nullptr) {
       int newDepth = depth;
-      if (atnstate_cast<RuleStopState>(config->state) != nullptr) {
+      if (config->state->isType(ATNState::RuleStopStateClass)) {
         assert(!fullCtx);
 
         // target fell off end of rule; mark resulting c as having dipped into outer context
@@ -905,7 +907,7 @@ void ParserATNSimulator::closure_(Ref<ATNConfig> const& config, ATNConfigSet *co
         closureBusy.insert(c);
 
         if (_dfa != nullptr && _dfa->isPrecedenceDfa()) {
-          size_t outermostPrecedenceReturn = transition_cast<EpsilonTransition>(t)->outermostPrecedenceReturn();
+          size_t outermostPrecedenceReturn = static_cast<EpsilonTransition *>(t)->outermostPrecedenceReturn();
           if (outermostPrecedenceReturn == _dfa->atnStartState->ruleIndex) {
             c->setPrecedenceFilterSuppressed(true);
           }
@@ -939,7 +941,7 @@ void ParserATNSimulator::closure_(Ref<ATNConfig> const& config, ATNConfigSet *co
         }
       }
 
-      if (transition_cast<RuleTransition>(t) != nullptr) {
+      if (t->isType(Transition::RuleTransitionClass)) {
         // latch when newDepth goes negative - once we step out of the entry context we can't return
         if (newDepth >= 0) {
           newDepth++;
@@ -1208,12 +1210,12 @@ void ParserATNSimulator::dumpDeadEndConfigs(NoViableAltException &nvae) {
     std::string trans = "no edges";
     if (c->state->transitions.size() > 0) {
       Transition *t = c->state->transitions[0];
-      AtomTransition *at = transition_cast<AtomTransition>(t);
-      SetTransition *st = transition_cast<SetTransition>(t);
-      if (at != nullptr) {
+      if (t->isType(Transition::AtomTransitionClass)) {
+        AtomTransition *at = static_cast<AtomTransition*>(t);
         trans = "Atom " + getTokenName(at->_label);
-      } else if (st != nullptr) {
-        bool is_not = transition_cast<NotSetTransition>(st) != nullptr;
+      } else if (t->isType(Transition::SetTransitionClass)) {
+        SetTransition *st = static_cast<SetTransition*>(t);
+        bool is_not = st->isType(Transition::NotSetTransitionClass);
         trans = (is_not ? "~" : "");
         trans += "Set ";
         trans += st->set.toString();

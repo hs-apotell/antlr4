@@ -10,14 +10,15 @@
 using namespace antlr4::tree::pattern;
 
 RuleTagToken::RuleTagToken(const std::string &/*ruleName*/, int _bypassTokenType) : bypassTokenType(_bypassTokenType) {
+  classtype |= RuleTagTokenClass;
 }
 
 RuleTagToken::RuleTagToken(const std::string &ruleName, size_t bypassTokenType, const std::string &label)
   : ruleName(ruleName), bypassTokenType(bypassTokenType), label(label) {
+  classtype |= RuleTagTokenClass;
   if (ruleName.empty()) {
     throw IllegalArgumentException("ruleName cannot be null or empty.");
   }
-
 }
 
 std::string RuleTagToken::getRuleName() const {

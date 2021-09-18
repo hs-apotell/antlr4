@@ -3,7 +3,6 @@
  * can be found in the LICENSE.txt file in the project root.
  */
 
-#include "atn/ATNSimulator.h"
 #include "atn/PredicateEvalInfo.h"
 #include "atn/LookaheadEventInfo.h"
 #include "Parser.h"
@@ -23,6 +22,7 @@ ProfilingATNSimulator::ProfilingATNSimulator(Parser *parser)
   : ParserATNSimulator(parser, parser->getInterpreter<ParserATNSimulator>()->atn,
                        parser->getInterpreter<ParserATNSimulator>()->decisionToDFA,
                        parser->getInterpreter<ParserATNSimulator>()->getSharedContextCache()) {
+  classtype |= ProfilingATNSimulatorClass;
   for (size_t i = 0; i < atn.decisionToState.size(); i++) {
     _decisions.push_back(DecisionInfo(i));
   }
@@ -116,7 +116,7 @@ std::unique_ptr<ATNConfigSet> ProfilingATNSimulator::computeReachSet(ATNConfigSe
 bool ProfilingATNSimulator::evalSemanticContext(Ref<SemanticContext> const& pred, ParserRuleContext *parserCallStack,
                                                 size_t alt, bool fullCtx) {
   bool result = ParserATNSimulator::evalSemanticContext(pred, parserCallStack, alt, fullCtx);
-  if (!(semanticcontext_cast<SemanticContext::PrecedencePredicate>(pred) != nullptr)) {
+  if (!pred->isType(SemanticContext::PrecedencePredicateClass)) {
     bool fullContext = _llStopIndex >= 0;
     int stopIndex = fullContext ? _llStopIndex : _sllStopIndex;
     _decisions[_currentDecision].predicateEvals.push_back(

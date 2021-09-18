@@ -139,8 +139,8 @@ size_t UnbufferedTokenStream::fill(size_t n)
 
 void UnbufferedTokenStream::add(std::unique_ptr<Token> t)
 {
-  WritableToken *writable = token_cast<WritableToken>(t.get());
-  if (writable != nullptr) {
+  if (t.get()->isType(WritableToken::WritableTokenClass)) {
+    WritableToken *writable = static_cast<WritableToken *>(t.get());
     writable->setTokenIndex(int(getBufferStartIndex() + _tokens.size()));
   }
 

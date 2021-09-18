@@ -12,7 +12,6 @@ namespace atn {
 
   /// TODO: make all transitions sets? no, should remove set edges.
   class ANTLR4CPP_PUBLIC AtomTransition final : public Transition {
-    IMPLEMENT_RTTI(AtomTransition, Transition)
   public:
     /// The token type or character value; or, signifies special label.
     const size_t _label;

@@ -13,6 +13,7 @@ using namespace antlr4::atn;
 using namespace antlr4::misc;
 
 LexerTypeAction::LexerTypeAction(int type) : _type(type) {
+  classtype |= LexerTypeActionClass;
 }
 
 int LexerTypeAction::getType() const {
@@ -43,11 +44,11 @@ bool LexerTypeAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerTypeAction *action = lexeraction_cast<LexerTypeAction>(&obj);
-  if (action == nullptr) {
+  if (!obj.isType(LexerTypeActionClass)) {
     return false;
   }
 
+  const LexerTypeAction *action = static_cast<const LexerTypeAction *>(&obj);
   return _type == action->_type;
 }
 

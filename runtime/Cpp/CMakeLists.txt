@@ -1,6 +1,7 @@
 # -*- mode:cmake -*-
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.15)
 # 2.8 needed because of ExternalProject
+# 3.15 needed to avid spew of warnings related to overriding cl command line flags
 
 # Detect build type, fallback to release and throw a warning if use didn't specify any
 if(NOT CMAKE_BUILD_TYPE)
@@ -24,6 +25,8 @@ option(WITH_STATIC_CRT "(Visual C++) Enable to statically link CRT, which avoids
  To disable with: -DWITH_STATIC_CRT=Off" On)
 
 project(LIBANTLR4)
+
+CMAKE_POLICY(SET CMP0092 NEW)
 
 if(CMAKE_VERSION VERSION_EQUAL "3.0.0" OR
    CMAKE_VERSION VERSION_GREATER "3.0.0")
@@ -66,9 +69,9 @@ if(WITH_DEMO)
 endif(WITH_DEMO)
 
 if(MSVC_VERSION)
-  set(MY_CXX_WARNING_FLAGS "  /W4")
+  set(MY_CXX_WARNING_FLAGS " /W4")
 else()
-  set(MY_CXX_WARNING_FLAGS "  -Wall -pedantic -W")
+  set(MY_CXX_WARNING_FLAGS " -Wall -pedantic -W")
 endif()
 
 # Define USE_UTF8_INSTEAD_OF_CODECVT macro.

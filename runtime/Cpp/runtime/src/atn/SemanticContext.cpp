@@ -16,10 +16,12 @@ using namespace antlrcpp;
 //------------------ Predicate -----------------------------------------------------------------------------------------
 
 SemanticContext::Predicate::Predicate() : Predicate(INVALID_INDEX, INVALID_INDEX, false) {
+  classtype |= PredicateClass;
 }
 
 SemanticContext::Predicate::Predicate(size_t ruleIndex, size_t predIndex, bool isCtxDependent)
 : ruleIndex(ruleIndex), predIndex(predIndex), isCtxDependent(isCtxDependent) {
+  classtype |= PredicateClass;
 }
 
 
@@ -43,10 +45,10 @@ bool SemanticContext::Predicate::operator == (const SemanticContext &other) cons
   if (this == &other)
     return true;
 
-  const Predicate *p = semanticcontext_cast<Predicate>(&other);
-  if (p == nullptr)
+  if (!other.isType(PredicateClass))
     return false;
 
+  const Predicate *p = static_cast<const Predicate*>(&other);
   return ruleIndex == p->ruleIndex && predIndex == p->predIndex && isCtxDependent == p->isCtxDependent;
 }
 
@@ -57,9 +59,11 @@ std::string SemanticContext::Predicate::toString() const {
 //------------------ PrecedencePredicate -------------------------------------------------------------------------------
 
 SemanticContext::PrecedencePredicate::PrecedencePredicate() : precedence(0) {
+  classtype |= PrecedencePredicateClass;
 }
 
 SemanticContext::PrecedencePredicate::PrecedencePredicate(int precedence) : precedence(precedence) {
+  classtype |= PrecedencePredicateClass;
 }
 
 bool SemanticContext::PrecedencePredicate::eval(Recognizer *parser, RuleContext *parserCallStack) {
@@ -90,10 +94,10 @@ bool SemanticContext::PrecedencePredicate::operator == (const SemanticContext &o
   if (this == &other)
     return true;
 
-  const PrecedencePredicate *predicate = semanticcontext_cast<PrecedencePredicate>(&other);
-  if (predicate == nullptr)
+  if (!other.isType(PrecedencePredicateClass))
     return false;
 
+  const PrecedencePredicate *predicate = static_cast<const PrecedencePredicate *>(&other);
   return precedence == predicate->precedence;
 }
 
@@ -104,20 +108,19 @@ std::string SemanticContext::PrecedencePredicate::toString() const {
 //------------------ AND -----------------------------------------------------------------------------------------------
 
 SemanticContext::AND::AND(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
+  classtype |= ANDClass;
   Set operands;
 
-  const Ref<AND> andA(semanticcontext_cast<AND>(a));
-  if (andA) {
-    for (auto operand : andA->opnds) {
+  if (a->isType(SemanticContext::ANDClass)) {
+    for (auto operand : std::static_pointer_cast<AND>(a)->opnds) {
       operands.insert(operand);
     }
   } else {
     operands.insert(a);
   }
 
-  const Ref<AND> andB(semanticcontext_cast<AND>(b));
-  if (andB) {
-    for (auto operand : andB->opnds) {
+  if (b->isType(SemanticContext::ANDClass)) {
+    for (auto operand : std::static_pointer_cast<AND>(b)->opnds) {
       operands.insert(operand);
     }
   } else {
@@ -147,10 +150,10 @@ bool SemanticContext::AND::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const AND *context = semanticcontext_cast<AND>(&other);
-  if (context == nullptr)
+  if (!other.isType(ANDClass))
     return false;
 
+  const AND *context = static_cast<const AND *>(&other);
   return Arrays::equals(opnds, context->opnds);
 }
 
@@ -210,20 +213,19 @@ std::string SemanticContext::AND::toString() const {
 //------------------ OR ------------------------------------------------------------------------------------------------
 
 SemanticContext::OR::OR(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) {
+  classtype |= ORClass;
   Set operands;
 
-  const Ref<OR> orA(semanticcontext_cast<OR>(a));
-  if (orA) {
-    for (auto operand : orA->opnds) {
+  if (a->isType(SemanticContext::ORClass)) {
+    for (auto operand : std::static_pointer_cast<OR>(a)->opnds) {
       operands.insert(operand);
     }
   } else {
     operands.insert(a);
   }
 
-  const Ref<OR> orB(semanticcontext_cast<OR>(b));
-  if (orB) {
-    for (auto operand : orB->opnds) {
+  if (b->isType(SemanticContext::ORClass)) {
+    for (auto operand : std::static_pointer_cast<OR>(b)->opnds) {
       operands.insert(operand);
     }
   } else {
@@ -251,10 +253,10 @@ bool SemanticContext::OR::operator == (const SemanticContext &other) const {
   if (this == &other)
     return true;
 
-  const OR *context = semanticcontext_cast<OR>(&other);
-  if (context == nullptr)
+  if (!other.isType(ORClass))
     return false;
 
+  const OR *context = static_cast<const OR *>(&other);
   return Arrays::equals(opnds, context->opnds);
 }
 
@@ -366,9 +368,8 @@ Ref<SemanticContext> SemanticContext::Or(Ref<SemanticContext> const& a, Ref<Sema
 std::vector<Ref<SemanticContext::PrecedencePredicate>> SemanticContext::filterPrecedencePredicates(const Set &collection) {
   std::vector<Ref<SemanticContext::PrecedencePredicate>> result;
   for (auto context : collection) {
-    Ref<PrecedencePredicate> precedencePredicate(semanticcontext_cast<PrecedencePredicate>(context));
-    if (precedencePredicate) {
-      result.push_back(precedencePredicate);
+    if (context->isType(SemanticContext::PrecedencePredicateClass)) {
+      result.push_back(std::static_pointer_cast<PrecedencePredicate>(context));
     }
   }
 
@@ -377,6 +378,10 @@ std::vector<Ref<SemanticContext::PrecedencePredicate>> SemanticContext::filterPr
 
 
 //------------------ Operator -----------------------------------------------------------------------------------------
+
+SemanticContext::Operator::Operator() {
+  classtype |= OperatorClass;
+}
 
 SemanticContext::Operator::~Operator() {
 }

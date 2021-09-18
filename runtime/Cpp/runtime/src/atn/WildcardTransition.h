@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC WildcardTransition final : public Transition {
-    IMPLEMENT_RTTI(WildcardTransition, Transition)
   public:
     WildcardTransition(ATNState *target);
 

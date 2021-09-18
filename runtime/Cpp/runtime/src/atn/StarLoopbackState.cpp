@@ -11,7 +11,9 @@
 using namespace antlr4::atn;
 
 StarLoopEntryState *StarLoopbackState::getLoopEntryState() {
-  return atnstate_cast<StarLoopEntryState>(transitions[0]->target);
+  return (transitions[0]->target != nullptr) && transitions[0]->target->isType(StarLoopEntryStateClass)
+    ? static_cast<StarLoopEntryState *>(transitions[0]->target)
+    : nullptr;
 }
 
 size_t StarLoopbackState::getStateType() {
