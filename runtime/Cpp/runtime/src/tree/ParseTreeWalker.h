@@ -12,7 +12,7 @@ namespace antlr4 {
 namespace tree {
 
   class ANTLR4CPP_PUBLIC ParseTreeWalker : public RTTI {
-    IMPLEMENT_RTTI(ParseTreeWalker, RTTI)
+    ANTLR_IMPLEMENT_RTTI(ParseTreeWalker, RTTI)
   public:
     static ParseTreeWalker &DEFAULT;
 
@@ -56,4 +56,4 @@ namespace tree {
 } // namespace tree
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(parsetreewalker_cast, antlr4::tree::ParseTreeWalker)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::tree::ParseTreeWalker)

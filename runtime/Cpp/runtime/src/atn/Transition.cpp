@@ -21,7 +21,6 @@ Transition::Transition(ATNState *target) {
   if (target == nullptr) {
     throw NullPointerException("target cannot be null.");
   }
-
   this->target = target;
 }
 

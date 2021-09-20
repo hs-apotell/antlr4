@@ -8,6 +8,7 @@
 #pragma once
 
 #include "antlr4-common.h"
+#include "RTTI.h"
 
 #ifdef _MSC_VER
   #pragma warning(push)
@@ -114,14 +115,36 @@ struct ANTLR4CPP_PUBLIC Any
   }
 
 private:
-  struct Base {
+  struct Base : public antlr4::RTTI {
+    ANTLR_IMPLEMENT_RTTI(Base, antlr4::RTTI)
+
+  public:
     virtual ~Base() {};
     virtual Base* clone() const = 0;
   };
+  ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(Base)
 
-  template<typename T>
-  struct Derived : Base
-  {
+  template<typename T, typename = typename std::enable_if<std::is_base_of<antlr4::RTTI, T>::value>::type>
+  struct Derived : Base {
+  public:
+    typedef Derived<T> thistype_t;
+    typedef Base basetype_t;
+    static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/Derived", T::kTypeId);
+    static constexpr auto kTypeIds = antlr4::internal::join(
+      std::array<typeid_t, 1>{thistype_t::kTypeId}, basetype_t::kTypeIds);
+  protected:
+    friend class antlr4::RTTI;
+    inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }
+    inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override
+    { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }
+    inline void *AsOfTypeRecurse(typeid_t tid)
+    { return (tid == thistype_t::kTypeId) ? static_cast<void *>(this) : basetype_t::AsOfTypeRecurse(tid); }
+    inline const void *AsOfTypeRecurse(typeid_t tid) const
+    { return (tid == thistype_t::kTypeId) ? static_cast<const void *>(this) : basetype_t::AsOfTypeRecurse(tid); }
+    inline virtual void *AsOfType(typeid_t tid) override { return thistype_t::AsOfTypeRecurse(tid); }
+    inline virtual const void *AsOfType(typeid_t tid) const override { return thistype_t::AsOfTypeRecurse(tid); }
+
+  public:
     template<typename U> Derived(U&& value_) : value(std::forward<U>(value_)) {
     }
 
@@ -152,11 +175,9 @@ private:
       return nullptr;
   }
 
-  template<class U>
-  Derived<StorageType<U>>* getDerived(bool checkCast) const {
-    typedef StorageType<U> T;
-
-    auto derived = dynamic_cast<Derived<T>*>(_ptr);
+  template<class U, typename T = StorageType<U>>
+  Derived<T>* getDerived(bool checkCast) const {
+    auto derived = antlr_cast<Derived<T>*>(_ptr);
 
     if (checkCast && !derived)
       throw std::bad_cast();

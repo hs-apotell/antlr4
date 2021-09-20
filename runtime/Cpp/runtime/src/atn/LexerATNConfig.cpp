@@ -79,7 +79,6 @@ bool LexerATNConfig::operator == (const LexerATNConfig& other) const
 }
 
 bool LexerATNConfig::checkNonGreedyDecision(Ref<LexerATNConfig> const& source, ATNState *target) {
-  DecisionState *const decisionState = atnstate_cast<DecisionState>(target);
   return source->_passedThroughNonGreedyDecision ||
-    ((decisionState != nullptr) && decisionState->nonGreedy);
+    (target->isType(ATNState::DecisionStateClass) && (static_cast<DecisionState*>(target))->nonGreedy);
 }

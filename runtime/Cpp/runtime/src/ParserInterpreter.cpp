@@ -161,8 +161,8 @@ atn::ATNState* ParserInterpreter::getATNState() {
 
 void ParserInterpreter::visitState(atn::ATNState *p) {
   size_t predictedAlt = 1;
-  DecisionState *const decisionState = atnstate_cast<DecisionState>(p);
-  if (decisionState != nullptr) {
+  if (p->isType(DecisionState::DecisionStateClass)) {
+    DecisionState *const decisionState = static_cast<DecisionState *>(p);
     predictedAlt = visitDecisionState(decisionState);
   }
 
@@ -170,8 +170,8 @@ void ParserInterpreter::visitState(atn::ATNState *p) {
   switch (transition->getSerializationType()) {
     case atn::Transition::EPSILON:
       if (p->getStateType() == ATNState::STAR_LOOP_ENTRY &&
-        atnstate_cast<StarLoopEntryState>(p)->isPrecedenceDecision &&
-        atnstate_cast<LoopEndState>(transition->target) == nullptr) {
+        static_cast<StarLoopEntryState *>(p)->isPrecedenceDecision &&
+        !transition->target->isType(LoopEndState::LoopEndStateClass)) {
         // We are at the start of a left recursive rule's (...)* loop
         // and we're not taking the exit branch of loop.
         InterpreterRuleContext *localctx = createInterpreterRuleContext(_parentContextStack.top().first,
@@ -283,7 +283,7 @@ void ParserInterpreter::recover(RecognitionException &e) {
 
   if (_input->index() == i) {
     // no input consumed, better add an error node
-    InputMismatchException *const ime = runtimeexception_cast<InputMismatchException>(&e);
+    InputMismatchException *const ime = antlr_cast<InputMismatchException *>(&e);
     if (ime != nullptr) {
       Token *tok = e.getOffendingToken();
       size_t expectedTokenType = ime->getExpectedTokens().getMinElement(); // get any element

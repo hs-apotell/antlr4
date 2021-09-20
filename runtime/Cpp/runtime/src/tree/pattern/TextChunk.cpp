@@ -10,6 +10,7 @@
 using namespace antlr4::tree::pattern;
 
 TextChunk::TextChunk(const std::string &text) : text(text) {
+  classtype |= TextChunkClass;
   if (text == "") {
     throw IllegalArgumentException("text cannot be nul");
   }

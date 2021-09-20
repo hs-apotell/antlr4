@@ -26,10 +26,10 @@ FailedPredicateException::FailedPredicateException(Parser *recognizer, const std
                          recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken()) {
 
   atn::ATNState *s = recognizer->getInterpreter<atn::ATNSimulator>()->atn.states[recognizer->getState()];
-  atn::PredicateTransition *const transition = transition_cast<atn::PredicateTransition>(s->transitions[0]);
-  if (transition != nullptr) {
-    _ruleIndex = transition->ruleIndex;
-    _predicateIndex = transition->predIndex;
+  atn::Transition *transition = s->transitions[0];
+  if (transition->isType(atn::Transition::PredicateTransitionClass)) {
+    _ruleIndex = static_cast<atn::PredicateTransition *>(transition)->ruleIndex;
+    _predicateIndex = static_cast<atn::PredicateTransition *>(transition)->predIndex;
   } else {
     _ruleIndex = 0;
     _predicateIndex = 0;

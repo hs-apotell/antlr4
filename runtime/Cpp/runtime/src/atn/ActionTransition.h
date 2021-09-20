@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC ActionTransition final : public Transition {
-    IMPLEMENT_RTTI(ActionTransition, Transition)
   public:
     const size_t ruleIndex;
     const size_t actionIndex;

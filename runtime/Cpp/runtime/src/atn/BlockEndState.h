@@ -12,7 +12,6 @@ namespace atn {
 
   /// Terminal node of a simple {@code (a|b|c)} block.
   class ANTLR4CPP_PUBLIC BlockEndState final : public ATNState {
-    IMPLEMENT_RTTI(BlockEndState, ATNState)
   public:
     BlockStartState *startState = nullptr;
 

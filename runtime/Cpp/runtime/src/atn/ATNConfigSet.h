@@ -7,15 +7,13 @@
 
 #include "support/BitSet.h"
 #include "atn/PredictionContext.h"
-#include "RTTI.h"
 
 namespace antlr4 {
 namespace atn {
 
   /// Specialized set that can track info about the set, with support for combining similar configurations using a
   /// graph-structured stack.
-  class ANTLR4CPP_PUBLIC ATNConfigSet : public RTTI {
-    IMPLEMENT_RTTI(ATNConfigSet, RTTI)
+  class ANTLR4CPP_PUBLIC ATNConfigSet {
   public:
     /// Track the elements as they are added to the set; supports get(i)
     std::vector<Ref<ATNConfig>> configs;
@@ -110,5 +108,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(atnconfigset_cast, antlr4::atn::ATNConfigSet)

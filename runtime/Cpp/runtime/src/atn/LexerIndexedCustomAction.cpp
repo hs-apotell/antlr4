@@ -15,6 +15,7 @@ using namespace antlr4::misc;
 
 LexerIndexedCustomAction::LexerIndexedCustomAction(int offset, Ref<LexerAction> const& action)
   : _offset(offset), _action(action) {
+  classtype |= LexerIndexedCustomActionClass;
 }
 
 int LexerIndexedCustomAction::getOffset() const {
@@ -50,11 +51,11 @@ bool LexerIndexedCustomAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerIndexedCustomAction *action = lexeraction_cast<LexerIndexedCustomAction>(&obj);
-  if (action == nullptr) {
+  if (!obj.isType(LexerIndexedCustomActionClass)) {
     return false;
   }
 
+  const LexerIndexedCustomAction *action = static_cast<const LexerIndexedCustomAction *>(&obj);
   return _offset == action->_offset && *_action == *action->_action;
 }
 

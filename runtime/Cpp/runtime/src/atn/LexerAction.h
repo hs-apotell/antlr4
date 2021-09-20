@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "RTTI.h"
 #include "atn/LexerActionType.h"
 #include "antlr4-common.h"
 
@@ -20,9 +19,26 @@ namespace atn {
   /// @author Sam Harwell
   /// @since 4.2
   /// </summary>
-  class ANTLR4CPP_PUBLIC LexerAction : public RTTI {
-    IMPLEMENT_RTTI(LexerAction, RTTI)
+  class ANTLR4CPP_PUBLIC LexerAction {
   public:
+    enum ClassType {
+      LexerActionClass = 1,
+      LexerIndexedCustomActionClass = 2,
+      LexerModeActionClass = 4,
+      LexerCustomActionClass = 8,
+      LexerChannelActionClass = 16,
+      LexerPushModeActionClass = 32,
+      LexerTypeActionClass = 64,
+      // SetTransitionClass = 128,
+      // WildcardTransitionClass = 256,
+      // NotSetTransitionClass = 512,
+      // PredicateTransitionClass = 1024,
+    };
+
+    long classtype = LexerActionClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
+
     virtual ~LexerAction();
 
     /// <summary>
@@ -66,5 +82,3 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(lexeraction_cast, antlr4::atn::LexerAction)

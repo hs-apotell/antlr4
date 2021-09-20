@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC RangeTransition final : public Transition {
-    IMPLEMENT_RTTI(RangeTransition, Transition)
   public:
     const size_t from;
     const size_t to;

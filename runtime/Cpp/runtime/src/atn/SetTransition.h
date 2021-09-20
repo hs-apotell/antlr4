@@ -13,7 +13,6 @@ namespace atn {
   /// <summary>
   /// A transition containing a set of values. </summary>
   class ANTLR4CPP_PUBLIC SetTransition : public Transition {
-    IMPLEMENT_RTTI(SetTransition, Transition)
   public:
     const misc::IntervalSet set;
 

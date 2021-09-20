@@ -9,10 +9,12 @@ using namespace antlr4::tree::pattern;
 
 TokenTagToken::TokenTagToken(const std::string &/*tokenName*/, int type)
   : CommonToken(type), tokenName(""), label("") {
+  classtype |= TokenTagTokenClass;
 }
 
 TokenTagToken::TokenTagToken(const std::string &tokenName, int type, const std::string &label)
   : CommonToken(type), tokenName(tokenName), label(label) {
+  classtype |= TokenTagTokenClass;
 }
 
 std::string TokenTagToken::getTokenName() const {

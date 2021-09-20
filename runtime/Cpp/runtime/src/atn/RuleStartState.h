@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC RuleStartState final : public ATNState {
-    IMPLEMENT_RTTI(RuleStartState, ATNState)
   public:
     RuleStartState();
 

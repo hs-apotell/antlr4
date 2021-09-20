@@ -7,7 +7,7 @@
 
 
 class  XPathLexer : public antlr4::Lexer {
-  IMPLEMENT_RTTI(XPathLexer, antlr4::Lexer)
+  ANTLR_IMPLEMENT_RTTI(XPathLexer, antlr4::Lexer)
 public:
   enum {
     TOKEN_REF = 1, RULE_REF = 2, ANYWHERE = 3, ROOT = 4, WILDCARD = 5, BANG = 6, 

@@ -209,7 +209,7 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
     if (stype == ATNState::LOOP_END) { // special case
       int loopBackStateNumber = data[p++];
       loopBackStateNumbers.push_back({ (LoopEndState*)s,  loopBackStateNumber });
-    } else if (atnstate_cast<BlockStartState>(s) != nullptr) {
+    } else if (s->isType(ATNState::BlockStartStateClass)) {
       int endStateNumber = data[p++];
       endStateNumbers.push_back({ (BlockStartState*)s, endStateNumber });
     }
@@ -269,11 +269,13 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
 
   atn.ruleToStopState.resize(nrules);
   for (ATNState *state : atn.states) {
-    RuleStopState *const stopState = atnstate_cast<RuleStopState>(state);
-    if (stopState != nullptr) {
-      atn.ruleToStopState[state->ruleIndex] = stopState;
-      atn.ruleToStartState[state->ruleIndex]->stopState = stopState;
+    if (!state->isType(ATNState::RuleStopStateClass)) {
+      continue;
     }
+
+    RuleStopState *stopState = static_cast<RuleStopState*>(state);
+    atn.ruleToStopState[state->ruleIndex] = stopState;
+    atn.ruleToStartState[state->ruleIndex]->stopState = stopState;
   }
 
   //
@@ -320,11 +322,11 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
   for (ATNState *state : atn.states) {
     for (size_t i = 0; i < state->transitions.size(); i++) {
       Transition *t = state->transitions[i];
-      RuleTransition *const ruleTransition = transition_cast<RuleTransition>(t);
-      if (ruleTransition == nullptr) {
+      if (!(t->isType(Transition::RuleTransitionClass))) {
         continue;
       }
 
+      RuleTransition *ruleTransition = static_cast<RuleTransition*>(t);
       size_t outermostPrecedenceReturn = INVALID_INDEX;
       if (atn.ruleToStartState[ruleTransition->target->ruleIndex]->isLeftRecursiveRule) {
         if (ruleTransition->precedence == 0) {
@@ -338,8 +340,9 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
   }
 
   for (ATNState *state : atn.states) {
-    BlockStartState *const startState = atnstate_cast<BlockStartState>(state);
-    if (startState != nullptr) {
+    if (state->isType(ATNState::BlockStartStateClass)) {
+      BlockStartState *startState = static_cast<BlockStartState *>(state);
+
       // we need to know the end state to set its start state
       if (startState->endState == nullptr) {
         throw IllegalStateException();
@@ -353,22 +356,20 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
       startState->endState->startState = static_cast<BlockStartState*>(state);
     }
 
-    PlusLoopbackState *const plusLoopbackState = atnstate_cast<PlusLoopbackState>(state);
-    StarLoopbackState *const starLoopbackState = atnstate_cast<StarLoopbackState>(state);
-    if (plusLoopbackState != nullptr) {
-      for (size_t i = 0; i < plusLoopbackState->transitions.size(); i++) {
-        ATNState *target = plusLoopbackState->transitions[i]->target;
-        PlusBlockStartState *const plusBlockStartState = atnstate_cast<PlusBlockStartState>(target);
-        if (plusBlockStartState != nullptr) {
-          plusBlockStartState->loopBackState = plusLoopbackState;
+    if (state->isType(ATNState::PlusLoopbackStateClass)) {
+      PlusLoopbackState *loopbackState = static_cast<PlusLoopbackState *>(state);
+      for (size_t i = 0; i < loopbackState->transitions.size(); i++) {
+        ATNState *target = loopbackState->transitions[i]->target;
+        if (target->isType(ATNState::PlusBlockStartStateClass)) {
+          (static_cast<PlusBlockStartState *>(target))->loopBackState = loopbackState;
         }
       }
-    } else if (starLoopbackState != nullptr) {
-      for (size_t i = 0; i < starLoopbackState->transitions.size(); i++) {
-        ATNState *target = starLoopbackState->transitions[i]->target;
-        StarLoopEntryState *const starLoopEntryState = atnstate_cast<StarLoopEntryState>(target);
-        if (starLoopEntryState != nullptr) {
-          starLoopEntryState->loopBackState = starLoopbackState;
+    } else if (state->isType(ATNState::StarLoopbackStateClass)) {
+      StarLoopbackState *loopbackState = static_cast<StarLoopbackState *>(state);
+      for (size_t i = 0; i < loopbackState->transitions.size(); i++) {
+        ATNState *target = loopbackState->transitions[i]->target;
+        if (target->isType(ATNState::StarLoopEntryStateClass)) {
+          (static_cast<StarLoopEntryState*>(target))->loopBackState = loopbackState;
         }
       }
     }
@@ -380,10 +381,9 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
   size_t ndecisions = data[p++];
   for (size_t i = 1; i <= ndecisions; i++) {
     size_t s = data[p++];
-    DecisionState *decState = atnstate_cast<DecisionState>(atn.states[s]);
-    if (decState == nullptr)
+    if (!atn.states[s]->isType(DecisionState::DecisionStateClass))
       throw IllegalStateException();
-
+    DecisionState *decState = static_cast<DecisionState*>(atn.states[s]);
     atn.decisionToState.push_back(decState);
     decState->decision = (int)i - 1;
   }
@@ -414,16 +414,16 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
       // form, which is the index of a LexerCustomAction
       for (ATNState *state : atn.states) {
         for (size_t i = 0; i < state->transitions.size(); i++) {
-          ActionTransition *const actionTransition = transition_cast<ActionTransition>(state->transitions[i]);
-          if (actionTransition == nullptr) {
+          Transition *transition = state->transitions[i];
+          if (!transition->isType(Transition::ActionTransitionClass)) {
             continue;
           }
 
-          size_t ruleIndex = actionTransition->ruleIndex;
-          size_t actionIndex = actionTransition->actionIndex;
+          size_t ruleIndex = static_cast<ActionTransition *>(transition)->ruleIndex;
+          size_t actionIndex = static_cast<ActionTransition *>(transition)->actionIndex;
           Ref<LexerCustomAction> lexerAction = std::make_shared<LexerCustomAction>(ruleIndex, actionIndex);
-          state->transitions[i] = new ActionTransition(actionTransition->target, ruleIndex, atn.lexerActions.size(), false); /* mem-check freed in ATNState d-tor */
-          delete actionTransition; // ml: no longer needed since we just replaced it.
+          state->transitions[i] = new ActionTransition(transition->target, ruleIndex, atn.lexerActions.size(), false); /* mem-check freed in ATNState d-tor */
+          delete transition; // ml: no longer needed since we just replaced it.
           atn.lexerActions.push_back(lexerAction);
         }
       }
@@ -466,16 +466,16 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
             continue;
           }
 
-          if (atnstate_cast<StarLoopEntryState>(state) == nullptr) {
+          if (!state->isType(ATNState::StarLoopEntryStateClass)) {
             continue;
           }
 
           ATNState *maybeLoopEndState = state->transitions[state->transitions.size() - 1]->target;
-          if (atnstate_cast<LoopEndState>(maybeLoopEndState) == nullptr) {
+          if (!maybeLoopEndState->isType(ATNState::LoopEndStateClass)) {
             continue;
           }
 
-          if (maybeLoopEndState->epsilonOnlyTransitions && atnstate_cast<RuleStopState>(maybeLoopEndState->transitions[0]->target) != nullptr) {
+          if (maybeLoopEndState->epsilonOnlyTransitions && maybeLoopEndState->transitions[0]->target->isType(ATNState::RuleStopStateClass)) {
             endState = state;
             break;
           }
@@ -538,8 +538,7 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
  */
 void ATNDeserializer::markPrecedenceDecisions(const ATN &atn) {
   for (ATNState *state : atn.states) {
-    StarLoopEntryState *const starLoopEntryState = atnstate_cast<StarLoopEntryState>(state);
-    if (starLoopEntryState == nullptr) {
+    if (!state->isType(ATNState::StarLoopEntryStateClass)) {
       continue;
     }
 
@@ -549,9 +548,9 @@ void ATNDeserializer::markPrecedenceDecisions(const ATN &atn) {
      */
     if (atn.ruleToStartState[state->ruleIndex]->isLeftRecursiveRule) {
       ATNState *maybeLoopEndState = state->transitions[state->transitions.size() - 1]->target;
-      if (atnstate_cast<LoopEndState>(maybeLoopEndState) != nullptr) {
-        if (maybeLoopEndState->epsilonOnlyTransitions && (atnstate_cast<RuleStopState>(maybeLoopEndState->transitions[0]->target) != nullptr)) {
-          starLoopEntryState->isPrecedenceDecision = true;
+      if (maybeLoopEndState->isType(ATNState::LoopEndStateClass)) {
+        if (maybeLoopEndState->epsilonOnlyTransitions && maybeLoopEndState->transitions[0]->target->isType(ATNState::RuleStopStateClass)) {
+          static_cast<StarLoopEntryState *>(state)->isPrecedenceDecision = true;
         }
       }
     }
@@ -567,57 +566,53 @@ void ATNDeserializer::verifyATN(const ATN &atn) {
 
     checkCondition(state->epsilonOnlyTransitions || state->transitions.size() <= 1);
 
-    PlusBlockStartState *const plusBlockStartState = atnstate_cast<PlusBlockStartState>(state);
-    if (plusBlockStartState != nullptr) {
-      checkCondition(plusBlockStartState->loopBackState != nullptr);
+    if (state->isType(ATNState::PlusBlockStartStateClass)) {
+      checkCondition((static_cast<PlusBlockStartState *>(state))->loopBackState != nullptr);
     }
 
-    StarLoopEntryState *const starLoopEntryState = atnstate_cast<StarLoopEntryState>(state);
-    if (starLoopEntryState != nullptr) {
+    if (state->isType(ATNState::StarLoopEntryStateClass)) {
+      StarLoopEntryState *starLoopEntryState = static_cast<StarLoopEntryState*>(state);
       checkCondition(starLoopEntryState->loopBackState != nullptr);
       checkCondition(starLoopEntryState->transitions.size() == 2);
 
-      if (atnstate_cast<StarBlockStartState>(starLoopEntryState->transitions[0]->target) != nullptr) {
-        checkCondition(atnstate_cast<LoopEndState>(starLoopEntryState->transitions[1]->target) != nullptr);
+      if (starLoopEntryState->transitions[0]->target->isType(ATNState::StarBlockStartStateClass)) {
+        checkCondition(static_cast<LoopEndState *>(starLoopEntryState->transitions[1]->target) != nullptr);
         checkCondition(!starLoopEntryState->nonGreedy);
-      } else if (atnstate_cast<LoopEndState>(starLoopEntryState->transitions[0]->target) != nullptr) {
-        checkCondition(atnstate_cast<StarBlockStartState>(starLoopEntryState->transitions[1]->target) != nullptr);
+      } else if (starLoopEntryState->transitions[0]->target->isType(ATNState::LoopEndStateClass)) {
+        checkCondition(starLoopEntryState->transitions[1]->target->isType(ATNState::StarBlockStartStateClass));
         checkCondition(starLoopEntryState->nonGreedy);
       } else {
         throw IllegalStateException();
+
       }
     }
 
-    if (atnstate_cast<StarLoopbackState>(state) != nullptr) {
+    if (state->isType(ATNState::StarLoopbackStateClass)) {
       checkCondition(state->transitions.size() == 1);
-      checkCondition(atnstate_cast<StarLoopEntryState>(state->transitions[0]->target) != nullptr);
+      checkCondition(state->transitions[0]->target->isType(ATNState::StarLoopEntryStateClass));
     }
 
-    LoopEndState *const loopEndState = atnstate_cast<LoopEndState>(state);
-    if (loopEndState != nullptr) {
-      checkCondition(loopEndState->loopBackState != nullptr);
+    if (state->isType(ATNState::LoopEndStateClass)) {
+      checkCondition((static_cast<LoopEndState *>(state))->loopBackState != nullptr);
     }
 
-    RuleStartState *const ruleStartState = atnstate_cast<RuleStartState>(state);
-    if (ruleStartState != nullptr) {
-      checkCondition(ruleStartState->stopState != nullptr);
+    if (state->isType(ATNState::RuleStartStateClass)) {
+      checkCondition((static_cast<RuleStartState *>(state))->stopState != nullptr);
     }
 
-    BlockStartState *const blockStartState = atnstate_cast<BlockStartState>(state);
-    if (blockStartState != nullptr) {
-      checkCondition(blockStartState->endState != nullptr);
+    if (state->isType(ATNState::BlockStartStateClass)) {
+      checkCondition((static_cast<BlockStartState *>(state))->endState != nullptr);
     }
 
-    BlockEndState *const blockEndState = atnstate_cast<BlockEndState>(state);
-    if (blockEndState != nullptr) {
-      checkCondition(blockEndState->startState != nullptr);
+    if (state->isType(ATNState::BlockEndStateClass)) {
+      checkCondition((static_cast<BlockEndState *>(state))->startState != nullptr);
     }
 
-    DecisionState *const decisionState = atnstate_cast<DecisionState>(state);
-    if (decisionState != nullptr) {
+    if (state->isType(ATNState::DecisionStateClass)) {
+      DecisionState *decisionState = static_cast<DecisionState *>(state);
       checkCondition(decisionState->transitions.size() <= 1 || decisionState->decision >= 0);
     } else {
-      checkCondition(state->transitions.size() <= 1 || atnstate_cast<RuleStopState>(state) != nullptr);
+      checkCondition(state->transitions.size() <= 1 || state->isType(ATNState::RuleStopStateClass));
     }
   }
 }

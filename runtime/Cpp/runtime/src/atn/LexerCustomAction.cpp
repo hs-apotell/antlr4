@@ -14,6 +14,7 @@ using namespace antlr4::atn;
 using namespace antlr4::misc;
 
 LexerCustomAction::LexerCustomAction(size_t ruleIndex, size_t actionIndex) : _ruleIndex(ruleIndex), _actionIndex(actionIndex) {
+  classtype |= LexerCustomActionClass;
 }
 
 size_t LexerCustomAction::getRuleIndex() const {
@@ -49,11 +50,11 @@ bool LexerCustomAction::operator == (const LexerAction &obj) const {
     return true;
   }
 
-  const LexerCustomAction *action = lexeraction_cast<LexerCustomAction>(&obj);
-  if (action == nullptr) {
+  if (!obj.isType(LexerCustomActionClass)) {
     return false;
   }
 
+  const LexerCustomAction *action = static_cast<const LexerCustomAction *>(&obj);
   return _ruleIndex == action->_ruleIndex && _actionIndex == action->_actionIndex;
 }
 

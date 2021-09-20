@@ -13,7 +13,7 @@ namespace xpath {
 
   /// Either {@code ID} at start of path or {@code ...//ID} in middle of path.
   class ANTLR4CPP_PUBLIC XPathRuleAnywhereElement : public XPathElement {
-    IMPLEMENT_RTTI(XPathRuleAnywhereElement, XPathElement)
+
   public:
     XPathRuleAnywhereElement(const std::string &ruleName, int ruleIndex);
 

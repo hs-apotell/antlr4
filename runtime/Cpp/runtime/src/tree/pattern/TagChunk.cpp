@@ -10,6 +10,7 @@
 using namespace antlr4::tree::pattern;
 
 TagChunk::TagChunk(const std::string &tag) : TagChunk("", tag) {
+  classtype |= TagChunkClass;
 }
 
 TagChunk::TagChunk(const std::string &label, const std::string &tag) : _tag(tag), _label(label) {

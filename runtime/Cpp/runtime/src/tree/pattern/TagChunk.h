@@ -26,7 +26,6 @@ namespace pattern {
   /// from ensuring that the tag is a non-null, non-empty string.
   /// </summary>
   class ANTLR4CPP_PUBLIC TagChunk : public Chunk {
-    IMPLEMENT_RTTI(TagChunk, Chunk)
   public:
     /// <summary>
     /// Construct a new instance of <seealso cref="TagChunk"/> using the specified tag and

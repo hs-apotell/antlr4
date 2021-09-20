@@ -6,7 +6,6 @@
 #pragma once
 
 #include "antlr4-common.h"
-#include "RTTI.h"
 
 namespace antlr4 {
 namespace tree {
@@ -23,12 +22,21 @@ namespace pattern {
   /// chunks are converted to <seealso cref="RuleTagToken"/>, <seealso cref="TokenTagToken"/>, or the
   /// regular tokens of the text surrounding the tags.
   /// </summary>
-  class ANTLR4CPP_PUBLIC Chunk : public RTTI {
-    IMPLEMENT_RTTI(Chunk, RTTI)
+  class ANTLR4CPP_PUBLIC Chunk {
   public:
     Chunk() = default;
     Chunk(Chunk const&) = default;
     virtual ~Chunk();
+
+    enum ClassType {
+      ChunkClass = 1,
+      TagChunkClass = 2,
+      TextChunkClass = 4,
+    };
+
+    long classtype = ChunkClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
 
     Chunk& operator=(Chunk const&) = default;
 
@@ -44,5 +52,3 @@ namespace pattern {
 } // namespace pattern
 } // namespace tree
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(chunk_cast, antlr4::tree::pattern::Chunk)

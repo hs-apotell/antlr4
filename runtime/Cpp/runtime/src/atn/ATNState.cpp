@@ -13,9 +13,6 @@
 using namespace antlr4::atn;
 using namespace antlrcpp;
 
-ATNState::ATNState() {
-}
-
 ATNState::~ATNState() {
   for (auto *transition : transitions) {
     delete transition;

@@ -161,7 +161,7 @@ namespace antlr4 {
 
   protected:
     class RewriteOperation : public RTTI {
-      IMPLEMENT_RTTI(RewriteOperation, RTTI)
+      ANTLR_IMPLEMENT_RTTI(RewriteOperation, RTTI)
     public:
       /// What index into rewrites List are we?
       size_t index;
@@ -185,10 +185,10 @@ namespace antlr4 {
       void InitializeInstanceFields();
     };
 
-    IMPLEMENT_CAST_FUNCTIONS(rewriteoperation_cast, antlr4::TokenStreamRewriter::RewriteOperation)
+    ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::TokenStreamRewriter::RewriteOperation)
 
     class InsertBeforeOp : public RewriteOperation {
-      IMPLEMENT_RTTI(InsertBeforeOp, RewriteOperation)
+      ANTLR_IMPLEMENT_RTTI(InsertBeforeOp, RewriteOperation)
     private:
       TokenStreamRewriter *const outerInstance;
 
@@ -199,7 +199,7 @@ namespace antlr4 {
     };
 
     class ReplaceOp : public RewriteOperation {
-      IMPLEMENT_RTTI(ReplaceOp, RewriteOperation)
+      ANTLR_IMPLEMENT_RTTI(ReplaceOp, RewriteOperation)
     private:
       TokenStreamRewriter *const outerInstance;
 
@@ -288,7 +288,7 @@ namespace antlr4 {
     std::vector<T *> getKindOfOps(const std::vector<RewriteOperation *> &rewrites, size_t before) {
       std::vector<T *> ops;
       for (size_t i = 0; i < before && i < rewrites.size(); i++) {
-        T *op = rewriteoperation_cast<T>(rewrites[i]);
+        T *op = antlr_cast<T *>(rewrites[i]);
         if (op != nullptr) { // ignore deleted or non matching entries
           ops.push_back(op);
         }

@@ -5,48 +5,148 @@
 
 #include "antlr4-common.h"
 
+#include <array>
 #include <cstdint>
+#include <map>
+#include <memory>
 #include <type_traits>
+
 
 namespace antlr4
 {
-  static const uint64_t kFNV1aInitialHash64 = 0xCBF29CE484222325ULL;
-  static const uint64_t kFNV1aPrime64 = 0x100000001B3ULL;
-
-  inline constexpr uint64_t RTTIHash(const char *const str, uint64_t hash) noexcept
+  // Ref: https://gist.github.com/klemens-morgenstern/b75599292667a4f53007
+  namespace internal
   {
-    return (*str == '\0')
-      ? hash
-      : RTTIHash(str + 1, (hash ^ static_cast<uint64_t>(*str)) * kFNV1aPrime64);
+    template<std::size_t ... Size>
+    struct num_tuple {};
+
+    template<std::size_t Prepend, typename T>
+    struct appender {};
+
+    template<std::size_t Prepend, std::size_t ... Sizes>
+    struct appender<Prepend, num_tuple<Sizes...>>
+    {
+      using type = num_tuple<Prepend, Sizes...>;
+    };
+
+    template<std::size_t Size, std::size_t Counter = 0>
+    struct counter_tuple
+    {
+      using type = typename appender<Counter, typename counter_tuple<Size, Counter + 1>::type>::type;
+    };
+
+    template<std::size_t Size>
+    struct counter_tuple<Size, Size>
+    {
+      using type = num_tuple<>;
+    };
+
+    template<typename T, std::size_t LL, std::size_t RL, std::size_t ... LLs, std::size_t ... RLs>
+    constexpr std::array<T, LL + RL> join(
+      const std::array<T, LL> rhs, const std::array<T, RL> lhs,
+      num_tuple<LLs...>, num_tuple<RLs...>)
+    {
+      return { rhs[LLs]..., lhs[RLs]... };
+    }
+
+    template<typename T, std::size_t LL, std::size_t RL>
+    constexpr std::array<T, LL + RL> join(std::array<T, LL> rhs, std::array<T, RL> lhs)
+    {
+      return join(
+        rhs, lhs,
+        typename counter_tuple<LL>::type(),
+        typename counter_tuple<RL>::type());
+    }
+
+    static constexpr uint32_t kFNV1aSeed32 = 0x811C9DC5;
+    static constexpr uint32_t kFNV1aPrime32 = 0x01000193;
+
+    inline constexpr uint32_t RTTIHash(const char *const str, uint32_t hash) noexcept
+    {
+      return (*str == '\0')
+        ? hash
+        : RTTIHash(str + 1, (hash ^ static_cast<uint32_t>(*str)) * kFNV1aPrime32);
+    }
   }
 
   class ANTLR4CPP_PUBLIC RTTI
   {
   protected:
-    typedef uint64_t typeid_t;
-    static constexpr typeid_t kTypeId = RTTIHash("RTTI", kFNV1aInitialHash64);
+    typedef uint32_t typeid_t;
+    typedef RTTI thistype_t;
+    static constexpr typeid_t kTypeId = internal::RTTIHash("RTTI", internal::kFNV1aSeed32);
+    static constexpr std::array<typeid_t, 1> kTypeIds{ kTypeId };
 
   protected:
     RTTI() = default;
 
-  protected:
-    virtual typeid_t GetTypeId() const;
-    virtual void* AsType(typeid_t id) = 0;
-    virtual const void* AsType(typeid_t tid) const = 0;
-
   public:
     virtual ~RTTI() = default;
 
-    template<typename T>
-    inline T* Cast()
+  protected:
+    virtual typeid_t GetTypeId() const = 0;
+    virtual void *AsOfType(typeid_t tid) = 0;
+    virtual const void *AsOfType(typeid_t tid) const = 0;
+    virtual const typeid_t *GetTypeIds(size_t &count) const = 0;
+
+    inline void *AsOfTypeRecurse(typeid_t tid)
     {
-      return static_cast<T *>(AsType(T::kTypeId));
+      return (tid == RTTI::kTypeId) ? static_cast<void *>(this) : nullptr;
     }
 
-    template<typename T>
-    inline const T* Cast() const
+    inline const void *AsOfTypeRecurse(typeid_t tid) const
     {
-      return static_cast<const T *>(AsType(T::kTypeId));
+      return (tid == RTTI::kTypeId) ? static_cast<const void *>(this) : nullptr;
+    }
+
+    inline bool IsOfType(typeid_t tid) const
+    {
+      size_t count = 0;
+      const typeid_t *const typeIds = GetTypeIds(count);
+      for (size_t i = 0, j = count - 1; i <= j; ++i, --j)
+      {
+        if ((typeIds[i] == tid) || (typeIds[j] == tid))
+          return true;
+      }
+
+      return false;
+    }
+
+  public:
+    template<
+      typename I,
+      typename T = typename std::remove_pointer<I>::type,
+      typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
+    inline T *VirtualCast()
+    {
+      return IsOfType(T::kTypeId) ? static_cast<T *>(AsOfType(T::kTypeId)) : nullptr;
+    }
+
+    template<
+      typename I,
+      typename T = typename std::remove_pointer<I>::type,
+      typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
+    inline const T *VirtualCast() const
+    {
+      return IsOfType(T::kTypeId) ? static_cast<const T *>(AsOfType(T::kTypeId)) : nullptr;
+    }
+
+    template<
+      typename I,
+      typename T = typename std::remove_pointer<I>::type,
+      typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
+    inline T *Cast()
+    {
+      return IsOfType(T::kTypeId) ? static_cast<T *>(this) : nullptr;
+    }
+
+    template<
+      typename I,
+      typename T = typename std::remove_pointer<I>::type,
+      typename = typename std::enable_if<std::is_base_of<RTTI, T>::value>::type>
+    inline const T *Cast() const
+    {
+      return IsOfType(T::kTypeId) ? static_cast<const T *>(this) : nullptr;
     }
   };
 
@@ -55,74 +155,126 @@ namespace antlr4
     return RTTI::kTypeId;
   }
 
-  inline void* RTTI::AsType(typeid_t tid)
+  inline const RTTI::typeid_t *RTTI::GetTypeIds(size_t &count) const
   {
-    return static_cast<void *>((tid == RTTI::kTypeId) ? this : nullptr);
+    count = kTypeIds.size();
+    return kTypeIds.data();
   }
 
-  inline const void* RTTI::AsType(typeid_t tid) const
+  inline void *RTTI::AsOfType(typeid_t tid)
   {
-    return static_cast<const void *>((tid == RTTI::kTypeId) ? this : nullptr);
+    return AsOfTypeRecurse(tid);
   }
+
+  inline const void *RTTI::AsOfType(typeid_t tid) const
+  {
+    return AsOfTypeRecurse(tid);
+  }
+
 } // namespace antlr4
 
-#define IMPLEMENT_RTTI(classType, baseType)                                                         \
-  protected:                                                                                        \
-    typedef baseType Base;                                                                          \
-    friend class antlr4::RTTI;                                                                      \
-    static constexpr typeid_t kTypeId = antlr4::RTTIHash("/" #classType, Base::kTypeId);            \
-    virtual RTTI::typeid_t GetTypeId() const override                                               \
-    { return static_cast<RTTI::typeid_t>(classType::kTypeId); }                                     \
-    virtual void* AsType(typeid_t tid) override                                                     \
-    { return static_cast<void *>((tid == classType::kTypeId) ? this : Base::AsType(tid)); }         \
-    virtual const void* AsType(typeid_t tid) const override                                         \
-    { return static_cast<const void *>((tid == classType::kTypeId) ? this : Base::AsType(tid)); }   \
+#define ANTLR_IMPLEMENT_RTTI(classType, baseType)                                                                 \
+  public:                                                                                                         \
+    typedef classType thistype_t;                                                                                 \
+    typedef baseType basetype_t;                                                                                  \
+    static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/" #classType, basetype_t::kTypeId);          \
+    static constexpr auto kTypeIds = antlr4::internal::join(                                                      \
+      std::array<typeid_t, 1>{thistype_t::kTypeId}, basetype_t::kTypeIds);                                        \
+  protected:                                                                                                      \
+    friend class antlr4::RTTI;                                                                                    \
+    inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }                      \
+    inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override                                 \
+    { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }                                  \
+    inline void *AsOfTypeRecurse(typeid_t tid)                                                                    \
+    { return (tid == thistype_t::kTypeId) ? static_cast<void *>(this) : basetype_t::AsOfTypeRecurse(tid); }       \
+    inline const void *AsOfTypeRecurse(typeid_t tid) const                                                        \
+    { return (tid == thistype_t::kTypeId) ? static_cast<const void *>(this) : basetype_t::AsOfTypeRecurse(tid); } \
+    inline virtual void *AsOfType(typeid_t tid) override { return thistype_t::AsOfTypeRecurse(tid); }             \
+    inline virtual const void *AsOfType(typeid_t tid) const override { return thistype_t::AsOfTypeRecurse(tid); } \
   private:
 
-#define IMPLEMENT_RTTI_2_BASES(classType, baseType1, baseType2)                                             \
-  protected:                                                                                                \
-    typedef baseType1 Base1;                                                                                \
-    typedef baseType2 Base2;                                                                                \
-    friend class antlr4::RTTI;                                                                              \
-    static constexpr typeid_t kTypeId = antlr4::RTTIHash("/" #classType, Base1::kTypeId ^ Base2::kTypeId);  \
-    virtual RTTI::typeid_t GetTypeId() const override                                                       \
-    { return static_cast<RTTI::typeid_t>(classType::kTypeId); }                                             \
-    virtual void* AsType(typeid_t tid) override                                                             \
-    {                                                                                                       \
-      void *p = nullptr;                                                                                    \
-      if (tid == classType::kTypeId) p = static_cast<void *>(this);                                         \
-      if (p == nullptr) p = Base1::AsType(tid);                                                             \
-      if (p == nullptr) p = Base2::AsType(tid);                                                             \
-      return p;                                                                                             \
-    }                                                                                                       \
-    virtual const void* AsType(typeid_t tid) const override                                                 \
-    {                                                                                                       \
-      const void *p = nullptr;                                                                              \
-      if (tid == classType::kTypeId) p = static_cast<const void *>(this);                                   \
-      if (p == nullptr) p = Base1::AsType(tid);                                                             \
-      if (p == nullptr) p = Base2::AsType(tid);                                                             \
-      return p;                                                                                             \
-    }                                                                                                       \
+#define ANTLR_IMPLEMENT_RTTI_2_BASES(classType, baseType1, baseType2)                                                             \
+  public:                                                                                                                         \
+    typedef classType thistype_t;                                                                                                 \
+    typedef baseType1 base1type_t;                                                                                                \
+    typedef baseType2 base2type_t;                                                                                                \
+    static constexpr typeid_t kTypeId = antlr4::internal::RTTIHash("/" #classType, base1type_t::kTypeId ^ base2type_t::kTypeId);  \
+    static constexpr auto kTypeIds = antlr4::internal::join(                                                                      \
+      std::array<typeid_t, 1>{thistype_t::kTypeId},                                                                               \
+      antlr4::internal::join(base1type_t::kTypeIds, base2type_t::kTypeIds));                                                      \
+  protected:                                                                                                                      \
+    friend class antlr4::RTTI;                                                                                                    \
+    inline virtual RTTI::typeid_t GetTypeId() const override { return thistype_t::kTypeId; }                                      \
+    inline virtual const RTTI::typeid_t *GetTypeIds(size_t &count) const override                                                 \
+    { count = thistype_t::kTypeIds.size(); return thistype_t::kTypeIds.data(); }                                                  \
+    inline void *AsOfTypeRecurse(typeid_t tid) {                                                                                  \
+      void *p = nullptr;                                                                                                          \
+      if (tid == thistype_t::kTypeId) p = static_cast<void *>(this);                                                              \
+      if (p == nullptr) p = base1type_t::AsOfTypeRecurse(tid);                                                                    \
+      if (p == nullptr) p = base2type_t::AsOfTypeRecurse(tid);                                                                    \
+      return p;                                                                                                                   \
+    }                                                                                                                             \
+    inline const void *AsOfTypeRecurse(typeid_t tid) const {                                                                      \
+      const void *p = nullptr;                                                                                                    \
+      if (tid == thistype_t::kTypeId) p = static_cast<const void *>(this);                                                        \
+      if (p == nullptr) p = base1type_t::AsOfTypeRecurse(tid);                                                                    \
+      if (p == nullptr) p = base2type_t::AsOfTypeRecurse(tid);                                                                    \
+      return p;                                                                                                                   \
+    }                                                                                                                             \
+    inline virtual void *AsOfType(typeid_t tid) override { return thistype_t::AsOfTypeRecurse(tid); }                             \
+    inline virtual const void *AsOfType(typeid_t tid) const override { return thistype_t::AsOfTypeRecurse(tid); }                 \
   private:
 
-#define IMPLEMENT_CAST_FUNCTIONS(fname, baseType)                                                                           \
-  template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                       \
-  inline ANTLR4CPP_PUBLIC T *fname(baseType *const u) noexcept {                                                            \
+#define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType)                                                                       \
+  template<                                                                                                                 \
+    typename I,                                                                                                             \
+    typename T = typename std::remove_pointer<I>::type,                                                                     \
+    typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                    \
+    typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                          \
+  inline ANTLR4CPP_PUBLIC T *antlr_cast(baseType *const u) noexcept {                                                       \
     return (u == nullptr) ? nullptr : u->template Cast<T>();                                                                \
   }                                                                                                                         \
-  template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                       \
-  inline ANTLR4CPP_PUBLIC const T *fname(const baseType *const u) noexcept {                                                \
+  template<                                                                                                                 \
+    typename I,                                                                                                             \
+    typename T = typename std::remove_pointer<I>::type,                                                                     \
+    typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                    \
+    typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                          \
+  inline ANTLR4CPP_PUBLIC const T *antlr_cast(const baseType *const u) noexcept {                                           \
     return (u == nullptr) ? nullptr : u->template Cast<const T>();                                                          \
   }                                                                                                                         \
   template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                       \
-  inline ANTLR4CPP_PUBLIC Ref<T> fname(Ref<baseType> const &u) noexcept {                                                   \
+  inline ANTLR4CPP_PUBLIC Ref<T> antlr_cast(Ref<baseType> const &u) noexcept {                                              \
     return (u && (u->template Cast<T>() != nullptr)) ? std::static_pointer_cast<T>(u) : Ref<T>(nullptr);                    \
   }                                                                                                                         \
   template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                       \
-  inline ANTLR4CPP_PUBLIC Ref<const T> fname(Ref<const baseType> const &u) noexcept {                                       \
+  inline ANTLR4CPP_PUBLIC Ref<const T> antlr_cast(Ref<const baseType> const &u) noexcept {                                  \
     return (u && (u->template Cast<const T>() != nullptr)) ? std::static_pointer_cast<const T>(u) : Ref<const T>(nullptr);  \
-  } 
+  }
 
-IMPLEMENT_CAST_FUNCTIONS(rtti_cast, antlr4::RTTI)
+#define ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(baseType)                                                                     \
+  template<                                                                                                                       \
+    typename I,                                                                                                                   \
+    typename T = typename std::remove_pointer<I>::type,                                                                           \
+    typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                          \
+    typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                                \
+  inline ANTLR4CPP_PUBLIC T *antlr_cast(baseType *const u) noexcept {                                                             \
+    return (u == nullptr) ? nullptr : u->template VirtualCast<T>();                                                               \
+  }                                                                                                                               \
+  template<                                                                                                                       \
+    typename I,                                                                                                                   \
+    typename T = typename std::remove_pointer<I>::type,                                                                           \
+    typename = typename std::enable_if<std::is_pointer<I>::value>::type,                                                          \
+    typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                                                \
+  inline ANTLR4CPP_PUBLIC const T *antlr_cast(const baseType *const u) noexcept {                                                 \
+    return (u == nullptr) ? nullptr : u->template VirtualCast<const T>();                                                         \
+  }                                                                                                                               \
+  template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                             \
+  inline ANTLR4CPP_PUBLIC Ref<T> antlr_cast(Ref<baseType> const &u) noexcept {                                                    \
+    return (u && (u->template VirtualCast<T>() != nullptr)) ? std::static_pointer_cast<T>(u) : Ref<T>(nullptr);                   \
+  }                                                                                                                               \
+  template<typename T, typename = typename std::enable_if<std::is_base_of<baseType, T>::value>::type>                             \
+  inline ANTLR4CPP_PUBLIC Ref<const T> antlr_cast(Ref<const baseType> const &u) noexcept {                                        \
+    return (u && (u->template VirtualCast<const T>() != nullptr)) ? std::static_pointer_cast<const T>(u) : Ref<const T>(nullptr); \
+  }
 
 #endif  /// ANTLR_RTTI_H

@@ -36,7 +36,7 @@ Ref<LexerActionExecutor> LexerActionExecutor::append(Ref<LexerActionExecutor> co
 Ref<LexerActionExecutor> LexerActionExecutor::fixOffsetBeforeMatch(int offset) {
   std::vector<Ref<LexerAction>> updatedLexerActions;
   for (size_t i = 0; i < _lexerActions.size(); i++) {
-    if (_lexerActions[i]->isPositionDependent() && lexeraction_cast<LexerIndexedCustomAction>(_lexerActions[i].get()) == nullptr) {
+    if (_lexerActions[i]->isPositionDependent() && !_lexerActions[i]->isType(LexerAction::LexerIndexedCustomActionClass)) {
       if (updatedLexerActions.empty()) {
         updatedLexerActions = _lexerActions; // Make a copy.
       }
@@ -66,7 +66,7 @@ void LexerActionExecutor::execute(Lexer *lexer, CharStream *input, size_t startI
     }
   });
   for (auto lexerAction : _lexerActions) {
-    if (lexeraction_cast<LexerIndexedCustomAction>(lexerAction.get()) != nullptr) {
+    if (lexerAction->isType(LexerAction::LexerIndexedCustomActionClass)) {
       int offset = (std::static_pointer_cast<LexerIndexedCustomAction>(lexerAction))->getOffset();
       input->seek(startIndex + offset);
       lexerAction = std::static_pointer_cast<LexerIndexedCustomAction>(lexerAction)->getAction();

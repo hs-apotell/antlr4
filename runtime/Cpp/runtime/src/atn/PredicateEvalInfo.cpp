@@ -14,4 +14,5 @@ PredicateEvalInfo::PredicateEvalInfo(size_t decision, TokenStream *input, size_t
   Ref<SemanticContext> const& semctx, bool evalResult, size_t predictedAlt, bool fullCtx)
   : DecisionEventInfo(decision, nullptr, input, startIndex, stopIndex, fullCtx),
     semctx(semctx), predictedAlt(predictedAlt), evalResult(evalResult) {
+  classtype |= PredicateEvalInfoClass;
 }

@@ -12,7 +12,7 @@ namespace antlr4 {
 
   // An exception hierarchy modelled loosely after java.lang.* exceptions.
   class ANTLR4CPP_PUBLIC RuntimeException : public std::exception, public RTTI {
-    IMPLEMENT_RTTI(RuntimeException, RTTI)
+    ANTLR_IMPLEMENT_RTTI(RuntimeException, RTTI)
   private:
     std::string _message;
   public:
@@ -22,7 +22,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC IllegalStateException : public RuntimeException {
-    IMPLEMENT_RTTI(IllegalStateException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(IllegalStateException, RuntimeException)
   public:
     IllegalStateException(const std::string &msg = "") : RuntimeException(msg) {}
     IllegalStateException(IllegalStateException const&) = default;
@@ -31,7 +31,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC IllegalArgumentException : public RuntimeException {
-    IMPLEMENT_RTTI(IllegalArgumentException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(IllegalArgumentException, RuntimeException)
   public:
     IllegalArgumentException(IllegalArgumentException const&) = default;
     IllegalArgumentException(const std::string &msg = "") : RuntimeException(msg) {}
@@ -40,7 +40,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC NullPointerException : public RuntimeException {
-    IMPLEMENT_RTTI(NullPointerException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(NullPointerException, RuntimeException)
   public:
     NullPointerException(const std::string &msg = "") : RuntimeException(msg) {}
     NullPointerException(NullPointerException const&) = default;
@@ -49,7 +49,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC IndexOutOfBoundsException : public RuntimeException {
-    IMPLEMENT_RTTI(IndexOutOfBoundsException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(IndexOutOfBoundsException, RuntimeException)
   public:
     IndexOutOfBoundsException(const std::string &msg = "") : RuntimeException(msg) {}
     IndexOutOfBoundsException(IndexOutOfBoundsException const&) = default;
@@ -58,7 +58,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC UnsupportedOperationException : public RuntimeException {
-    IMPLEMENT_RTTI(UnsupportedOperationException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(UnsupportedOperationException, RuntimeException)
   public:
     UnsupportedOperationException(const std::string &msg = "") : RuntimeException(msg) {}
     UnsupportedOperationException(UnsupportedOperationException const&) = default;
@@ -68,7 +68,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC EmptyStackException : public RuntimeException {
-    IMPLEMENT_RTTI(EmptyStackException, RuntimeException)
+    ANTLR_IMPLEMENT_RTTI(EmptyStackException, RuntimeException)
   public:
     EmptyStackException(const std::string &msg = "") : RuntimeException(msg) {}
     EmptyStackException(EmptyStackException const&) = default;
@@ -79,7 +79,7 @@ namespace antlr4 {
   // IOException is not a runtime exception (in the java hierarchy).
   // Hence we have to duplicate the RuntimeException implementation.
   class ANTLR4CPP_PUBLIC IOException : public std::exception, public RTTI {
-    IMPLEMENT_RTTI(IOException, RTTI)
+    ANTLR_IMPLEMENT_RTTI(IOException, RTTI)
   private:
     std::string _message;
 
@@ -90,7 +90,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC CancellationException : public IllegalStateException {
-    IMPLEMENT_RTTI(CancellationException, IllegalStateException)
+    ANTLR_IMPLEMENT_RTTI(CancellationException, IllegalStateException)
   public:
     CancellationException(const std::string &msg = "") : IllegalStateException(msg) {}
     CancellationException(CancellationException const&) = default;
@@ -99,7 +99,7 @@ namespace antlr4 {
   };
 
   class ANTLR4CPP_PUBLIC ParseCancellationException : public CancellationException {
-    IMPLEMENT_RTTI(ParseCancellationException, CancellationException)
+    ANTLR_IMPLEMENT_RTTI(ParseCancellationException, CancellationException)
   public:
     ParseCancellationException(const std::string &msg = "") : CancellationException(msg) {}
     ParseCancellationException(ParseCancellationException const&) = default;
@@ -109,4 +109,4 @@ namespace antlr4 {
 
 } // namespace antlr4
 
-IMPLEMENT_CAST_FUNCTIONS(runtimeexception_cast, antlr4::RuntimeException)
+ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(antlr4::RuntimeException)

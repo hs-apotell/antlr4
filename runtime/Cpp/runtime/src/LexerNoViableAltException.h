@@ -11,7 +11,7 @@
 namespace antlr4 {
 
   class ANTLR4CPP_PUBLIC LexerNoViableAltException : public RecognitionException {
-    IMPLEMENT_RTTI(LexerNoViableAltException, RecognitionException)
+    ANTLR_IMPLEMENT_RTTI(LexerNoViableAltException, RecognitionException)
   public:
     LexerNoViableAltException(Lexer *lexer, CharStream *input, size_t startIndex,
                               atn::ATNConfigSet *deadEndConfigs);

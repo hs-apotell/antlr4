@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "RTTI.h"
 #include "IntStream.h"
 
 namespace antlr4 {
@@ -13,8 +12,7 @@ namespace antlr4 {
   /// A token has properties: text, type, line, character position in the line
   /// (so we can ignore tabs), token channel, index, and source from which
   /// we obtained this token.
-  class ANTLR4CPP_PUBLIC Token : public RTTI {
-    IMPLEMENT_RTTI(Token, RTTI)
+  class ANTLR4CPP_PUBLIC Token {
   public:
 #if __cplusplus >= 201703L
     static constexpr size_t INVALID_TYPE = 0;
@@ -80,6 +78,18 @@ namespace antlr4 {
     };
 #endif
 
+    enum ClassType {
+      TokenClass = 1,
+      RuleTagTokenClass = 2,
+      WritableTokenClass = 4,
+      CommonTokenClass = 8,
+      TokenTagTokenClass = 16,
+    };
+
+    long classtype = TokenClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
+
     /// Get the text of the token.
     virtual std::string getText() const = 0;
 
@@ -124,5 +134,3 @@ namespace antlr4 {
   };
 
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(token_cast, antlr4::Token)

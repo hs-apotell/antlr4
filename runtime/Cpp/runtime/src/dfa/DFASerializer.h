@@ -6,14 +6,12 @@
 #pragma once
 
 #include "Vocabulary.h"
-#include "RTTI.h"
 
 namespace antlr4 {
 namespace dfa {
 
   /// A DFA walker that knows how to dump them to serialized strings.
-  class ANTLR4CPP_PUBLIC DFASerializer : public RTTI {
-    IMPLEMENT_RTTI(DFASerializer, RTTI)
+  class ANTLR4CPP_PUBLIC DFASerializer {
   public:
     DFASerializer(const DFA *dfa, const std::vector<std::string>& tnames);
     DFASerializer(const DFA *dfa, const Vocabulary &vocabulary);
@@ -32,5 +30,3 @@ namespace dfa {
 
 } // namespace dfa
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(dfaserializer_cast, antlr4::dfa::DFASerializer)

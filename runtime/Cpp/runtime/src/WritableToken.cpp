@@ -5,5 +5,9 @@
 
 #include "WritableToken.h"
 
+antlr4::WritableToken::WritableToken() {
+  classtype |= WritableTokenClass;
+}
+
 antlr4::WritableToken::~WritableToken() {
 }

@@ -12,7 +12,6 @@ namespace tree {
 namespace xpath {
 
   class ANTLR4CPP_PUBLIC XPathRuleElement : public XPathElement {
-    IMPLEMENT_RTTI(XPathRuleElement, XPathElement)
   public:
     XPathRuleElement(const std::string &ruleName, size_t ruleIndex);
 

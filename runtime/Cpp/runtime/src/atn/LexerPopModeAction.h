@@ -21,7 +21,6 @@ namespace atn {
   /// @since 4.2
   /// </summary>
   class ANTLR4CPP_PUBLIC LexerPopModeAction final : public LexerAction {
-    IMPLEMENT_RTTI(LexerPopModeAction, LexerAction)
   public:
     /// <summary>
     /// Provides a singleton instance of this parameterless lexer action.

@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "RTTI.h"
 #include "Recognizer.h"
 #include "support/CPPUtils.h"
 
@@ -18,9 +17,10 @@ namespace atn {
   ///
   ///  I have scoped the AND, OR, and Predicate subclasses of
   ///  SemanticContext within the scope of this outer class.
-  class ANTLR4CPP_PUBLIC SemanticContext : public RTTI, public std::enable_shared_from_this<SemanticContext> {
-    IMPLEMENT_RTTI(SemanticContext, RTTI)
+  class ANTLR4CPP_PUBLIC SemanticContext : public std::enable_shared_from_this<SemanticContext> {
   public:
+    SemanticContext() = default;
+    
     struct Hasher
     {
       size_t operator()(Ref<SemanticContext> const& k) const {
@@ -36,6 +36,18 @@ namespace atn {
       }
     };
 
+    enum ClassType {
+      SemanticContextClass = 1,
+      ANDClass = 2,
+      ORClass = 4,
+      PrecedencePredicateClass = 8,
+      PredicateClass = 16,
+      OperatorClass = 32,
+    };
+
+    long classtype = SemanticContextClass;
+
+    bool isType(ClassType type) const { return (classtype & type) != 0; }
 
     using Set = std::unordered_set<Ref<SemanticContext>, Hasher, Comparer>;
 
@@ -103,7 +115,6 @@ namespace atn {
   };
 
   class ANTLR4CPP_PUBLIC SemanticContext::Predicate : public SemanticContext {
-    IMPLEMENT_RTTI(Predicate, SemanticContext)
   public:
     const size_t ruleIndex;
     const size_t predIndex;
@@ -122,7 +133,6 @@ namespace atn {
   };
 
   class ANTLR4CPP_PUBLIC SemanticContext::PrecedencePredicate : public SemanticContext {
-    IMPLEMENT_RTTI(PrecedencePredicate, SemanticContext)
   public:
     const int precedence;
 
@@ -147,8 +157,8 @@ namespace atn {
    * @since 4.3
    */
   class ANTLR4CPP_PUBLIC SemanticContext::Operator : public SemanticContext {
-    IMPLEMENT_RTTI(Operator, SemanticContext)
   public:
+    Operator();
     virtual ~Operator() override;
 
     /**
@@ -168,10 +178,9 @@ namespace atn {
    * is false.
    */
   class ANTLR4CPP_PUBLIC SemanticContext::AND : public SemanticContext::Operator {
-    IMPLEMENT_RTTI(AND, Operator)
   public:
     std::vector<Ref<SemanticContext>> opnds;
-
+    AND() : SemanticContext::Operator() { classtype |= ANDClass; }
     AND(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b) ;
 
     virtual std::vector<Ref<SemanticContext>> getOperands() const override;
@@ -192,9 +201,9 @@ namespace atn {
    * contexts is true.
    */
   class ANTLR4CPP_PUBLIC SemanticContext::OR : public SemanticContext::Operator {
-    IMPLEMENT_RTTI(OR, Operator)
   public:
     std::vector<Ref<SemanticContext>> opnds;
+    OR() : SemanticContext::Operator() { classtype |= ORClass; }
 
     OR(Ref<SemanticContext> const& a, Ref<SemanticContext> const& b);
 
@@ -213,8 +222,6 @@ namespace atn {
 
 } // namespace atn
 } // namespace antlr4
-
-IMPLEMENT_CAST_FUNCTIONS(semanticcontext_cast, antlr4::atn::SemanticContext)
 
 // Hash function for SemanticContext, used in the MurmurHash::update function
 

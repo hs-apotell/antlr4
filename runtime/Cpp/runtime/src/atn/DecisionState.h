@@ -11,7 +11,6 @@ namespace antlr4 {
 namespace atn {
 
   class ANTLR4CPP_PUBLIC DecisionState : public ATNState {
-    IMPLEMENT_RTTI(DecisionState, ATNState)
   public:
     int decision;
     bool nonGreedy;
@@ -20,8 +19,9 @@ namespace atn {
     void InitializeInstanceFields();
 
   public:
-    DecisionState() {
+    DecisionState() : ATNState() {
       InitializeInstanceFields();
+      classtype |= DecisionStateClass;
     }
 
     virtual std::string toString() const override;
