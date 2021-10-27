@@ -13,7 +13,7 @@ using namespace antlr4;
 
 const std::unique_ptr<CommonTokenFactory> CommonTokenFactory::DEFAULT(new CommonTokenFactory);
 
-CommonTokenFactory::CommonTokenFactory(bool copyText_) : copyText(copyText_), allocator(sizeof(CommonToken), 8) {
+CommonTokenFactory::CommonTokenFactory(bool copyText_) : copyText(copyText_), allocator(sizeof(CommonToken), 512) {
 }
 
 CommonTokenFactory::CommonTokenFactory() : CommonTokenFactory(false) {
