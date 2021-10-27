@@ -61,11 +61,11 @@ void DefaultErrorStrategy::reportError(Parser *recognizer, const RecognitionExce
   }
 
   beginErrorCondition(recognizer);
-  if (antlr_cast<NoViableAltException *>(&e) != nullptr) {
+  if (antlr_cast<const NoViableAltException *>(&e) != nullptr) {
     reportNoViableAlternative(recognizer, static_cast<const NoViableAltException &>(e));
-  } else if (antlr_cast<InputMismatchException *>(&e) != nullptr) {
+  } else if (antlr_cast<const InputMismatchException *>(&e) != nullptr) {
     reportInputMismatch(recognizer, static_cast<const InputMismatchException &>(e));
-  } else if (antlr_cast<FailedPredicateException *>(&e) != nullptr) {
+  } else if (antlr_cast<const FailedPredicateException *>(&e) != nullptr) {
     reportFailedPredicate(recognizer, static_cast<const FailedPredicateException &>(e));
   } else {
     recognizer->notifyErrorListeners(e.getOffendingToken(), e.what(), std::current_exception());
