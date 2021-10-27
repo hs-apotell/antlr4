@@ -281,8 +281,11 @@ namespace antlr4
 
 #else
 
-#define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType) dynamic_cast
-#define ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(baseType) dynamic_cast
+#define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType) \
+  #define antlr_cast dynamic_cast
+
+#define ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(baseType) \
+  #define antlr_cast dynamic_cast
 
 #endif  /// _MSC_VER
 
