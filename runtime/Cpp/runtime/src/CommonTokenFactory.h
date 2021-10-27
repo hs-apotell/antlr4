@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Allocators.h"
 #include "TokenFactory.h"
 
 namespace antlr4 {
@@ -22,7 +23,7 @@ namespace antlr4 {
      * This token factory does not explicitly copy token text when constructing
      * tokens.</p>
      */
-    static const std::unique_ptr<TokenFactory<CommonToken>> DEFAULT;
+    static const std::unique_ptr<CommonTokenFactory> DEFAULT;
 
   protected:
     /**
@@ -41,6 +42,7 @@ namespace antlr4 {
      * overhead of copying text for every token unless explicitly requested.</p>
      */
     const bool copyText;
+    FixedAllocator allocator;
 
   public:
     /**
@@ -64,6 +66,9 @@ namespace antlr4 {
      * directly.</p>
      */
     CommonTokenFactory();
+
+    void *allocate() { return allocator.Allocate(); }
+    void free(void *p) { allocator.Free(p); }
 
     virtual std::unique_ptr<CommonToken> create(std::pair<TokenSource*, CharStream*> source, size_t type,
       const std::string &text, size_t channel, size_t start, size_t stop, size_t line, size_t charPositionInLine) override;

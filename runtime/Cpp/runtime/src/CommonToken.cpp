@@ -14,6 +14,7 @@
 #include "support/CPPUtils.h"
 
 #include "CommonToken.h"
+#include "CommonTokenFactory.h"
 
 using namespace antlr4;
 using namespace antlr4::misc;
@@ -21,6 +22,14 @@ using namespace antlr4::misc;
 using namespace antlrcpp;
 
 const std::pair<TokenSource*, CharStream*> CommonToken::EMPTY_SOURCE;
+
+void *CommonToken::operator new (size_t size) {
+  return CommonTokenFactory::DEFAULT->allocate();
+}
+
+void CommonToken::operator delete (void *p) {
+  CommonTokenFactory::DEFAULT->free(p);
+}
 
 CommonToken::CommonToken(size_t type) {
   classtype |= CommonTokenClass;

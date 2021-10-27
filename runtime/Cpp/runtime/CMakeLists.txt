@@ -84,7 +84,7 @@ elseif(APPLE)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set(disabled_compile_warnings "/wd4251")
+  set(disabled_compile_warnings "/wd4251 /wd4996")
 else()
   set(disabled_compile_warnings "-Wno-overloaded-virtual")
 endif()

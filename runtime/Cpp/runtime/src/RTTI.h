@@ -225,6 +225,8 @@ namespace antlr4
     inline virtual const void *AsOfType(typeid_t tid) const override { return thistype_t::AsOfTypeRecurse(tid); }                 \
   private:
 
+#if defined(_MSC_VER)
+
 #define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType)                                                                       \
   template<                                                                                                                 \
     typename I,                                                                                                             \
@@ -276,5 +278,12 @@ namespace antlr4
   inline ANTLR4CPP_PUBLIC Ref<const T> antlr_cast(Ref<const baseType> const &u) noexcept {                                        \
     return (u && (u->template VirtualCast<const T>() != nullptr)) ? std::static_pointer_cast<const T>(u) : Ref<const T>(nullptr); \
   }
+
+#else
+
+#define ANTLR_IMPLEMENT_RTTI_CAST_FUNCTIONS(baseType) dynamic_cast
+#define ANTLR_IMPLEMENT_RTTI_VIRTUAL_CAST_FUNCTIONS(baseType) dynamic_cast
+
+#endif  /// _MSC_VER
 
 #endif  /// ANTLR_RTTI_H

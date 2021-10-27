@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Allocators.h"
 #include "RTTI.h"
 #include "support/Any.h"
 
@@ -84,19 +85,24 @@ namespace tree {
     template<typename T, typename ... Args>
     T* createInstance(Args&& ... args) {
       static_assert(std::is_base_of<ParseTree, T>::value, "Argument must be a parse tree type");
-      T* result = new T(args...);
+      T* result = new(_allocator.Allocate(sizeof(T))) T(args...);
       _allocated.push_back(result);
       return result;
     }
 
     void reset() {
       for (auto * entry : _allocated)
-        delete entry;
+        entry->~ParseTree();
+
       _allocated.clear();
+      _allocator.Purge();
     }
+
+    ParseTreeTracker() : _allocator(16 * 1024 * 1024) {}
 
   private:
     std::vector<ParseTree *> _allocated;
+    LinearAllocator _allocator;
   };
 
 

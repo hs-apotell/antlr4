@@ -151,6 +151,10 @@ namespace antlr4 {
     virtual std::string toString() const override;
 
     virtual std::string toString(Recognizer *r) const;
+
+    static void *operator new (size_t size);
+    static void operator delete (void *p);
+
   private:
     void InitializeInstanceFields();
   };
