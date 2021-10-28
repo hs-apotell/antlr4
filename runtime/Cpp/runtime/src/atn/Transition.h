@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Allocators.h"
 #include "misc/IntervalSet.h"
 
 namespace antlr4 {
@@ -88,6 +89,30 @@ namespace atn {
 
     Transition(Transition const&) = delete;
     Transition& operator=(Transition const&) = delete;
+  };
+
+  class TransitionFactory final {
+  public:
+    static std::shared_ptr<TransitionFactory> GetInstance();
+
+    TransitionFactory(std::size_t size) : allocator(size) {}
+    ~TransitionFactory() { allocator.Purge(); }
+
+    template<typename T, typename = typename std::enable_if<std::is_base_of<Transition, T>::value>::type, typename ... Args>
+    T *Create(Args&& ... args) {
+      return new(allocator.Allocate(sizeof(T))) T(args...);
+    }
+
+    void Destroy(Transition *const transition) {
+      allocator.Free(transition);
+    }
+
+  private:
+    LinearAllocator allocator;
+
+  private:
+    TransitionFactory(const TransitionFactory &) = delete;
+    TransitionFactory &operator = (const TransitionFactory &) = delete;
   };
 
 } // namespace atn

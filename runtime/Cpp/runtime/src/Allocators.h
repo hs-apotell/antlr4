@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <array>
 #include <cstddef>
 
 namespace antlr4 {
@@ -43,6 +44,8 @@ namespace antlr4 {
     ~LinearAllocator();
 
     void *Allocate(std::size_t size);
+    void Free(void *const ptr);
+
     void Purge();
 
   private:
@@ -56,8 +59,13 @@ namespace antlr4 {
       Block *next = nullptr;
     };
 
+    struct Chunk {
+      Chunk *next = nullptr;
+    };
+
     Block *head = nullptr;
     const std::size_t blockSize = 0;
+    std::array<Chunk *, 256> chunks;
 
   private:
     LinearAllocator(const LinearAllocator &) = delete;

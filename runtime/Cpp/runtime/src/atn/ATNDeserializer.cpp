@@ -334,7 +334,7 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
         }
       }
 
-      EpsilonTransition *returnTransition = new EpsilonTransition(ruleTransition->followState, outermostPrecedenceReturn); /* mem check: freed in ANTState d-tor */
+      EpsilonTransition *returnTransition = TransitionFactory::GetInstance()->Create<EpsilonTransition>(ruleTransition->followState, outermostPrecedenceReturn); /* mem check: freed in ANTState d-tor */
       atn.ruleToStopState[ruleTransition->target->ruleIndex]->addTransition(returnTransition);
     }
   }
@@ -422,8 +422,8 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
           size_t ruleIndex = static_cast<ActionTransition *>(transition)->ruleIndex;
           size_t actionIndex = static_cast<ActionTransition *>(transition)->actionIndex;
           Ref<LexerCustomAction> lexerAction = std::make_shared<LexerCustomAction>(ruleIndex, actionIndex);
-          state->transitions[i] = new ActionTransition(transition->target, ruleIndex, atn.lexerActions.size(), false); /* mem-check freed in ATNState d-tor */
-          delete transition; // ml: no longer needed since we just replaced it.
+          state->transitions[i] = TransitionFactory::GetInstance()->Create<ActionTransition>(transition->target, ruleIndex, atn.lexerActions.size(), false); /* mem-check freed in ATNState d-tor */
+          TransitionFactory::GetInstance()->Destroy(transition); // ml: no longer needed since we just replaced it.
           atn.lexerActions.push_back(lexerAction);
         }
       }
@@ -443,11 +443,11 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
     }
 
     for (std::vector<RuleStartState*>::size_type i = 0; i < atn.ruleToStartState.size(); i++) {
-      BasicBlockStartState *bypassStart = new BasicBlockStartState(); /* mem check: freed in ATN d-tor */
+      BasicBlockStartState *bypassStart = ATNStateFactory::GetInstance()->Create<BasicBlockStartState>(); /* mem check: freed in ATN d-tor */
       bypassStart->ruleIndex = (int)i;
       atn.addState(bypassStart);
 
-      BlockEndState *bypassStop = new BlockEndState(); /* mem check: freed in ATN d-tor */
+      BlockEndState *bypassStop = ATNStateFactory::GetInstance()->Create<BlockEndState>(); /* mem check: freed in ATN d-tor */
       bypassStop->ruleIndex = (int)i;
       atn.addState(bypassStop);
 
@@ -511,13 +511,13 @@ ATN ATNDeserializer::deserialize(const std::vector<uint16_t>& input) {
       }
 
       // link the new states
-      atn.ruleToStartState[i]->addTransition(new EpsilonTransition(bypassStart));  /* mem check: freed in ATNState d-tor */
-      bypassStop->addTransition(new EpsilonTransition(endState)); /* mem check: freed in ATNState d-tor */
+      atn.ruleToStartState[i]->addTransition(TransitionFactory::GetInstance()->Create<EpsilonTransition>(bypassStart));  /* mem check: freed in ATNState d-tor */
+      bypassStop->addTransition(TransitionFactory::GetInstance()->Create<EpsilonTransition>(endState)); /* mem check: freed in ATNState d-tor */
 
-      ATNState *matchState = new BasicState(); /* mem check: freed in ATN d-tor */
+      ATNState *matchState = ATNStateFactory::GetInstance()->Create<BasicState>(); /* mem check: freed in ATN d-tor */
       atn.addState(matchState);
-      matchState->addTransition(new AtomTransition(bypassStop, atn.ruleToTokenType[i])); /* mem check: freed in ATNState d-tor */
-      bypassStart->addTransition(new EpsilonTransition(matchState)); /* mem check: freed in ATNState d-tor */
+      matchState->addTransition(TransitionFactory::GetInstance()->Create<AtomTransition>(bypassStop, atn.ruleToTokenType[i])); /* mem check: freed in ATNState d-tor */
+      bypassStart->addTransition(TransitionFactory::GetInstance()->Create<EpsilonTransition>(matchState)); /* mem check: freed in ATNState d-tor */
     }
 
     if (deserializationOptions.isVerifyATN()) {
@@ -639,33 +639,33 @@ Transition *ATNDeserializer::edgeFactory(const ATN &atn, size_t type, size_t /*s
   ATNState *target = atn.states[trg];
   switch (type) {
     case Transition::EPSILON:
-      return new EpsilonTransition(target);
+      return TransitionFactory::GetInstance()->Create<EpsilonTransition>(target);
     case Transition::RANGE:
       if (arg3 != 0) {
-        return new RangeTransition(target, Token::EOF, arg2);
+        return TransitionFactory::GetInstance()->Create<RangeTransition>(target, Token::EOF, arg2);
       } else {
-        return new RangeTransition(target, arg1, arg2);
+        return TransitionFactory::GetInstance()->Create<RangeTransition>(target, arg1, arg2);
       }
     case Transition::RULE:
-      return new RuleTransition(static_cast<RuleStartState*>(atn.states[arg1]), arg2, (int)arg3, target);
+      return TransitionFactory::GetInstance()->Create<RuleTransition>(static_cast<RuleStartState*>(atn.states[arg1]), arg2, (int)arg3, target);
     case Transition::PREDICATE:
-      return new PredicateTransition(target, arg1, arg2, arg3 != 0);
+      return TransitionFactory::GetInstance()->Create<PredicateTransition>(target, arg1, arg2, arg3 != 0);
     case Transition::PRECEDENCE:
-      return new PrecedencePredicateTransition(target, (int)arg1);
+      return TransitionFactory::GetInstance()->Create<PrecedencePredicateTransition>(target, (int)arg1);
     case Transition::ATOM:
       if (arg3 != 0) {
-        return new AtomTransition(target, Token::EOF);
+        return TransitionFactory::GetInstance()->Create<AtomTransition>(target, Token::EOF);
       } else {
-        return new AtomTransition(target, arg1);
+        return TransitionFactory::GetInstance()->Create<AtomTransition>(target, arg1);
       }
     case Transition::ACTION:
-      return new ActionTransition(target, arg1, arg2, arg3 != 0);
+      return TransitionFactory::GetInstance()->Create<ActionTransition>(target, arg1, arg2, arg3 != 0);
     case Transition::SET:
-      return new SetTransition(target, sets[arg1]);
+      return TransitionFactory::GetInstance()->Create<SetTransition>(target, sets[arg1]);
     case Transition::NOT_SET:
-      return new NotSetTransition(target, sets[arg1]);
+      return TransitionFactory::GetInstance()->Create<NotSetTransition>(target, sets[arg1]);
     case Transition::WILDCARD:
-      return new WildcardTransition(target);
+      return TransitionFactory::GetInstance()->Create<WildcardTransition>(target);
   }
 
   throw IllegalArgumentException("The specified transition type is not valid.");
@@ -678,40 +678,40 @@ ATNState* ATNDeserializer::stateFactory(size_t type, size_t ruleIndex) {
     case ATNState::ATN_INVALID_TYPE:
       return nullptr;
     case ATNState::BASIC :
-      s = new BasicState();
+      s = ATNStateFactory::GetInstance()->Create<BasicState>();
       break;
     case ATNState::RULE_START :
-      s = new RuleStartState();
+      s = ATNStateFactory::GetInstance()->Create<RuleStartState>();
       break;
     case ATNState::BLOCK_START :
-      s = new BasicBlockStartState();
+      s = ATNStateFactory::GetInstance()->Create<BasicBlockStartState>();
       break;
     case ATNState::PLUS_BLOCK_START :
-      s = new PlusBlockStartState();
+      s = ATNStateFactory::GetInstance()->Create<PlusBlockStartState>();
       break;
     case ATNState::STAR_BLOCK_START :
-      s = new StarBlockStartState();
+      s = ATNStateFactory::GetInstance()->Create<StarBlockStartState>();
       break;
     case ATNState::TOKEN_START :
-      s = new TokensStartState();
+      s = ATNStateFactory::GetInstance()->Create<TokensStartState>();
       break;
     case ATNState::RULE_STOP :
-      s = new RuleStopState();
+      s = ATNStateFactory::GetInstance()->Create<RuleStopState>();
       break;
     case ATNState::BLOCK_END :
-      s = new BlockEndState();
+      s = ATNStateFactory::GetInstance()->Create<BlockEndState>();
       break;
     case ATNState::STAR_LOOP_BACK :
-      s = new StarLoopbackState();
+      s = ATNStateFactory::GetInstance()->Create<StarLoopbackState>();
       break;
     case ATNState::STAR_LOOP_ENTRY :
-      s = new StarLoopEntryState();
+      s = ATNStateFactory::GetInstance()->Create<StarLoopEntryState>();
       break;
     case ATNState::PLUS_LOOP_BACK :
-      s = new PlusLoopbackState();
+      s = ATNStateFactory::GetInstance()->Create<PlusLoopbackState>();
       break;
     case ATNState::LOOP_END :
-      s = new LoopEndState();
+      s = ATNStateFactory::GetInstance()->Create<LoopEndState>();
       break;
     default :
       std::string message = "The specified state type " + std::to_string(type) + " is not valid.";
@@ -731,7 +731,7 @@ Ref<LexerAction> ATNDeserializer::lexerActionFactory(LexerActionType type, int d
       return std::make_shared<LexerCustomAction>(data1, data2);
 
     case LexerActionType::MODE:
-      return std::make_shared< LexerModeAction>(data1);
+      return std::make_shared<LexerModeAction>(data1);
 
     case LexerActionType::MORE:
       return LexerMoreAction::getInstance();

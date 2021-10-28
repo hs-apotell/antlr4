@@ -34,14 +34,16 @@ ATN::ATN(ATN &&other) {
   ruleToTokenType = std::move(other.ruleToTokenType);
   lexerActions = std::move(other.lexerActions);
   modeToStartState = std::move(other.modeToStartState);
+  atnStateFactory = std::move(other.atnStateFactory);
 }
 
 ATN::ATN(ATNType grammarType_, size_t maxTokenType_) : grammarType(grammarType_), maxTokenType(maxTokenType_) {
+  atnStateFactory = ATNStateFactory::GetInstance();
 }
 
 ATN::~ATN() {
   for (ATNState *state : states) {
-    delete state;
+    atnStateFactory->Destroy(state);
   }
 }
 
@@ -58,6 +60,7 @@ ATN& ATN::operator = (ATN &other) NOEXCEPT {
   ruleToTokenType = other.ruleToTokenType;
   lexerActions = other.lexerActions;
   modeToStartState = other.modeToStartState;
+  atnStateFactory = other.atnStateFactory;
 
   return *this;
 }
@@ -77,6 +80,7 @@ ATN& ATN::operator = (ATN &&other) NOEXCEPT {
   ruleToTokenType = std::move(other.ruleToTokenType);
   lexerActions = std::move(other.lexerActions);
   modeToStartState = std::move(other.modeToStartState);
+  atnStateFactory = std::move(other.atnStateFactory);
 
   return *this;
 }
@@ -108,7 +112,7 @@ void ATN::addState(ATNState *state) {
 }
 
 void ATN::removeState(ATNState *state) {
-  delete states.at(state->stateNumber);// just free mem, don't shift states in list
+  atnStateFactory->Destroy(states.at(state->stateNumber));// just free mem, don't shift states in list
   states.at(state->stateNumber) = nullptr;
 }
 

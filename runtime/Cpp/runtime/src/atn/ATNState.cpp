@@ -13,9 +13,11 @@
 using namespace antlr4::atn;
 using namespace antlrcpp;
 
+ATNState::ATNState() { transitionFactory = TransitionFactory::GetInstance(); }
+
 ATNState::~ATNState() {
   for (auto *transition : transitions) {
-    delete transition;
+    transitionFactory->Destroy(transition);
   }
 }
 
@@ -48,7 +50,7 @@ void ATNState::addTransition(Transition *e) {
 void ATNState::addTransition(size_t index, Transition *e) {
   for (Transition *transition : transitions)
     if (transition->target->stateNumber == e->target->stateNumber) {
-      delete e;
+      transitionFactory->Destroy(e);
       return;
     }
 
@@ -66,4 +68,9 @@ Transition *ATNState::removeTransition(size_t index) {
   Transition *result = transitions[index];
   transitions.erase(transitions.begin() + index);
   return result;
+}
+
+std::shared_ptr<ATNStateFactory> ATNStateFactory::GetInstance() {
+  static std::shared_ptr<ATNStateFactory> instance(new ATNStateFactory(1024 * 1024));
+  return instance;
 }

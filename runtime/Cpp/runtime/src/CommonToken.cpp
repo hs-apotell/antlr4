@@ -23,11 +23,11 @@ using namespace antlrcpp;
 
 const std::pair<TokenSource*, CharStream*> CommonToken::EMPTY_SOURCE;
 
-void *CommonToken::operator new (size_t size) {
+void *CommonToken::operator new(size_t /* size */) {
   return CommonTokenFactory::DEFAULT->allocate();
 }
 
-void CommonToken::operator delete (void *p) {
+void CommonToken::operator delete(void *p) {
   CommonTokenFactory::DEFAULT->free(p);
 }
 

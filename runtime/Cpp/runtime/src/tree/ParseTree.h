@@ -98,7 +98,7 @@ namespace tree {
       _allocator.Purge();
     }
 
-    ParseTreeTracker() : _allocator(16 * 1024 * 1024) {}
+    ParseTreeTracker() : _allocator(4 * 1024 * 1024) {}
 
   private:
     std::vector<ParseTree *> _allocated;

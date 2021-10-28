@@ -79,6 +79,7 @@ namespace antlr4 {
   LinearAllocator::LinearAllocator(std::size_t blockSize)
     : head(nullptr)
     , blockSize(RoundUp(blockSize)) {
+    std::fill(chunks.begin(), chunks.end(), nullptr);
   }
 
   bool LinearAllocator::AddBlock() {
@@ -102,17 +103,46 @@ namespace antlr4 {
   void *LinearAllocator::Allocate(std::size_t size) {
     size = RoundUp(size);
 
-    if ((head == nullptr) || (head->available < size)) {
-      if (!AddBlock()) return nullptr;
+    void *p = nullptr;
+
+    const std::size_t index = size / kAlignment;
+    if ((index < chunks.size()) && (chunks[index] != nullptr)) {
+      p = reinterpret_cast<void *>(chunks[index]);
+      chunks[index] = chunks[index]->next;
+    } else {
+      if ((head == nullptr) || (head->available < (size + kAlignment))) {
+        if (!AddBlock()) return nullptr;
+      }
+
+      p = static_cast<void *>(head->head);
+      head->head += (size + kAlignment);
+      head->available -= (size + kAlignment);
     }
 
-    void *const p = static_cast<void *>(head->head);
-    head->head += size;
-    head->available -= size;
+    if (p != nullptr) {
+      *reinterpret_cast<std::size_t *>(p) = size;
+      return reinterpret_cast<char *>(p) + kAlignment;
+    }
+
     return p;
   }
 
+  void LinearAllocator::Free(void *const ptr) {
+    if (ptr == nullptr) return;
+
+    void *const p = reinterpret_cast<char *>(ptr) - kAlignment;
+    std::size_t size = *reinterpret_cast<std::size_t *>(p);
+
+    const std::size_t index = size / kAlignment;
+    if (index < chunks.size()) {
+      Chunk *const chunk = reinterpret_cast<Chunk *>(p);
+      chunk->next = chunks[index];
+      chunks[index] = chunk;
+    }
+  }
+
   void LinearAllocator::Purge() {
+    std::fill(chunks.begin(), chunks.end(), nullptr);
     while (head != nullptr) {
       Block *const next = head->next;
       free(head->data);

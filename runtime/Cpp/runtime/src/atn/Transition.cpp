@@ -41,3 +41,8 @@ std::string Transition::toString() const {
 
   return ss.str();
 }
+
+std::shared_ptr<TransitionFactory> TransitionFactory::GetInstance() {
+  static std::shared_ptr<TransitionFactory> instance(new TransitionFactory(1024 * 1024));
+  return instance;
+}

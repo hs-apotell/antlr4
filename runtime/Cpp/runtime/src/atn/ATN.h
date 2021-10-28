@@ -15,7 +15,7 @@
 
 namespace antlr4 {
 namespace atn {
-
+  class ATNStateFactory;
   class ANTLR4CPP_PUBLIC ATN {
   public:
 #if __cplusplus >= 201703L
@@ -65,6 +65,8 @@ namespace atn {
     std::vector<Ref<LexerAction>> lexerActions;
 
     std::vector<TokensStartState *> modeToStartState;
+
+    std::shared_ptr<ATNStateFactory> atnStateFactory;
 
     ATN& operator = (ATN &other) NOEXCEPT;
     ATN& operator = (ATN &&other) NOEXCEPT;

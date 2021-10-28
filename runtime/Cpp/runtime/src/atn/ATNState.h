@@ -5,11 +5,12 @@
 
 #pragma once
 
+#include "Allocators.h"
 #include "misc/IntervalSet.h"
 
 namespace antlr4 {
 namespace atn {
-
+  class TransitionFactory;
   /// <summary>
   /// The following images show the relation of states and
   /// <seealso cref="ATNState#transitions"/> for various grammar constructs.
@@ -81,7 +82,7 @@ namespace atn {
 
   class ANTLR4CPP_PUBLIC ATNState {
   public:
-    ATNState() = default;
+    ATNState();
     ATNState(ATNState const&) = delete;
 
     virtual ~ATNState();
@@ -163,7 +164,33 @@ namespace atn {
     misc::IntervalSet _nextTokenWithinRule;
     std::atomic<bool> _nextTokenUpdated { false };
 
+    std::shared_ptr<TransitionFactory> transitionFactory;
+
     friend class ATN;
+  };
+
+  class ATNStateFactory final {
+  public:
+    static std::shared_ptr<ATNStateFactory> GetInstance();
+
+    ATNStateFactory(std::size_t size) : allocator(size) {}
+    ~ATNStateFactory() { allocator.Purge(); }
+
+    template<typename S, typename = typename std::enable_if<std::is_base_of<ATNState, S>::value>::type, typename ... Args>
+    S* Create(Args&& ... args) {
+      return new(allocator.Allocate(sizeof(S))) S(args...);
+    }
+
+    void Destroy(ATNState *const state) {
+      allocator.Free(state);
+    }
+
+  private:
+    LinearAllocator allocator;
+
+  private:
+    ATNStateFactory(const ATNStateFactory &) = delete;
+    ATNStateFactory &operator = (const ATNStateFactory &) = delete;
   };
 
 } // namespace atn
