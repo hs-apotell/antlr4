@@ -23,15 +23,15 @@ TagChunk::TagChunk(const std::string &label, const std::string &tag) : _tag(tag)
 TagChunk::~TagChunk() {
 }
 
-std::string TagChunk::getTag() {
+const std::string& TagChunk::getTag() const {
   return _tag;
 }
 
-std::string TagChunk::getLabel() {
+const std::string& TagChunk::getLabel() const {
   return _label;
 }
 
-std::string TagChunk::toString() {
+std::string TagChunk::toString() const {
   if (!_label.empty()) {
     return _label + ":" + _tag;
   }

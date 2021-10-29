@@ -56,21 +56,21 @@ namespace pattern {
     /// Get the tag for this chunk.
     /// </summary>
     /// <returns> The tag for the chunk. </returns>
-    std::string getTag();
+    const std::string& getTag() const;
 
     /// <summary>
     /// Get the label, if any, assigned to this chunk.
     /// </summary>
     /// <returns> The label assigned to this chunk, or {@code null} if no label is
     /// assigned to the chunk. </returns>
-    std::string getLabel();
+    const std::string& getLabel() const;
 
     /// <summary>
     /// This method returns a text representation of the tag chunk. Labeled tags
     /// are returned in the form {@code label:tag}, and unlabeled tags are
     /// returned as just the tag name.
     /// </summary>
-    virtual std::string toString() override;
+    virtual std::string toString() const override;
 
   private:
     /// This is the backing field for <seealso cref="#getTag"/>.

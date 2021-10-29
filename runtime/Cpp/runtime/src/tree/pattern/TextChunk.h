@@ -35,7 +35,7 @@ namespace pattern {
     /// Gets the raw text of this chunk.
     /// </summary>
     /// <returns> The text of the chunk. </returns>
-    std::string getText();
+    const std::string& getText() const;
 
     /// <summary>
     /// {@inheritDoc}
@@ -43,7 +43,7 @@ namespace pattern {
     /// The implementation for <seealso cref="TextChunk"/> returns the result of
     /// <seealso cref="#getText()"/> in single quotes.
     /// </summary>
-    virtual std::string toString() override;
+    virtual std::string toString() const override;
   };
 
 } // namespace pattern

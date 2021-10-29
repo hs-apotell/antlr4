@@ -20,10 +20,10 @@ TextChunk::TextChunk(const std::string &text) : text(text) {
 TextChunk::~TextChunk() {
 }
 
-std::string TextChunk::getText() {
+const std::string& TextChunk::getText() const {
   return text;
 }
 
-std::string TextChunk::toString() {
+std::string TextChunk::toString() const {
   return std::string("'") + text + std::string("'");
 }
